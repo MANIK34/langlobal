@@ -117,7 +117,7 @@ class _SelectCompany extends State<SelectCompany> {
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () async {
           SharedPreferences myPrefs = await SharedPreferences.getInstance();
-          myPrefs.setString('companyID', companyID);
+          myPrefs.setString('companyID', companyID.toString());
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => DashboardPage(token)),
