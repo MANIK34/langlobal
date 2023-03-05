@@ -226,6 +226,7 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
       try {
         var returnCode=jsonResponse['returnCode'];
         var orderInfo= jsonResponse['transientOrderInfo'];
+        var cartonList= orderInfo['cartonList'];
         print('returnCode'+ returnCode.toString());
         if(returnCode=="1"){
           var memoNumber=orderInfo['memoNumber'];
@@ -241,15 +242,17 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
           var sku=orderInfo['sku'];
           var category=orderInfo['categoryName'];
           var productName=orderInfo['productName'];
-
           var supplier=orderInfo['supplierName'];
           var cartonCount=orderInfo['quantityPerContainers'];
           var orderQty=orderInfo['orderedQty'];
+          var transientOrderID=orderInfo['transientOrderID'];
+          var isESNRequired=orderInfo['isESNRequired'];
+          var palletID=cartonList[0]['palletID'];
 
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => TransientOrderValidatePage(memoNumber,formatted,
-            orderStatus,sku,category,productName,supplier,cartonCount,orderQty)),
+            orderStatus,sku,category,productName,supplier,cartonCount,orderQty,transientOrderID,isESNRequired,palletID)),
           );
         }else{
           _showToast(jsonResponse['returnMessage']);

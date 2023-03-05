@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/dashboard/DashboardPage.dart';
-import 'package:langlobal/response/companies.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'model/responseParams/companies.dart';
 
 class SelectCompany extends StatefulWidget {
   String token = '';
@@ -24,7 +26,7 @@ class _SelectCompany extends State<SelectCompany> {
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool _isLoading = false;
 
-
+  var companyID;
   List<CompanyList> companyList = <CompanyList>[];
   List<CompanyList> companyList2 = <CompanyList>[];
   late CompanyList? _companyList = null;
@@ -33,46 +35,51 @@ class _SelectCompany extends State<SelectCompany> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {
+      _isLoading = true;
+    });
     callGetCompanyApi();
   }
 
   void callGetCompanyApi() async {
-    var url =
-        "http://api.sanvitti.com/common/v1/Companies";
+    var url = "http://api.sanvitti.com/common/v1/Companies";
 
-    Map<String, String> headers = {
-      'Authorization': 'Bearer '+token
-    };
+    Map<String, String> headers = {'Authorization': 'Bearer ' + token};
 
-    final response1 = await http.get(Uri.parse(url),headers: headers);
+    final response1 = await http.get(Uri.parse(url), headers: headers);
     if (response1.statusCode == 200) {
       var jsonData = json.decode(response1.body);
       var jsonResponse = json.decode(response1.body);
-      var jsonArray=jsonResponse['companies'];
+      var jsonArray = jsonResponse['companies'];
       print(response1.body);
-      for(int m=0;m<jsonArray.length;m++){
-        var companyID=jsonArray[m]['companyID'];
-        var companyName=jsonArray[m]['companyName'];
-        var companyShortName=jsonArray[m]['companyShortName'];
-        var companyLogo=jsonArray[m]['companyLogo'];
-        CompanyList finList= CompanyList(companyID: companyID, companyName: companyName,companyShortName:companyShortName,
+      for (int m = 0; m < jsonArray.length; m++) {
+        var companyID = jsonArray[m]['companyID'];
+        var companyName = jsonArray[m]['companyName'];
+        var companyShortName = jsonArray[m]['companyShortName'];
+        var companyLogo = jsonArray[m]['companyLogo'];
+        CompanyList finList = CompanyList(
+            companyID: companyID,
+            companyName: companyName,
+            companyShortName: companyShortName,
             companyLogo: companyLogo);
         companyList.add(finList);
         print(companyList[m].companyName);
       }
-      companyList2=companyList;
-      setState(() {
-        companyList=companyList2;
-        _companyList=companyList[1];
-      });
-    }else{
+      companyList2 = companyList;
+    } else {
       print(response1.statusCode);
     }
+    setState(() {
+      _isLoading = false;
+      companyList = companyList2;
+      if(companyList.isNotEmpty) {
+        _companyList = companyList[1];
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
     final companyField = Container(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
       decoration: BoxDecoration(
@@ -88,6 +95,7 @@ class _SelectCompany extends State<SelectCompany> {
           onChanged: (value) {
             setState(() {
               _companyList = value!;
+              companyID = value!.companyID;
             });
           },
           items: companyList.map((CompanyList map) {
@@ -100,24 +108,19 @@ class _SelectCompany extends State<SelectCompany> {
       ),
     );
 
-
-
     final submitButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(10.0),
       color: Colors.orange,
       child: MaterialButton(
-        minWidth:250,
+        minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          /*setState(() {
-            _isLoading = true;
-          });
-          submitFeedback();*/
+        onPressed: () async {
+          SharedPreferences myPrefs = await SharedPreferences.getInstance();
+          myPrefs.setString('companyID', companyID);
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => DashboardPage(token)),
+            MaterialPageRoute(builder: (context) => DashboardPage(token)),
           );
         },
         child: Text("Go",
@@ -137,49 +140,47 @@ class _SelectCompany extends State<SelectCompany> {
         ),
       ),
       body: Center(
-         child:  Padding(
-           padding: const EdgeInsets.all(36.0),
-           child: _isLoading
-               ? const Center(child: CircularProgressIndicator())
-               : Column(
-             crossAxisAlignment: CrossAxisAlignment.center,
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: <Widget>[
-               SizedBox(
-                 height: 100.0,
-                 child: Image.asset(
-                   "assets/lan_global_icon.jpeg",
-                   fit: BoxFit.contain,
-                 ),
-               ),
-               const SizedBox(height: 50.0),
-               const Align(
-                 alignment: Alignment.centerLeft,
-                 child: Padding(
-                   padding: EdgeInsets.only(top: 0.0, left: 20.0),
-                   child: Text("Select Company"),
-                 ),
-               ),
-               Align(
-                 alignment: Alignment.centerLeft,
-                 child: Padding(
-                   padding: EdgeInsets.only(right: 20.0, left: 20.0),
-                   child: companyField,
-                 ),
-               ),
-               const SizedBox(height: 60.0),
-               submitButton,
-               const SizedBox(
-                 height: 250.0,
-               ),
-             ],
-           ),
-         ),
+        child: Padding(
+          padding: const EdgeInsets.all(36.0),
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 100.0,
+                      child: Image.asset(
+                        "assets/lan_global_icon.jpeg",
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: 50.0),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 0.0, left: 20.0),
+                        child: Text("Select Company"),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 20.0, left: 20.0),
+                        child: companyField,
+                      ),
+                    ),
+                    const SizedBox(height: 60.0),
+                    submitButton,
+                    const SizedBox(
+                      height: 250.0,
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }
-
-
 
   void _showToast(String errorMessage) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -189,6 +190,5 @@ class _SelectCompany extends State<SelectCompany> {
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
-
   }
 }

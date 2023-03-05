@@ -1,13 +1,9 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/select_company.dart';
-import 'package:langlobal/transientSearch/transientOrderValidate.dart';
-import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'dashboard/DashboardPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -172,6 +168,7 @@ class _LoginPage extends State<LoginPage> {
       try {
         var returnCode=jsonResponse['returnCode'];
         var userInfo= jsonResponse['userInfo'];
+        var companyInfo= userInfo['companyInfo'];
         print('returnCode'+ returnCode.toString());
         if(returnCode=="1"){
           var userId=userInfo['userID'];
@@ -190,6 +187,7 @@ class _LoginPage extends State<LoginPage> {
                   builder: (context) => SelectCompany(token)),
             );
           }else{
+            myPrefs.setString('companyID',companyInfo['companyID']);
             Navigator.push(
               context,
               MaterialPageRoute(

@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../model/requestParams/cartonList.dart';
 
 class TransientOrderValidatePage extends StatefulWidget {
   var memoNumber;
@@ -13,15 +18,19 @@ class TransientOrderValidatePage extends StatefulWidget {
   var supplier;
   var cartonCount;
   var orderQty;
+  var transientOrderID;
+  var isESNRequired;
+  var palletID;
+
   TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
       this.sku,this.category,this.name,this.supplier,this.cartonCount,
-      this.orderQty, {Key? key}) : super(key: key);
+      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID, {Key? key}) : super(key: key);
 
   @override
   _TransientOrderValidatePage createState() =>
       _TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
           this.sku,this.category,this.name,this.supplier,this.cartonCount,
-          this.orderQty);
+          this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID);
 }
 
 class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
@@ -34,10 +43,13 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   var supplier ;
   var cartonCount;
   var orderQty ;
+  var transientOrderID;
+  var isESNRequired;
+  var palletID;
 
   _TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
       this.sku,this.category,this.name,this.supplier,this.cartonCount,
-      this.orderQty);
+      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -45,7 +57,9 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool readOnly=true;
+  bool _isLoading = false;
 
+  List<CartonList> cartonList = <CartonList>[];
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -415,7 +429,54 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     ));
   }
 
-  void callValidateOrderApi() {
+  Future<void> callValidateOrderApi() async {
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
 
+    for (int i = 0; i < controllers.length; i++) {
+
+      CartonList obj= CartonList();
+      obj.cartonID=controllers[i].text!;
+      obj.quantityPerCarton=cartonCount;
+      obj.isDelete=false;
+      obj.palletID=palletID;
+      obj.warehouseLocation='';
+      cartonList.add(obj);
+    }
+
+
+    var url = "http://api.sanvitti.com/transientreceive/v1/transientOrder/validate";
+    Map<String, String> headers = {'Content-type': 'application/json'};
+    var body = json.encode({
+      "companyID": companyID,
+      "transientOrderID": transientOrderID,
+      "source": "Mobile",
+      "isESN": isESNRequired,
+      "cartonList":cartonList,
+    });
+    var jsonRequest = json.decode(body);
+    print("requestParams"+ jsonRequest.toString() );
+    var response =
+        await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          _showToast("Validate successfully!");
+        }else{
+          _showToast("");
+        }
+      } catch (e) {
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      print(response.statusCode);
+    }
+    print(response.body);
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
