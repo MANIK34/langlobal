@@ -8,6 +8,8 @@ import 'package:langlobal/transientSearch/transientOrderValidate.dart';
 import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dashboard/DashboardPage.dart';
+
 class LoginPage extends StatefulWidget {
   String bookName = '';
 
@@ -152,12 +154,9 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void callLoginApi() async {
-    var rndnumber = "";
-    var rnd = Random();
-    for (var i = 0; i < 4; i++) {
-      rndnumber = rndnumber + rnd.nextInt(9).toString();
-    }
-    var url = "https://api.langlobal.com/auth/v1/authenticateuser";
+    //http://api.sanvitti.com // https://api.langlobal.com
+
+    var url = "http://api.sanvitti.com/auth/v1/authenticateuser";
     Map<String, String> headers = {'Content-type': 'application/json'};
     var body = json.encode({
       "username": emailController.text.toString(),
@@ -181,11 +180,23 @@ class _LoginPage extends State<LoginPage> {
           var token=jsonResponse['token'];
           SharedPreferences myPrefs = await SharedPreferences.getInstance();
           myPrefs.setString('token', token.toString());
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => SelectCompany(token)),
-          );
+          myPrefs.setString('userId', userId.toString());
+          myPrefs.setString('userName', userName.toString());
+          _showToast("Login successfully!");
+          if(userType=="LANGlobal"){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SelectCompany(token)),
+            );
+          }else{
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DashboardPage(token)),
+            );
+          }
+
         }else{
           _showToast("Invalid credentials!");
         }

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import '../transientSearch/transientOrderSearch.dart';
 
@@ -13,6 +14,16 @@ class DrawerElement extends StatefulWidget {
 }
 
 class _DrawerElement extends State<DrawerElement> {
+
+  String userName="";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -41,7 +52,7 @@ class _DrawerElement extends State<DrawerElement> {
                                 image: AssetImage('assets/lan_global_icon.jpeg'),
                               )),
                         ),
-                        const Text("MANIK LAKHI",style: TextStyle(
+                        Text(userName,style: const TextStyle(
                             color: Colors.white,fontFamily: 'Montserrat',fontWeight: FontWeight.bold,
                             fontSize: 16),),
                         const SizedBox(height: 20.0),
@@ -157,6 +168,14 @@ class _DrawerElement extends State<DrawerElement> {
         );
       },
     );
+  }
+
+  void getUserInfo() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = myPrefs.getString("userName")!;
+      print(userName);
+    });
   }
 }
 //Copyrights © 2022 | All Rights Reserved by Department of Finance.\n

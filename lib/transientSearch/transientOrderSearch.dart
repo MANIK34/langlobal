@@ -214,7 +214,7 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
   void callGetTransientOrderApi() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? token = myPrefs.getString("token");
-    var url = "https://api.langlobal.com/transientreceive/v1/transientorder/"+memoController.text.toString();
+    var url = "http://api.sanvitti.com/transientreceive/v1/transientorder/"+memoController.text.toString();
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token!}'
     };

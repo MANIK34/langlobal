@@ -58,16 +58,14 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     return TextField(
       autofocus: true,
       showCursor: true,
-      readOnly: true,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
         textFeildList.add(customField());
       },
-
       onChanged: (value) {
-        if (value.length == 6) {
-          textFeildList.add(customField());
+        if (value.length == 20) {
+          //textFeildList.add(customField());
         }
       },
     );
@@ -96,7 +94,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+            callValidateOrderApi();
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -415,5 +413,9 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
+  }
+
+  void callValidateOrderApi() {
+
   }
 }
