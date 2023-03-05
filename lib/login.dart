@@ -157,7 +157,6 @@ class _LoginPage extends State<LoginPage> {
     for (var i = 0; i < 4; i++) {
       rndnumber = rndnumber + rnd.nextInt(9).toString();
     }
-    print(rndnumber);
     var url = "https://api.langlobal.com/auth/v1/authenticateuser";
     Map<String, String> headers = {'Content-type': 'application/json'};
     var body = json.encode({
