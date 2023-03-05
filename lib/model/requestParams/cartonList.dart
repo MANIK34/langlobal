@@ -7,15 +7,8 @@ class CartonList{
   var palletID;
   var quantityPerCarton;
 
-  CartonList({this.cartonID, this.warehouseLocation,this.isDelete,this.palletID,this.quantityPerCarton});
+  CartonList({required this.cartonID,required this.warehouseLocation,required this.isDelete,required this.palletID,
+    required this.quantityPerCarton});
 
-  factory CartonList.fromJson(Map<String, dynamic> json) {
-    return CartonList(
-      cartonID: json['cartonID'],
-      warehouseLocation: json['warehouseLocation'],
-      isDelete: json['isDelete'],
-      palletID: json['palletID'],
-      quantityPerCarton: json['quantityPerCarton'],
-    );
-  }
+
 }

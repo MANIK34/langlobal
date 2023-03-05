@@ -187,7 +187,7 @@ class _LoginPage extends State<LoginPage> {
                   builder: (context) => SelectCompany(token)),
             );
           }else{
-            myPrefs.setString('companyID',companyInfo['companyID']);
+            myPrefs.setString('companyID',companyInfo['companyID'].toString());
             Navigator.push(
               context,
               MaterialPageRoute(

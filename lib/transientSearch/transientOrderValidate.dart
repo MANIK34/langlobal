@@ -432,27 +432,34 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   Future<void> callValidateOrderApi() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? companyID = myPrefs.getString("companyID");
-
+    String? token = myPrefs.getString("token");
+    cartonList= <CartonList>[];
     for (int i = 0; i < controllers.length; i++) {
-
-      CartonList obj= CartonList();
-      obj.cartonID=controllers[i].text!;
-      obj.quantityPerCarton=cartonCount;
-      obj.isDelete=false;
-      obj.palletID=palletID;
-      obj.warehouseLocation='';
-      cartonList.add(obj);
+      if(controllers[i].text! != ""){
+        CartonList obj= CartonList(cartonID: controllers[i].text!,isDelete: false, palletID: palletID,quantityPerCarton: cartonCount,warehouseLocation: "");
+        cartonList.add(obj);
+      }
     }
-
+    var _cartonList = cartonList.map((e){
+      return {
+        "cartonID": e.cartonID,
+        "warehouseLocation": e.warehouseLocation,
+        "isDelete": e.isDelete,
+        "palletID": e.palletID,
+        "quantityPerCarton": e.quantityPerCarton
+      };
+    }).toList();
 
     var url = "http://api.sanvitti.com/transientreceive/v1/transientOrder/validate";
-    Map<String, String> headers = {'Content-type': 'application/json'};
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}'
+    };
     var body = json.encode({
       "companyID": companyID,
       "transientOrderID": transientOrderID,
       "source": "Mobile",
       "isESN": isESNRequired,
-      "cartonList":cartonList,
+      "cartonList":_cartonList.toString(),
     });
     var jsonRequest = json.decode(body);
     print("requestParams"+ jsonRequest.toString() );
@@ -465,7 +472,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         if(returnCode=="1"){
           _showToast("Validate successfully!");
         }else{
-          _showToast("");
+          _showToast("Something went wrong!!");
         }
       } catch (e) {
         print('returnCode'+e.toString());
