@@ -98,6 +98,18 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   @override
   void dispose() {
     super.dispose();
+    print("Dispose called");
+  }
+
+  buildShowDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 
   @override
@@ -111,6 +123,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+            buildShowDialog(context);
             callValidateOrderApi();
         },
         child: Text("Validate",
@@ -148,7 +161,9 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child:  Column(
+              child:  _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  :Column(
                 children: <Widget>[
                   SizedBox(
                     height: 10,
@@ -479,6 +494,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     var response =
         await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
+      Navigator.of(context).pop();
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
@@ -506,11 +522,10 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
+      Navigator.of(context).pop();
       print(response.statusCode);
     }
-    print(response.body);
-    setState(() {
-      _isLoading = false;
-    });
   }
+
+
 }

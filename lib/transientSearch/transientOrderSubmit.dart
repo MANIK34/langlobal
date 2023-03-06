@@ -71,20 +71,8 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
     controller.text=cartonId;
     controllers.add(controller);
 
-    return TextField(
-      autofocus: true,
-      showCursor: true,
-      readOnly: true,
-      controller: controller,
-      textInputAction: TextInputAction.done,
-      onSubmitted: (value) {
-        textFeildList.add(customField());
-      },
-      onChanged: (value) {
-        if (value.length == 20) {
-          //textFeildList.add(customField());
-        }
-      },
+    return Text(
+        cartonId
     );
   }
 
@@ -291,77 +279,34 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: <Widget>[
-                                          Text(
-                                            'Carton count: ' ,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          Text(
-                                            cartonCount.toString(),
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
 
-                                    ],
-                                  )),
-                              SizedBox(
-                                width: 2,
-                              ),
-                              Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: <Widget>[
-                                          Text(
-                                            'Ordered Qty: ' ,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          Text(
-                                            orderQty.toString(),
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
-                            ],
-                          ),
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(
+                 const SizedBox(
                     height: 20,
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Cartons',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
+                  Padding(padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child:  Row(
+                    children: <Widget>[
+                      Text(
+                        'Cartons',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                  ),
+                      Spacer(),
+                      Text(
+                        'QTY',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),),
                   SizedBox(
                     height: 15,
                     child:  Card(
@@ -403,13 +348,50 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                           primary: false,
                           itemCount: textFeildList.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Row(
-                              children: [
-                                Expanded(child: textFeildList[index]),
-                               const SizedBox(width: 10,),
-                                Expanded(child: Text(
-                                    cartonQty[index]
-                                )),
+                            return Column(
+                              children: <Widget>[
+                                Row(
+                                  children: [
+                                    Expanded(child: textFeildList[index]),
+                                    const SizedBox(width: 60,),
+                                    GestureDetector(
+                                        onTap: () {
+                                        },
+                                        child: index < 0
+                                            ? Container()
+                                            : Text(cartonQty[index],)),
+                                  ],
+                                ),
+
+                                SizedBox(
+                                  height: 12,
+                                  child:  Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(1.0),
+                                    ),
+
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: const [
+
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              ' ',
+                                              style: TextStyle(
+                                                fontSize: 1,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             );
                           },
