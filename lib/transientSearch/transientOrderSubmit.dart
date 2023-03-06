@@ -4,12 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:langlobal/transientSearch/transientOrderSubmit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../model/requestParams/cartonList.dart';
 
-class TransientOrderValidatePage extends StatefulWidget {
+class TransientOrderSubmitPage extends StatefulWidget {
   var memoNumber;
   var orderDate;
   var status;
@@ -22,19 +20,20 @@ class TransientOrderValidatePage extends StatefulWidget {
   var transientOrderID;
   var isESNRequired;
   var palletID;
+  List<CartonList> obj_cartonList;
 
-  TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
+  TransientOrderSubmitPage(this.memoNumber,this.orderDate,this.status,
       this.sku,this.category,this.name,this.supplier,this.cartonCount,
-      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID, {Key? key}) : super(key: key);
+      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList, {Key? key}) : super(key: key);
 
   @override
-  _TransientOrderValidatePage createState() =>
-      _TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
+  _TransientOrderSubmitPage createState() =>
+      _TransientOrderSubmitPage(this.memoNumber,this.orderDate,this.status,
           this.sku,this.category,this.name,this.supplier,this.cartonCount,
-          this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID);
+          this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList);
 }
 
-class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
+class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
   var memoNumber;
   var orderDate ;
   var status ;
@@ -47,10 +46,11 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   var transientOrderID;
   var isESNRequired;
   var palletID;
+  List<CartonList> obj_cartonList;
 
-  _TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
+  _TransientOrderSubmitPage(this.memoNumber,this.orderDate,this.status,
       this.sku,this.category,this.name,this.supplier,this.cartonCount,
-      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID);
+      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -61,20 +61,20 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   bool _isLoading = false;
 
   List<CartonList> cartonList = <CartonList>[];
-  List<CartonList> cartonList2 = <CartonList>[];
   List<String> esnList = <String>[];
+  String cartonId="";
+  List<String> cartonQty = <String>[];
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
     TextEditingController controller = TextEditingController();
+    controller.text=cartonId;
     controllers.add(controller);
-    for (int i = 0; i < controllers.length; i++) {
-      print(
-          controllers[i].text); //printing the values to show that it's working
-    }
+
     return TextField(
       autofocus: true,
       showCursor: true,
+      readOnly: true,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
@@ -92,7 +92,13 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    textFeildList.add(customField());
+    for(int m=0;m<obj_cartonList.length;m++){
+      if(obj_cartonList[m].isDelete){
+        cartonId=obj_cartonList[m].cartonID.toString();
+        textFeildList.add(customField());
+        cartonQty.add(obj_cartonList[m].quantityPerCarton.toString());
+      }
+    }
   }
 
   @override
@@ -111,9 +117,9 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-            callValidateOrderApi();
+          callValidateOrderApi();
         },
-        child: Text("Validate",
+        child: Text("Submit",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -391,6 +397,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         ListView.builder(
                           shrinkWrap: true,
                           primary: false,
@@ -399,14 +406,10 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                             return Row(
                               children: [
                                 Expanded(child: textFeildList[index]),
-                                GestureDetector(
-                                    onTap: () {
-                                      textFeildList.removeAt(index);
-                                      setState(() {});
-                                    },
-                                    child: index < 0
-                                        ? Container()
-                                        : const Icon(Icons.delete,color: Colors.red,)),
+                               const SizedBox(width: 10,),
+                                Expanded(child: Text(
+                                    cartonQty[index]
+                                )),
                               ],
                             );
                           },
@@ -432,7 +435,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     ));
   }
 
-   callValidateOrderApi() async {
+  callValidateOrderApi() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? companyID = myPrefs.getString("companyID");
     String? token = myPrefs.getString("token");
@@ -474,30 +477,16 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     body=body.replaceAll("\"[", "[");
     body=body.replaceAll("]\"", "]");
     body=body.replaceAll("\\\"", "\"");
-   // var jsonRequest = json.decode(body); \"
+    // var jsonRequest = json.decode(body); \"
     print("requestParams$body" );
     var response =
-        await http.post(Uri.parse(url), body: body, headers: headers);
+    await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
           _showToast("Validate successfully!");
-
-          var jsonArray = jsonResponse['cartons'];
-          for (int m = 0; m < jsonArray.length; m++) {
-              CartonList list = CartonList(cartonID: jsonArray[m]['cartonID'], warehouseLocation: jsonArray[m]['warehouseLocation'],
-                  isDelete: jsonArray[m]['isDelete'], palletID: palletID, quantityPerCarton: jsonArray[m]['quantityPerCarton'],
-                  errorMessage: jsonArray[m]['errorMessage'], esnList: esnList);
-              cartonList2.add(list);
-
-          }
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => TransientOrderSubmitPage(memoNumber,orderDate,
-                status,sku,category,name,supplier,cartonCount,orderQty,transientOrderID,isESNRequired,palletID,cartonList2)),
-          );
         }else{
           _showToast("Something went wrong!!");
         }

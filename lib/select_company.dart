@@ -74,6 +74,7 @@ class _SelectCompany extends State<SelectCompany> {
       companyList = companyList2;
       if(companyList.isNotEmpty) {
         _companyList = companyList[1];
+        companyID= companyList[1].companyID;
       }
     });
   }
