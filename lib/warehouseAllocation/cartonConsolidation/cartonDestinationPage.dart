@@ -2,24 +2,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
-import 'package:langlobal/warehouseAllocation/movement/cartonMovementSubmit.dart';
+import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonSubmitPage.dart';
 import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
 
-class CartonMovementPage extends StatefulWidget {
+class CartonDestinationPage extends StatefulWidget {
   var heading;
 
-  CartonMovementPage(this.heading,  {Key? key}) : super(key: key);
+  CartonDestinationPage(this.heading,  {Key? key}) : super(key: key);
 
   @override
-  _CartonMovementPage createState() =>
-      _CartonMovementPage(this.heading );
+  _CartonDestinationPage createState() =>
+      _CartonDestinationPage(this.heading );
 }
 
-class _CartonMovementPage extends State<CartonMovementPage> {
+class _CartonDestinationPage extends State<CartonDestinationPage> {
   var heading;
 
 
-  _CartonMovementPage(this.heading );
+  _CartonDestinationPage(this.heading );
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -70,7 +70,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   @override
   Widget build(BuildContext context) {
 
-    final sourceField = TextField(
+    final cartonField = TextField(
         maxLength: null,
         controller: skuController,
         style: style,
@@ -79,9 +79,9 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "Source Location",
+          labelText: "Carton",
           alignLabelWithHint: true,
-          hintText: "Source Location",
+          hintText: "Carton",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
           ),
@@ -99,13 +99,28 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CartonMovementValidate('')),
+            MaterialPageRoute(builder: (context) => CartonSubmitPage('')),
           );
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+
+    final generateIDButton = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(10.0),
+      child: MaterialButton(
+        minWidth:250,
+        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+        },
+        child: Text("Generate Container ID",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.black, fontWeight: FontWeight.bold)),
       ),
     );
 
@@ -119,7 +134,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children:  [
-            const Text('Inventory Movement',textAlign: TextAlign.center,
+            const Text('Cartons Consolidation',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
             GestureDetector(
@@ -139,13 +154,13 @@ class _CartonMovementPage extends State<CartonMovementPage> {
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child:  Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Align(
+                  const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Carton Movement',
+                      'Cartons - Destination Carton',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -181,82 +196,69 @@ class _CartonMovementPage extends State<CartonMovementPage> {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   SizedBox(
+                    height: 50,
+                    width: 300,
+                    child: cartonField,
+                  ),
+                  const SizedBox(
                     height: 20,
                   ),
-                  sourceField,
-                  SizedBox(
+                  const Text('OR',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                  const SizedBox(
                     height: 20,
                   ),
-
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Cartons to Move',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
                   SizedBox(
-                    height: 15,
-                    child:  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      color: Color.fromRGBO(	40, 40, 43, 6.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    ),
+                    height: 50,
+                    width: 300,
+                    child: generateIDButton,
                   ),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: Colors.grey,
+                        width: 1, //<-- SEE HERE
+                      ),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          primary: false,
-                          itemCount: textFeildList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Row(
-                              children: [
-                                Expanded(child: textFeildList[index]),
-                                GestureDetector(
-                                    onTap: () {
-                                      textFeildList.removeAt(index);
-                                      setState(() {});
-                                    },
-                                    child: index < 0
-                                        ? Container()
-                                        : const Icon(Icons.delete,color: Colors.red,)),
-                              ],
-                            );
-                          },
-                        )
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Row(
+                          children: <Widget>[
+                            Text('Total Cartons:'),
+                            Spacer(),
+                            Text('10'),
+                          ],
+                        ),),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Row(
+                            children: <Widget>[
+                              Text('Total Qty:'),
+                              Spacer(),
+                              Text('5'),
+                            ],
+                          ),),
+                        const SizedBox(
+                          height: 20,
+                        ),
                       ],
                     ),
-                  ),
+                  ),)
+
                 ],
               ),
             )

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentPage.dart';
+import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolidationPage.dart';
 import '../drawer/drawerElement.dart';
 import '../transientSearch/transientOrderSearch.dart';
 import '../warehouseAllocation/movement/cartonMovement.dart';
@@ -749,6 +750,11 @@ class _DashboardPage extends State<DashboardPage> {
                             50) // put the width and height you want
                     ),
                     onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CartonConsolidationPage('')),
+                      );
                     },
                     child: const Text(
                         'Consolidation')),

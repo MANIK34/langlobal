@@ -1,25 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:langlobal/drawer/drawerElement.dart';
-import 'package:langlobal/warehouseAllocation/movement/cartonMovementSubmit.dart';
+import 'package:langlobal/drawer/drawerElement.dart'; 
 import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
 
-class CartonMovementPage extends StatefulWidget {
+import 'cartonDestinationPage.dart';
+
+class CartonConsolidationPage extends StatefulWidget {
   var heading;
 
-  CartonMovementPage(this.heading,  {Key? key}) : super(key: key);
+  CartonConsolidationPage(this.heading,  {Key? key}) : super(key: key);
 
   @override
-  _CartonMovementPage createState() =>
-      _CartonMovementPage(this.heading );
+  _CartonConsolidationPage createState() =>
+      _CartonConsolidationPage(this.heading );
 }
 
-class _CartonMovementPage extends State<CartonMovementPage> {
+class _CartonConsolidationPage extends State<CartonConsolidationPage> {
   var heading;
 
 
-  _CartonMovementPage(this.heading );
+  _CartonConsolidationPage(this.heading );
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -70,25 +71,6 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   @override
   Widget build(BuildContext context) {
 
-    final sourceField = TextField(
-        maxLength: null,
-        controller: skuController,
-        style: style,
-        textInputAction: TextInputAction.next,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          labelText: "Source Location",
-          alignLabelWithHint: true,
-          hintText: "Source Location",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
-
-
     final validateButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
@@ -99,7 +81,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CartonMovementValidate('')),
+            MaterialPageRoute(builder: (context) => CartonDestinationPage('')),
           );
         },
         child: Text("Validate",
@@ -119,7 +101,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children:  [
-            const Text('Inventory Movement',textAlign: TextAlign.center,
+            const Text('Cartons Consolidation',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
             GestureDetector(
@@ -145,54 +127,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Carton Movement',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                    child:  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      color: Color.fromRGBO(	40, 40, 43, 6.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  sourceField,
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Cartons to Move',
+                      'Cartons',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,

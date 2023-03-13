@@ -3,23 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/movement/cartonMovementSubmit.dart';
-import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
 
-class CartonMovementPage extends StatefulWidget {
+class CartonSubmitPage extends StatefulWidget {
   var heading;
 
-  CartonMovementPage(this.heading,  {Key? key}) : super(key: key);
+  CartonSubmitPage(this.heading,  {Key? key}) : super(key: key);
 
   @override
-  _CartonMovementPage createState() =>
-      _CartonMovementPage(this.heading );
+  _CartonSubmitPage createState() =>
+      _CartonSubmitPage(this.heading );
 }
 
-class _CartonMovementPage extends State<CartonMovementPage> {
+class _CartonSubmitPage extends State<CartonSubmitPage> {
   var heading;
 
 
-  _CartonMovementPage(this.heading );
+  _CartonSubmitPage(this.heading );
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -34,24 +33,8 @@ class _CartonMovementPage extends State<CartonMovementPage> {
 
     TextEditingController controller = TextEditingController();
     controllers.add(controller);
-    for (int i = 0; i < controllers.length; i++) {
-      print(
-          controllers[i].text); //printing the values to show that it's working
-    }
-    return TextField(
-      autofocus: true,
-      showCursor: true,
-      controller: controller,
-      textInputAction: TextInputAction.done,
-      onSubmitted: (value) {
-        textFeildList.add(customField());
-      },
-
-      onChanged: (value) {
-        if (value.length == 6) {
-          textFeildList.add(customField());
-        }
-      },
+    return Text(
+        'Carton ID'
     );
   }
 
@@ -70,24 +53,22 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   @override
   Widget build(BuildContext context) {
 
-    final sourceField = TextField(
+    final destinationField = TextField(
         maxLength: null,
-        controller: skuController,
+        controller: locationController,
         style: style,
-        textInputAction: TextInputAction.next,
+        textInputAction: TextInputAction.done,
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "Source Location",
+
           alignLabelWithHint: true,
-          hintText: "Source Location",
+          hintText: "Destination Location",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
           ),
         ));
-
-
 
     final validateButton = Material(
       elevation: 5.0,
@@ -97,12 +78,9 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CartonMovementValidate('')),
-          );
+
         },
-        child: Text("Validate",
+        child: Text("Submit",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -119,7 +97,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children:  [
-            const Text('Inventory Movement',textAlign: TextAlign.center,
+            const Text('Cartons Consolidation',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
             GestureDetector(
@@ -139,13 +117,13 @@ class _CartonMovementPage extends State<CartonMovementPage> {
               padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
               child:  Column(
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Align(
+                  const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Carton Movement',
+                      'Cartons Consolidation - View & Submit',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -181,75 +159,68 @@ class _CartonMovementPage extends State<CartonMovementPage> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  sourceField,
-                  SizedBox(
-                    height: 20,
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Cartons to Move',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                    child:  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      color: Color.fromRGBO(	40, 40, 43, 6.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         ListView.builder(
                           shrinkWrap: true,
                           primary: false,
                           itemCount: textFeildList.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Row(
-                              children: [
-                                Expanded(child: textFeildList[index]),
-                                GestureDetector(
-                                    onTap: () {
-                                      textFeildList.removeAt(index);
-                                      setState(() {});
-                                    },
-                                    child: index < 0
-                                        ? Container()
-                                        : const Icon(Icons.delete,color: Colors.red,)),
+                            return Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Expanded(child: textFeildList[index]),
+                                    const SizedBox(
+                                      width: 0,
+                                    ),
+                                    Spacer(),
+                                    GestureDetector(
+                                        onTap: () {
+                                          textFeildList.removeAt(index);
+                                          setState(() {});
+                                        },
+                                        child: index < 0
+                                            ? Container()
+                                            : const Icon(Icons.delete,color: Colors.red,)),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 12,
+                                  child:  Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(1.0),
+                                    ),
+
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: const [
+
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              ' ',
+                                              style: TextStyle(
+                                                fontSize: 1,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             );
                           },
@@ -257,6 +228,103 @@ class _CartonMovementPage extends State<CartonMovementPage> {
                       ],
                     ),
                   ),
+
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Carton Allocation',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                    child:  Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2.0),
+                      ),
+                      color: Color.fromRGBO(	40, 40, 43, 6.0),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: const [
+
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                ' ',
+                                style: TextStyle(
+                                  fontSize: 1,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(
+                          color: Colors.grey,
+                          width: 1, //<-- SEE HERE
+                        ),
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: Row(
+                              children: <Widget>[
+                                Text('Carton:'),
+                                Spacer(),
+                                Text('1'),
+                              ],
+                            ),),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: Row(
+                              children: <Widget>[
+                                Text('Total Cartons:'),
+                                Spacer(),
+                                Text('10'),
+                              ],
+                            ),),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: Row(
+                              children: <Widget>[
+                                Text('Total Qty:'),
+                                Spacer(),
+                                Text('5'),
+                              ],
+                            ),),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    ),)
+
                 ],
               ),
             )
