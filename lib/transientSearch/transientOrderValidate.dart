@@ -22,16 +22,24 @@ class TransientOrderValidatePage extends StatefulWidget {
   var transientOrderID;
   var isESNRequired;
   var palletID;
+  var customerOrderNumber;
+  var condition;
+  var companyID;
+  var itemCompanyGUID;
+  var userID;
+  var orderDateTime;
 
   TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
       this.sku,this.category,this.name,this.supplier,this.cartonCount,
-      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID, {Key? key}) : super(key: key);
+      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.customerOrderNumber
+  ,this.condition,this.orderDateTime,this.companyID,this.itemCompanyGUID,this.userID,{Key? key}) : super(key: key);
 
   @override
   _TransientOrderValidatePage createState() =>
       _TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
           this.sku,this.category,this.name,this.supplier,this.cartonCount,
-          this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID);
+          this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.customerOrderNumber
+        ,this.condition,this.orderDateTime,this.companyID,this.itemCompanyGUID,this.userID,);
 }
 
 class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
@@ -48,9 +56,17 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   var isESNRequired;
   var palletID;
 
+  var customerOrderNumber;
+  var condition;
+  var companyID;
+  var itemCompanyGUID;
+  var userID;
+  var orderDateTime;
+
   _TransientOrderValidatePage(this.memoNumber,this.orderDate,this.status,
       this.sku,this.category,this.name,this.supplier,this.cartonCount,
-      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID);
+      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.customerOrderNumber
+      ,this.condition,this.orderDateTime,this.companyID,this.itemCompanyGUID,this.userID,);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -106,7 +122,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         });
@@ -473,7 +489,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     }).toList();
     var jsonstringmap = json.encode(_cartonList);
     print("_cartonList$jsonstringmap" );
-    var url = "http://api.sanvitti.com/transientreceive/v1/transientOrder/validate";
+    var url = "https://api.langlobal.com/transientreceive/v1/transientOrder/validate";
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token!}',
       "Accept": "application/json",
@@ -494,6 +510,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     var response =
         await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
+      print(response.body);
       Navigator.of(context).pop();
       var jsonResponse = json.decode(response.body);
       try {
@@ -512,12 +529,14 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => TransientOrderSubmitPage(memoNumber,orderDate,
-                status,sku,category,name,supplier,cartonCount,orderQty,transientOrderID,isESNRequired,palletID,cartonList2)),
+                status,sku,category,name,supplier,cartonCount,orderQty,transientOrderID,isESNRequired,palletID,cartonList2
+            ,customerOrderNumber,condition,orderDateTime,companyID,itemCompanyGUID,userID)),
           );
         }else{
           _showToast("Something went wrong!!");
         }
       } catch (e) {
+        Navigator.of(context).pop();
         print('returnCode'+e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }

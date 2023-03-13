@@ -1,33 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
-import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentSubmitPage.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../model/requestParams/cartonList2.dart';
+import 'package:langlobal/warehouseAllocation/movement/cartonMovementSubmit.dart';
+import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
 
-class CartonAssignmentPage extends StatefulWidget {
+class CartonMovementPage extends StatefulWidget {
   var heading;
 
-  CartonAssignmentPage(this.heading,  {Key? key}) : super(key: key);
+  CartonMovementPage(this.heading,  {Key? key}) : super(key: key);
 
   @override
-  _CartonAssignmentPage createState() =>
-      _CartonAssignmentPage(this.heading );
+  _CartonMovementPage createState() =>
+      _CartonMovementPage(this.heading );
 }
 
-class _CartonAssignmentPage extends State<CartonAssignmentPage> {
+class _CartonMovementPage extends State<CartonMovementPage> {
   var heading;
 
 
-  _CartonAssignmentPage(this.heading );
+  _CartonMovementPage(this.heading );
 
   List<Widget> textFeildList = [];
-  List<TextEditingController> controllers = [];//the controllers list
-  List<CartonList2> cartonList = <CartonList2>[];
+  List<TextEditingController> controllers = []; //the controllers list
 
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
@@ -46,6 +41,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     return TextField(
       autofocus: true,
       showCursor: true,
+      readOnly: true,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
@@ -53,7 +49,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
       },
 
       onChanged: (value) {
-        if (value.length == 20) {
+        if (value.length == 6) {
           textFeildList.add(customField());
         }
       },
@@ -75,7 +71,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
   @override
   Widget build(BuildContext context) {
 
-    final skuField = TextField(
+    final sourceField = TextField(
         maxLength: null,
         controller: skuController,
         style: style,
@@ -84,30 +80,15 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          labelText: "SKU",
+          labelText: "Source Location",
           alignLabelWithHint: true,
-          hintText: "SKU",
+          hintText: "Source Location",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
           ),
         ));
 
-    final locationField = TextField(
-        maxLength: null,
-        controller: locationController,
-        style: style,
-        textInputAction: TextInputAction.done,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          labelText: "Location",
-          alignLabelWithHint: true,
-          hintText: "Location",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
+
 
     final validateButton = Material(
       elevation: 5.0,
@@ -117,8 +98,10 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonAssignmentApi();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonMovementValidate('')),
+          );
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -137,16 +120,12 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children:  [
-            const Text('Inventory Allocation',textAlign: TextAlign.center,
+            const Text('Inventory Movement',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
             GestureDetector(
               onTap: (){
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardPage('')),
-                );
               },
               child: const Text('Cancel',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
@@ -167,7 +146,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Carton Assignment',
+                      'Carton Movement',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -206,11 +185,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  skuField,
-                  SizedBox(
-                    height: 20,
-                  ),
-                  locationField,
+                  sourceField,
                   SizedBox(
                     height: 20,
                   ),
@@ -218,7 +193,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Cartons',
+                      'Cartons to Move',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -299,92 +274,5 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
-  }
-
-  buildShowDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-  }
-
-  void callCartonAssignmentApi() async{
-    SharedPreferences myPrefs = await SharedPreferences.getInstance();
-    String? companyID = myPrefs.getString("companyID");
-    String? token = myPrefs.getString("token");
-    print(token);
-    cartonList= <CartonList2>[];
-    for (int i = 0; i < controllers.length; i++) {
-      if(controllers[i].text! != ""){
-        CartonList2 obj= CartonList2(cartonID: controllers[i].text!,assignedQty: 0,);
-        cartonList.add(obj);
-      }
-    }
-    var _cartonList = cartonList.map((e){
-      return {
-        "cartonID": e.cartonID,
-        "assignedQty": e.assignedQty,
-      };
-    }).toList();
-    var jsonstringmap = json.encode(_cartonList);
-    print("_cartonList$jsonstringmap" );
-    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonassignment/validate";
-    Map<String, String> headers = {
-      'Authorization': 'Bearer ${token!}',
-      "Accept": "application/json",
-      "content-type":"application/json"
-    };
-    var body = json.encode({
-      "companyID": int.parse(companyID!),
-      "sku": skuController.text!,
-      "location": locationController.text!,
-      "cartons":jsonstringmap,
-    });
-    body=body.replaceAll("\"[", "[");
-    body=body.replaceAll("]\"", "]");
-    body=body.replaceAll("\\\"", "\"");
-    // var jsonRequest = json.decode(body); \"
-    print("requestParams$body" );
-    var response =
-    await http.post(Uri.parse(url), body: body, headers: headers);
-    if (response.statusCode == 200) {
-      print(response.body);
-      Navigator.of(context).pop();
-      var jsonResponse = json.decode(response.body);
-      try {
-        var returnCode=jsonResponse['returnCode'];
-        if(returnCode=="1"){
-          var cartonAssignment=jsonResponse['cartonAssignment'];
-          _showToast("Validate successfully!");
-          cartonList = <CartonList2>[];
-          var jsonArray = cartonAssignment['cartons'];
-          for (int m = 0; m < jsonArray.length; m++) {
-            CartonList2 list = CartonList2(cartonID: jsonArray[m]['cartonID'],assignedQty: jsonArray[m]['assignedQty']);
-            cartonList.add(list);
-
-          }
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CartonAssignmentSubmitPage(cartonAssignment['sku'],
-                cartonAssignment['category'],cartonAssignment['productName'],cartonAssignment['cartonCount'],
-                cartonAssignment['cartornItemsCount'],cartonList,locationController.text)),
-          );
-        }else{
-          _showToast("Something went wrong!!");
-        }
-      } catch (e) {
-        Navigator.of(context).pop();
-        print("error message ::"+e.toString());
-        print('returnCode'+e.toString());
-        // TODO: handle exception, for example by showing an alert to the user
-      }
-    } else {
-      Navigator.of(context).pop();
-      print(response.statusCode);
-    }
   }
 }

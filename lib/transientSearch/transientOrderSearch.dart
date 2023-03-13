@@ -214,7 +214,8 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
   void callGetTransientOrderApi() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? token = myPrefs.getString("token");
-    var url = "http://api.sanvitti.com/transientreceive/v1/transientorder/"+memoController.text.toString();
+    String? companyID = myPrefs.getString("companyID");
+    var url = "https://api.langlobal.com/transientreceive/v1/transientorder/"+memoController.text.toString()+"/"+companyID!;
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token!}'
     };
@@ -249,10 +250,17 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
           var isESNRequired=orderInfo['isESNRequired'];
           var palletID=cartonList[0]['palletID'];
 
+          var customerOrderNumber=orderInfo['customerOrderNumber'];
+          var condition=orderInfo['condition'];
+          var companyID=orderInfo['companyID'];
+          var itemCompanyGUID=orderInfo['itemCompanyGUID'];
+          var userID=orderInfo['userID'];
+
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => TransientOrderValidatePage(memoNumber,formatted,
-            orderStatus,sku,category,productName,supplier,cartonCount,orderQty,transientOrderID,isESNRequired,palletID)),
+            orderStatus,sku,category,productName,supplier,cartonCount,orderQty,transientOrderID,isESNRequired,palletID,
+                customerOrderNumber,condition,orderInfo['transientOrderDateTime'],companyID,itemCompanyGUID,userID)),
           );
         }else{
           _showToast(jsonResponse['returnMessage']);
@@ -265,7 +273,7 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
     } else {
       print(response.statusCode);
     }
-    print(response.body);
+    debugPrint(response.body);
     setState(() {
       _isLoading = false;
     });

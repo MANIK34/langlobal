@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentPage.dart';
 import '../drawer/drawerElement.dart';
 import '../transientSearch/transientOrderSearch.dart';
+import '../warehouseAllocation/movement/cartonMovement.dart';
 
 class DashboardPage extends StatefulWidget {
   String token = '';
@@ -216,7 +218,10 @@ class _DashboardPage extends State<DashboardPage> {
                                 width: 160,
                                 child: GestureDetector(
                                   onTap: () {
-
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => CartonMovementPage('')),
+                                    );
                                   },
                                   child: Card(
                                       color: Colors.blueGrey,
@@ -270,6 +275,7 @@ class _DashboardPage extends State<DashboardPage> {
                                   width: 160,
                                   child: GestureDetector(
                                     onTap: () {
+                                      showCartonsDialog();
                                     },
                                     child: Card(
                                         color: Colors.green,
@@ -333,7 +339,7 @@ class _DashboardPage extends State<DashboardPage> {
                                           const Padding(
                                             padding: EdgeInsets.fromLTRB(
                                                 0.0, 10, 0.0, 0.0),
-                                            child: Text('Quarentine',
+                                            child: Text('Quarantine',
                                                 style: TextStyle(
                                                     color: Colors.white,
                                                     fontWeight:
@@ -402,125 +408,7 @@ class _DashboardPage extends State<DashboardPage> {
                                   width: 160,
                                   child: GestureDetector(
                                     onTap: () {
-                                      showModalBottomSheet<void>(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return Container(
-                                            decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                BorderRadius.only(
-                                                    topRight: Radius
-                                                        .circular(
-                                                        50.0),
-                                                    topLeft: Radius
-                                                        .circular(
-                                                        50.0))),
-                                            height: 350,
-                                            child: Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .center,
-                                                mainAxisSize:
-                                                MainAxisSize.min,
-                                                children: <Widget>[
-                                                  const Text(
-                                                    'Select Option',
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold,
-                                                        color:
-                                                        Colors.black),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  ElevatedButton(
-                                                      child: const Text(
-                                                          'Stock in Hand'),
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                          primary: Colors.orange,
-                                                          minimumSize:
-                                                          const Size(
-                                                              250,
-                                                              50) // put the width and height you want
-                                                      ),
-                                                      onPressed: () {
-                                                      }),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  ElevatedButton(
-                                                      child: const Text(
-                                                          'Stock Demand'),
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                          primary: Colors.orange,
-                                                          minimumSize:
-                                                          const Size(
-                                                              250,
-                                                              50) // put the width and height you want
-                                                      ),
-                                                      onPressed: () {
-                                                      }),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  ElevatedButton(
-                                                      child: const Text(
-                                                          'Shipments'),
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                          primary: Colors.orange,
-                                                          minimumSize:
-                                                          const Size(
-                                                              250,
-                                                              50) // put the width and height you want
-                                                      ),
-                                                      onPressed: () {
-                                                      }),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  ElevatedButton(
-                                                      child: const Text(
-                                                          'Fulfillment'),
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                          primary: Colors.orange,
-                                                          minimumSize:
-                                                          const Size(
-                                                              250,
-                                                              50) // put the width and height you want
-                                                      ),
-                                                      onPressed: () {
-                                                      }),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  ElevatedButton(
-                                                      child: const Text(
-                                                          'SO Requests'),
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                          primary: Colors.orange,
-                                                          minimumSize:
-                                                          const Size(
-                                                              250,
-                                                              50) // put the width and height you want
-                                                      ),
-                                                      onPressed: () {
-                                                      }),
-
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
+                                      showSummaryDialog();
                                     },
                                     child: Card(
                                         color: Colors.yellow.shade700,
@@ -670,6 +558,224 @@ class _DashboardPage extends State<DashboardPage> {
               ],
             )),
       ),
+    );
+  }
+
+  void showSummaryDialog(){
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+              BorderRadius.only(
+                  topRight: Radius
+                      .circular(
+                      50.0),
+                  topLeft: Radius
+                      .circular(
+                      50.0))),
+          height: 350,
+          child: Center(
+            child: Column(
+              mainAxisAlignment:
+              MainAxisAlignment
+                  .center,
+              mainAxisSize:
+              MainAxisSize.min,
+              children: <Widget>[
+                const Text(
+                  'Select Option',
+                  style: TextStyle(
+                      fontWeight:
+                      FontWeight
+                          .bold,
+                      color:
+                      Colors.black),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    child: const Text(
+                        'Stock in Hand'),
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    child: const Text(
+                        'Stock Demand'),
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    child: const Text(
+                        'Shipments'),
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    child: const Text(
+                        'Fulfillment'),
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    child: const Text(
+                        'SO Requests'),
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                    }),
+
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void showCartonsDialog(){
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+              BorderRadius.only(
+                  topRight: Radius
+                      .circular(
+                      50.0),
+                  topLeft: Radius
+                      .circular(
+                      50.0))),
+          height: 350,
+          child: Center(
+            child: Column(
+              mainAxisAlignment:
+              MainAxisAlignment
+                  .center,
+              mainAxisSize:
+              MainAxisSize.min,
+              children: <Widget>[
+                const Text(
+                  'Select Option',
+                  style: TextStyle(
+                      fontWeight:
+                      FontWeight
+                          .bold,
+                      color:
+                      Colors.black),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CartonAssignmentPage('')),
+                      );
+                    },
+                    child: const Text(
+                        'Assignment')),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                    },
+                    child: const Text(
+                        'Consolidation')),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                    },
+                    child: const Text(
+                        'Creations')),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

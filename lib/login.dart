@@ -152,7 +152,7 @@ class _LoginPage extends State<LoginPage> {
   void callLoginApi() async {
     //http://api.sanvitti.com // https://api.langlobal.com
 
-    var url = "http://api.sanvitti.com/auth/v1/authenticateuser";
+    var url = "https://api.langlobal.com/auth/v1/authenticateuser";
     Map<String, String> headers = {'Content-type': 'application/json'};
     var body = json.encode({
       "username": emailController.text.toString(),

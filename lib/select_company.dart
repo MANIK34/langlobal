@@ -42,7 +42,7 @@ class _SelectCompany extends State<SelectCompany> {
   }
 
   void callGetCompanyApi() async {
-    var url = "http://api.sanvitti.com/common/v1/Companies";
+    var url = "https://api.langlobal.com/common/v1/Companies";
 
     Map<String, String> headers = {'Authorization': 'Bearer ' + token};
 

@@ -5,6 +5,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../dashboard/DashboardPage.dart';
 import '../model/requestParams/cartonList.dart';
 
 class TransientOrderSubmitPage extends StatefulWidget {
@@ -22,15 +23,26 @@ class TransientOrderSubmitPage extends StatefulWidget {
   var palletID;
   List<CartonList> obj_cartonList;
 
+  var customerOrderNumber;
+  var condition;
+  var companyID;
+  var itemCompanyGUID;
+  var userID;
+  var orderDateTime;
+
   TransientOrderSubmitPage(this.memoNumber,this.orderDate,this.status,
       this.sku,this.category,this.name,this.supplier,this.cartonCount,
-      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList, {Key? key}) : super(key: key);
+      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList
+      ,this.customerOrderNumber
+      ,this.condition,this.orderDateTime,this.companyID,this.itemCompanyGUID,this.userID,{Key? key}) : super(key: key);
 
   @override
   _TransientOrderSubmitPage createState() =>
       _TransientOrderSubmitPage(this.memoNumber,this.orderDate,this.status,
           this.sku,this.category,this.name,this.supplier,this.cartonCount,
-          this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList);
+          this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList
+        ,this.customerOrderNumber
+        ,this.condition,this.orderDateTime,this.companyID,this.itemCompanyGUID,this.userID,);
 }
 
 class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
@@ -48,9 +60,18 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
   var palletID;
   List<CartonList> obj_cartonList;
 
+  var customerOrderNumber;
+  var condition;
+  var companyID;
+  var itemCompanyGUID;
+  var userID;
+  var orderDateTime;
+
   _TransientOrderSubmitPage(this.memoNumber,this.orderDate,this.status,
       this.sku,this.category,this.name,this.supplier,this.cartonCount,
-      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList);
+      this.orderQty,this.transientOrderID,this.isESNRequired,this.palletID,this.obj_cartonList
+      ,this.customerOrderNumber
+      ,this.condition,this.orderDateTime,this.companyID,this.itemCompanyGUID,this.userID,);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -64,6 +85,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
   List<String> esnList = <String>[];
   String cartonId="";
   List<String> cartonQty = <String>[];
+  int _orderQty=0;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -81,10 +103,11 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
     // TODO: implement initState
     super.initState();
     for(int m=0;m<obj_cartonList.length;m++){
-      if(obj_cartonList[m].isDelete){
+      if(!obj_cartonList[m].isDelete){
         cartonId=obj_cartonList[m].cartonID.toString();
         textFeildList.add(customField());
         cartonQty.add(obj_cartonList[m].quantityPerCarton.toString());
+        _orderQty=_orderQty+(obj_cartonList[m].quantityPerCarton as int);
       }
     }
   }
@@ -97,7 +120,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
   @override
   Widget build(BuildContext context) {
 
-    final validateButton = Material(
+    final submitButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(10.0),
       color: Colors.orange,
@@ -105,7 +128,8 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          callValidateOrderApi();
+          buildShowDialog(context);
+          callSubmitOrderApi();
         },
         child: Text("Submit",
             textAlign: TextAlign.center,
@@ -117,7 +141,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
     return Scaffold(
       bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
-        child: validateButton,
+        child: submitButton,
       ),
       appBar: AppBar(
         backgroundColor: Colors.blue.shade700,
@@ -417,20 +441,29 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
     ));
   }
 
-  callValidateOrderApi() async {
+  buildShowDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
+  callSubmitOrderApi() async {
+     var noOfContainers=textFeildList.length;
+     //var orderQty=(noOfContainers*10);
+
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? companyID = myPrefs.getString("companyID");
     String? token = myPrefs.getString("token");
-    print(token);
-    cartonList= <CartonList>[];
-    for (int i = 0; i < controllers.length; i++) {
-      if(controllers[i].text! != ""){
-        CartonList obj= CartonList(cartonID: controllers[i].text!,isDelete: false, palletID: palletID,
-            quantityPerCarton: cartonCount,warehouseLocation: "upper", errorMessage: "none",esnList: esnList);
-        cartonList.add(obj);
-      }
+    String? _userId= myPrefs.getString("userId");
+    for(int m=0;m<obj_cartonList.length;m++){
+      obj_cartonList[m].warehouseLocation="";
     }
-    var _cartonList = cartonList.map((e){
+    var _cartonList = obj_cartonList.map((e){
       return {
         "cartonID": e.cartonID,
         "warehouseLocation": e.warehouseLocation,
@@ -443,18 +476,27 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
     }).toList();
     var jsonstringmap = json.encode(_cartonList);
     print("_cartonList$jsonstringmap" );
-    var url = "http://api.sanvitti.com/transientreceive/v1/transientOrder/validate";
+    var url = "https://api.langlobal.com/transientreceive/v1/transientOrder";
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token!}',
       "Accept": "application/json",
       "content-type":"application/json"
     };
     var body = json.encode({
-      "companyID": int.parse(companyID!),
       "transientOrderID": transientOrderID,
-      "source": "Mobile",
-      "isESN": isESNRequired,
+      "memoNumber": memoNumber,
+      "customerOrderNumber": customerOrderNumber,
+      "condition": condition,
+      "transientOrderDateTime": orderDateTime,
+      "companyID": int.parse(companyID!),
+      "itemCompanyGUID":itemCompanyGUID,
+      "supplierName": supplier,
+      "orderedQty": _orderQty,
+      "isESNRequired": isESNRequired,
+      "userID": _userId,
+      "noOfContainers": noOfContainers,
       "cartonList":jsonstringmap,
+      "accessoryList":esnList
     });
     body=body.replaceAll("\"[", "[");
     body=body.replaceAll("]\"", "]");
@@ -467,21 +509,57 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
+        var returnMessage=jsonResponse['returnMessage'];
         if(returnCode=="1"){
-          _showToast("Validate successfully!");
+          _showResultDialog(returnMessage);
         }else{
-          _showToast("Something went wrong!!");
+          Navigator.of(context).pop();
+          _showToast(returnMessage);
         }
       } catch (e) {
+        Navigator.of(context).pop();
         print('returnCode'+e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
+      Navigator.of(context).pop();
       print(response.statusCode);
     }
     print(response.body);
     setState(() {
       _isLoading = false;
     });
+  }
+
+  Future<void> _showResultDialog(String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Success!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashboardPage('')),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
