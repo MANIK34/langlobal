@@ -42,9 +42,11 @@ class _SelectCompany extends State<SelectCompany> {
   }
 
   void callGetCompanyApi() async {
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? _token = myPrefs.getString("token");
     var url = "https://api.langlobal.com/common/v1/Companies";
 
-    Map<String, String> headers = {'Authorization': 'Bearer ' + token};
+    Map<String, String> headers = {'Authorization': 'Bearer ' + _token!};
 
     final response1 = await http.get(Uri.parse(url), headers: headers);
     if (response1.statusCode == 200) {

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:langlobal/warehouseAllocation/movement/cartonMovementConfirmation.dart';
 
 class CartonMovementSubmit extends StatefulWidget {
   var heading;
@@ -94,7 +95,10 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonMovementConfirmation('')),
+          );
         },
         child: Text("Submit",
             textAlign: TextAlign.center,

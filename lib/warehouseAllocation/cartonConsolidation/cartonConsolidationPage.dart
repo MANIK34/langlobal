@@ -117,8 +117,9 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
       drawer: DrawerElement(),
       body: SafeArea(
         child: SingleChildScrollView(
+            reverse: true,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              padding:EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child:  Column(
                 children: <Widget>[
                   SizedBox(

@@ -34,6 +34,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
   bool readOnly=true;
   TextEditingController skuController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  bool isReverse=false;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -49,12 +50,16 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
-        textFeildList.add(customField());
-      },
-
-      onChanged: (value) {
-        if (value.length == 20) {
+        if(controllers[textFeildList.length-1].text!=""){
           textFeildList.add(customField());
+        }
+      },
+      onChanged: (value) {
+        setState(() {
+          isReverse=true;
+        });
+        if (value.length == 20) {
+          //textFeildList.add(customField());
         }
       },
     );
@@ -77,6 +82,8 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
 
     final skuField = TextField(
         maxLength: null,
+        autofocus: true,
+        showCursor: true,
         controller: skuController,
         style: style,
         textInputAction: TextInputAction.next,
@@ -117,8 +124,13 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonAssignmentApi();
+          if(controllers[0].text == ""){
+            _showToast("Carton value can't be empty!");
+          }else{
+            buildShowDialog(context);
+            callCartonAssignmentApi();
+          }
+
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -157,102 +169,109 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
       drawer: DrawerElement(),
       body: SafeArea(
         child: SingleChildScrollView(
+            reverse: isReverse,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              padding:EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child:  Column(
                 children: <Widget>[
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Carton Assignment',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                    child:  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      color: Color.fromRGBO(	40, 40, 43, 6.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: 1,
-                                  fontWeight: FontWeight.w700,
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Carton Assignment',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
-                            ),
+                              SizedBox(
+                                height: 15,
+                                child:  Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(2.0),
+                                  ),
+                                  color: Color.fromRGBO(	40, 40, 43, 6.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: const [
 
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  skuField,
-                  SizedBox(
-                    height: 20,
-                  ),
-                  locationField,
-                  SizedBox(
-                    height: 20,
-                  ),
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            ' ',
+                                            style: TextStyle(
+                                              fontSize: 1,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
 
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Cartons',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                    child:  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      color: Color.fromRGBO(	40, 40, 43, 6.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: 1,
-                                  fontWeight: FontWeight.w700,
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              skuField,
+                              SizedBox(
+                                height: 20,
+                              ),
+                              locationField,
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Cartons',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                                child:  Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(2.0),
+                                  ),
+                                  color: Color.fromRGBO(	40, 40, 43, 6.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: const [
 
-                          ],
-                        ),
-                      ),
-                    ),
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            ' ',
+                                            style: TextStyle(
+                                              fontSize: 1,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
 
                   Padding(
@@ -270,8 +289,11 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
                                 Expanded(child: textFeildList[index]),
                                 GestureDetector(
                                     onTap: () {
-                                      textFeildList.removeAt(index);
-                                      setState(() {});
+                                      if(textFeildList.length>1){
+                                        textFeildList.removeAt(index);
+                                        controllers.removeAt(index);
+                                        setState(() {});
+                                      }
                                     },
                                     child: index < 0
                                         ? Container()
@@ -374,7 +396,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
                 cartonAssignment['cartornItemsCount'],cartonList,locationController.text)),
           );
         }else{
-          _showToast("Something went wrong!!");
+          _showToast(jsonResponse['returnMessage']);
         }
       } catch (e) {
         Navigator.of(context).pop();

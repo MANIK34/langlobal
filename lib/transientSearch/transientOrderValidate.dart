@@ -81,7 +81,6 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
   List<String> esnList = <String>[];
 
   Widget customField({GestureTapCallback? removeWidget}) {
-
     TextEditingController controller = TextEditingController();
     controllers.add(controller);
     for (int i = 0; i < controllers.length; i++) {
@@ -94,11 +93,13 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
-        textFeildList.add(customField());
+        if(controllers[textFeildList.length-1].text!=""){
+          textFeildList.add(customField());
+        }
       },
       onChanged: (value) {
         if (value.length == 20) {
-          //textFeildList.add(customField());
+         // textFeildList.add(customField());
         }
       },
     );
@@ -139,8 +140,13 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-            buildShowDialog(context);
-            callValidateOrderApi();
+            if(controllers[0].text == ""){
+              _showToast("Carton value can't be empty!");
+            }else{
+              buildShowDialog(context);
+              callValidateOrderApi();
+            }
+
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -150,6 +156,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     );
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
         child: validateButton,
@@ -175,8 +182,9 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
       drawer: DrawerElement(),
       body: SafeArea(
         child: SingleChildScrollView(
+            reverse: true,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child:  _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   :Column(
@@ -432,8 +440,11 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                                 Expanded(child: textFeildList[index]),
                                 GestureDetector(
                                     onTap: () {
-                                      textFeildList.removeAt(index);
-                                      setState(() {});
+                                      if(textFeildList.length>1){
+                                        textFeildList.removeAt(index);
+                                        controllers.removeAt(index);
+                                        setState(() {});
+                                      }
                                     },
                                     child: index < 0
                                         ? Container()

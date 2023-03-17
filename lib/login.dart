@@ -167,10 +167,10 @@ class _LoginPage extends State<LoginPage> {
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
-        var userInfo= jsonResponse['userInfo'];
-        var companyInfo= userInfo['companyInfo'];
         print('returnCode'+ returnCode.toString());
         if(returnCode=="1"){
+          var userInfo= jsonResponse['userInfo'];
+          var companyInfo= userInfo['companyInfo'];
           var userId=userInfo['userID'];
           var userName=userInfo['userName'];
           var userType=userInfo['userType'];
@@ -184,7 +184,7 @@ class _LoginPage extends State<LoginPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SelectCompany(token)),
+                  builder: (context) => SelectCompany('')),
             );
           }else{
             myPrefs.setString('companyID',companyInfo['companyID'].toString());
@@ -196,7 +196,7 @@ class _LoginPage extends State<LoginPage> {
           }
 
         }else{
-          _showToast("Invalid credentials!");
+          _showToast("Incorrect username or password");
         }
       } catch (e) {
         print('returnCode'+e.toString());

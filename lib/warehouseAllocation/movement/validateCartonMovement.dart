@@ -4,21 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
-import 'package:langlobal/warehouseAllocation/movement/validateCartonMovement.dart';
 
-class CartonMovementPage extends StatefulWidget {
+class ValidateCartonMovementPage extends StatefulWidget {
   var heading;
 
-  CartonMovementPage(this.heading, {Key? key}) : super(key: key);
+  ValidateCartonMovementPage(this.heading, {Key? key}) : super(key: key);
 
   @override
-  _CartonMovementPage createState() => _CartonMovementPage(this.heading);
+  _ValidateCartonMovementPage createState() => _ValidateCartonMovementPage(this.heading);
 }
 
-class _CartonMovementPage extends State<CartonMovementPage> {
+class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
   var heading;
 
-  _CartonMovementPage(this.heading);
+  _ValidateCartonMovementPage(this.heading);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -28,7 +27,8 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   bool readOnly = true;
   TextEditingController skuController = TextEditingController();
   TextEditingController locationController = TextEditingController();
-  String btn_text="Validate Location";
+
+  String btn_text="Validate";
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -95,7 +95,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ValidateCartonMovementPage('')),
+            MaterialPageRoute(builder: (context) => CartonMovementValidate('')),
           );
 
         },
@@ -148,59 +148,90 @@ class _CartonMovementPage extends State<CartonMovementPage> {
       body: SafeArea(
         child: SingleChildScrollView(
             child: Padding(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 20,
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Carton Movement',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 15,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(2.0),
-                  ),
-                  color: Color.fromRGBO(40, 40, 43, 6.0),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  Visibility(
+                    visible: true,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
+                      children: <Widget>[
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            ' ',
+                            'Cartons to Move',
                             style: TextStyle(
-                              fontSize: 1,
+                              fontSize: 18,
                               fontWeight: FontWeight.w700,
                             ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2.0),
+                            ),
+                            color: Color.fromRGBO(40, 40, 43, 6.0),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: const [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      ' ',
+                                      style: TextStyle(
+                                        fontSize: 1,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount: textFeildList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Row(
+                                    children: [
+                                      Expanded(child: textFeildList[index]),
+                                      GestureDetector(
+                                          onTap: () {
+                                            textFeildList.removeAt(index);
+                                            setState(() {});
+                                          },
+                                          child: index < 0
+                                              ? Container()
+                                              : const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          )),
+                                    ],
+                                  );
+                                },
+                              )
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
-              SizedBox(
-                height: 20,
-              ),
-              sourceField,
-              SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
-        )),
+            )),
       ),
     );
   }

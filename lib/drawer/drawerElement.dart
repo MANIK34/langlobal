@@ -5,6 +5,7 @@ import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import '../select_company.dart';
 import '../transientSearch/transientOrderSearch.dart';
 
 
@@ -37,14 +38,14 @@ class _DrawerElement extends State<DrawerElement> {
               scrollDirection: Axis.vertical,
               children: <Widget>[
                 Container(
-                  color: Colors.blue.shade400,
+                  color: Colors.white,
                   width: double.infinity,
                   padding: const EdgeInsets.all(0),
                   child: Center(
                     child: Column(
                       children: <Widget>[
                         Container(
-                          margin: const EdgeInsets.only(bottom: 20, top: 60),
+                          margin: const EdgeInsets.only(bottom: 0, top: 60),
                           width: 200,
                           height: 100,
                           decoration: const BoxDecoration(
@@ -52,8 +53,12 @@ class _DrawerElement extends State<DrawerElement> {
                                 image: AssetImage('assets/lan_global_icon.jpeg'),
                               )),
                         ),
+                        Divider(
+                            color: Colors.black
+                        ),
+                        SizedBox(height: 10,),
                         Text(userName,style: const TextStyle(
-                            color: Colors.white,fontFamily: 'Montserrat',fontWeight: FontWeight.bold,
+                            color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold,
                             fontSize: 16),),
                         const SizedBox(height: 20.0),
                       ],
@@ -74,6 +79,9 @@ class _DrawerElement extends State<DrawerElement> {
                     );
                   },
                 ),
+                Divider(
+                    color: Colors.black
+                ),
                 ListTile(
                   minLeadingWidth : 2,
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
@@ -88,6 +96,9 @@ class _DrawerElement extends State<DrawerElement> {
                     );
                   },
                 ),
+                Divider(
+                    color: Colors.black
+                ),
                 ListTile(
                   minLeadingWidth : 2,
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
@@ -96,7 +107,15 @@ class _DrawerElement extends State<DrawerElement> {
                     style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SelectCompany('')),
+                    );
                   },
+                ),
+                Divider(
+                    color: Colors.black
                 ),
               ],
             ),

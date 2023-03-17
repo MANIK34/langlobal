@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 
-class CartonMovementSubmit extends StatefulWidget {
+import 'cartonMovement.dart';
+
+class CartonMovementConfirmation extends StatefulWidget {
   var heading;
 
-  CartonMovementSubmit(this.heading,  {Key? key}) : super(key: key);
+  CartonMovementConfirmation(this.heading,  {Key? key}) : super(key: key);
 
   @override
-  _CartonMovementSubmit createState() =>
-      _CartonMovementSubmit(this.heading );
+  _CartonMovementConfirmation createState() =>
+      _CartonMovementConfirmation(this.heading );
 }
 
-class _CartonMovementSubmit extends State<CartonMovementSubmit> {
+class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
   var heading;
 
 
-  _CartonMovementSubmit(this.heading );
+  _CartonMovementConfirmation(this.heading );
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -94,9 +96,12 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonMovementPage('')),
+          );
         },
-        child: Text("Submit",
+        child: Text("New Carton Movement",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -139,7 +144,7 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Carton Movement',
+                      'Carton Movement - Confirmation',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -190,6 +195,29 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                         children: [
                           SizedBox(
                             height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Carton(s) are successfully moved to location.',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                              SizedBox(
+                                width: 2,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           Row(
                             children: [
@@ -314,151 +342,7 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
 
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Cartons Assignment',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                    child:  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      color: Color.fromRGBO(	40, 40, 43, 6.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child:  Row(
-                      children: <Widget>[
-                        Text(
-                          'Cartons',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 80,
-                        ),
-                        Text(
-                          'SKU',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          'QTY',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        ListView.builder(
-                          shrinkWrap: true,
-                          primary: false,
-                          itemCount: textFeildList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Expanded(child: textFeildList[index]),
-                                    const SizedBox(
-                                      width: 0,
-                                    ),
-                                    Text(
-                                      'SKU',
-
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      '10',
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 12,
-                                  child:  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(1.0),
-                                    ),
-
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: const [
-
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              ' ',
-                                              style: TextStyle(
-                                                fontSize: 1,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ),
-
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        )
-                      ],
-                    ),
-                  ),
                 ],
               ),
             )
