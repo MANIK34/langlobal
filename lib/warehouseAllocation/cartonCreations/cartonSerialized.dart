@@ -5,8 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/model/requestParams/imei.dart';
-import 'package:langlobal/warehouseAllocation/cartonAssignment/creationSubmit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'creationSubmit.dart';
 
 class CartonSerializedPage extends StatefulWidget {
   var cartonID;
@@ -15,15 +16,19 @@ class CartonSerializedPage extends StatefulWidget {
   var productName;
   var _jsonResponse;
   var sourceCartonResponse;
+  String qty = '';
+  var sourceCartonID = '';
+  var containerConditionID = '';
+  bool isEsnRequired;
 
   CartonSerializedPage(this.cartonID,this.sku,this.condition,this.productName,this._jsonResponse,
-      this.sourceCartonResponse,
+      this.sourceCartonResponse,this.qty,this.sourceCartonID,this.containerConditionID,this.isEsnRequired,
       {Key? key}) : super(key: key);
 
   @override
   _CartonSerializedPage createState() =>
       _CartonSerializedPage(this.cartonID,this.sku,this.condition,this.productName,this._jsonResponse,
-        this.sourceCartonResponse,);
+        this.sourceCartonResponse,this.qty,this.sourceCartonID,this.containerConditionID,this.isEsnRequired);
 }
 
 class _CartonSerializedPage extends State<CartonSerializedPage> {
@@ -33,8 +38,13 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
   var productName;
   var _jsonResponse;
   var sourceCartonResponse;
+  String qty = '';
+  var sourceCartonID = '';
+  var containerConditionID = '';
+  bool isEsnRequired;
+
   _CartonSerializedPage(this.cartonID,this.sku,this.condition,this.productName,this._jsonResponse,
-      this.sourceCartonResponse,);
+      this.sourceCartonResponse,this.qty,this.sourceCartonID,this.containerConditionID,this.isEsnRequired);
 
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
@@ -57,7 +67,6 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
         if(controllers[textFeildList.length-1].text!=""){
-
           setState(() {
             autoFocus=true;
             textFeildList.add(customField());
@@ -226,7 +235,7 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
                           ),),
 
                         Visibility(
-                          visible: true,
+                          visible: isEsnRequired,
                           child: Column(
                           children: <Widget>[
                             const Align(
@@ -342,12 +351,18 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
       "Accept": "application/json",
       "content-type":"application/json"
     };
+    var sourceCarton;
+    if(containerConditionID=='0'){
+      sourceCarton="";
+    }else{
+      sourceCarton=sourceCartonResponse['cartonID']!;
+    }
     var body = json.encode({
       "companyID": _companyID!,
       "itemCompanyGUID": _jsonResponse['itemCompanyGUID'],
       "location": _jsonResponse['location'],
       "condition": condition,
-      "sourceCarton": sourceCartonResponse['cartonID']!,
+      "sourceCarton": sourceCarton,
       "esNs": jsonstringmap!,
     });
 
@@ -367,9 +382,11 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
           context,
           MaterialPageRoute(
               builder: (context) => CreationSubmitPage(cartonID,sku,condition,
-                  _jsonResponse['productName'],_jsonResponse,sourceCartonResponse)),
+                  _jsonResponse['productName'],_jsonResponse,sourceCartonResponse,qty,sourceCartonID,
+              containerConditionID,jsonstringmap,imeiList)),
         );
       }
+
       _showToast(jsonResponse['returnMessage']);
     }
     print(response1.statusCode);

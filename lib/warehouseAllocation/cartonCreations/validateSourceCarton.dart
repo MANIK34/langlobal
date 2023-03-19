@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonCreations/cartonSerialized.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/responseParams/sourceCartonConditions.dart';
 
@@ -16,9 +15,10 @@ class ValidateSourceCartonPage extends StatefulWidget {
   String qty = '';
   String location = '';
   var _jsonResponse;
+  bool isEsnRequired;
 
   ValidateSourceCartonPage(this.cartonID, this.sku, this.condition, this.qty,
-      this.location, this._jsonResponse,
+      this.location, this._jsonResponse,this.isEsnRequired,
       {Key? key})
       : super(key: key);
 
@@ -29,7 +29,8 @@ class ValidateSourceCartonPage extends StatefulWidget {
       this.condition,
       this.qty,
       this.location,
-      this._jsonResponse);
+      this._jsonResponse,
+      this.isEsnRequired);
 }
 
 class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
@@ -39,9 +40,10 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
   String qty = '';
   String location = '';
   var _jsonResponse;
+  bool isEsnRequired;
 
   _ValidateSourceCartonPage(this.cartonID, this.sku, this.condition, this.qty,
-      this.location, this._jsonResponse);
+      this.location, this._jsonResponse,this.isEsnRequired);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle style = const TextStyle(
@@ -242,7 +244,8 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => CartonSerializedPage(cartonID,sku,condition,
-                    jsonResponse['productName'],_jsonResponse,jsonResponse)),
+                    jsonResponse['productName'],_jsonResponse,jsonResponse,qty,
+                    cartonIDController.text.toString(),conditionID.toString(),isEsnRequired)),
           );
         }
         _showToast(jsonResponse['returnMessage']);

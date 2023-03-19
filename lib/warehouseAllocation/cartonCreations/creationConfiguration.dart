@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:langlobal/warehouseAllocation/cartonCreations/validateSourceCarton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'cartonSerialized.dart';
+
 class CreationConfigurationPage extends StatefulWidget {
   var heading;
 
@@ -106,7 +108,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
         showCursor: true,
         controller: skuController,
         style: style,
-        textInputAction: TextInputAction.next,
+        textInputAction: TextInputAction.done,
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         decoration: InputDecoration(
           filled: true,
@@ -123,7 +125,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
         maxLength: null,
         controller: QtyCartonController,
         style: style,
-        textInputAction: TextInputAction.done,
+        textInputAction: TextInputAction.next,
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         decoration: InputDecoration(
           filled: true,
@@ -141,6 +143,10 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
         controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,
+        onTap: (){
+          isReverse=true;
+          setState(() {});
+        },
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         decoration: InputDecoration(
           filled: true,
@@ -415,13 +421,25 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
       var jsonResponse = json.decode(response1.body);
       var returnCode=jsonResponse['returnCode'];
       if(returnCode=="1"){
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ValidateSourceCartonPage(cartonID,skuController.text.toString(),
-                  conditionValue,QtyCartonController.text.toString(),
-              locationController.text.toString(),jsonResponse)),
-        );
+        if(isChecked){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ValidateSourceCartonPage(cartonID,skuController.text.toString(),
+                    conditionValue,QtyCartonController.text.toString(),
+                    locationController.text.toString(),jsonResponse,jsonResponse['isEsnRequired'])),
+          );
+        }else{
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CartonSerializedPage(cartonID,skuController.text.toString(),
+                    conditionValue, jsonResponse['productName'],jsonResponse,jsonResponse,
+                    QtyCartonController.text.toString(),
+                    "","0",jsonResponse['isEsnRequired'])),
+          );
+        }
+
       }else{
          _showToast(jsonResponse['returnMessage']);
       }
