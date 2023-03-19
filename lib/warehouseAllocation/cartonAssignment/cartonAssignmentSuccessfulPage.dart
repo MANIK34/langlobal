@@ -5,20 +5,31 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentPage.dart';
 
 class CartonAssignmentSuccessfulPage extends StatefulWidget {
-  var heading;
+  var sku;
+  var category;
+  var name;
+  var totalCartons;
+  var itemsCount;
 
-  CartonAssignmentSuccessfulPage(this.heading,  {Key? key}) : super(key: key);
+  CartonAssignmentSuccessfulPage(this.sku,this.category,this.name,
+      this.totalCartons,this.itemsCount,{Key? key}) : super(key: key);
 
   @override
   _CartonAssignmentSuccessfulPage createState() =>
-      _CartonAssignmentSuccessfulPage(this.heading );
+      _CartonAssignmentSuccessfulPage(this.sku ,this.category,this.name,
+          this.totalCartons,this.itemsCount);
 }
 
 class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPage> {
-  var heading;
+  var sku;
+  var category;
+  var name;
+  var totalCartons;
+  var itemsCount;
 
 
-  _CartonAssignmentSuccessfulPage(this.heading );
+  _CartonAssignmentSuccessfulPage(this.sku ,this.category,this.name,
+      this.totalCartons,this.itemsCount);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -190,7 +201,7 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Sku',
+                                        sku,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
@@ -206,7 +217,7 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Category',
+                                        category,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
@@ -226,7 +237,7 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Name" ,
+                                        name ,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
@@ -247,8 +258,8 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        children: const <Widget>[
-                                          Text(
+                                        children:  <Widget>[
+                                          const Text(
                                             'Total Cartons: ' ,
                                             style: TextStyle(
                                               fontSize: 16,
@@ -256,7 +267,7 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                                             ),
                                           ),
                                           Text(
-                                            "",
+                                            totalCartons.toString(),
                                             style: TextStyle(
                                               fontSize: 14,
                                             ),
@@ -283,7 +294,7 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                                             ),
                                           ),
                                           Text(
-                                            "",
+                                            itemsCount.toString(),
                                             style: TextStyle(
                                               fontSize: 14,
                                             ),

@@ -476,7 +476,8 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => CartonAssignmentSuccessfulPage('')),
+                builder: (context) => CartonAssignmentSuccessfulPage(sku,category,productName
+                ,totalCartons,itemCount)),
           );
         }else{
           _showToast("Something went wrong!!");

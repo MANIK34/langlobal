@@ -311,7 +311,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                  const SizedBox(
                     height: 20,
                   ),
-                  Padding(padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child:  Row(
                     children: <Widget>[
                       Text(
@@ -366,7 +366,6 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         ListView.builder(
                           shrinkWrap: true,
                           primary: false,
@@ -386,36 +385,9 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                                             : Text(cartonQty[index],)),
                                   ],
                                 ),
-
-                                SizedBox(
-                                  height: 12,
-                                  child:  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(1.0),
-                                    ),
-
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: const [
-
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              ' ',
-                                              style: TextStyle(
-                                                fontSize: 1,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ),
-
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                               const Divider(
+                                   color: Colors.black
+                               ),
                               ],
                             );
                           },
