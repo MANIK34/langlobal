@@ -162,7 +162,9 @@ class _CreationConfirmationPage extends State<CreationConfirmationPage> {
                                   child: Row(
                                     children: <Widget>[
                                       Text('Carton ID:'),
-                                      Spacer(),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
                                       Text(cartonID.toString(),style: TextStyle(
                                           fontWeight: FontWeight.bold
                                       ),),
@@ -171,32 +173,38 @@ class _CreationConfirmationPage extends State<CreationConfirmationPage> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Total Cartons:'),
-                                      Spacer(),
-                                      Text("",style: TextStyle(
-                                          fontWeight: FontWeight.bold
-                                      )),
-                                    ],
-                                  ),),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Items Count:'),
-                                      Spacer(),
-                                      Text("",style: TextStyle(
-                                          fontWeight: FontWeight.bold
-                                      )),
-                                    ],
-                                  ),),
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                               Visibility(
+                                 visible: false,
+                                   child: Column(
+                                     children: <Widget>[
+                                       Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                         child: Row(
+                                           children: <Widget>[
+                                             Text('Total Cartons:'),
+                                             Spacer(),
+                                             Text("",style: TextStyle(
+                                                 fontWeight: FontWeight.bold
+                                             )),
+                                           ],
+                                         ),),
+                                       const SizedBox(
+                                         height: 10,
+                                       ),
+                                       Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                         child: Row(
+                                           children: <Widget>[
+                                             Text('Items Count:'),
+                                             Spacer(),
+                                             Text("",style: TextStyle(
+                                                 fontWeight: FontWeight.bold
+                                             )),
+                                           ],
+                                         ),),
+                                       const SizedBox(
+                                         height: 10,
+                                       ),
+                                     ],
+                                   ))
                               ],
                             ),
                           ),),

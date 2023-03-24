@@ -30,6 +30,8 @@ class _SelectCompany extends State<SelectCompany> {
   List<CompanyList> companyList = <CompanyList>[];
   List<CompanyList> companyList2 = <CompanyList>[];
   late CompanyList? _companyList = null;
+  var selectedCompanyID;
+  var header = 'Select Company';
 
   @override
   void initState() {
@@ -43,6 +45,12 @@ class _SelectCompany extends State<SelectCompany> {
 
   void callGetCompanyApi() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    try {
+      selectedCompanyID = myPrefs.getString("companyID")!;
+    } catch (e) {
+      selectedCompanyID = "";
+    }
+
     String? _token = myPrefs.getString("token");
     var url = "https://api.langlobal.com/common/v1/Companies";
 
@@ -50,7 +58,6 @@ class _SelectCompany extends State<SelectCompany> {
 
     final response1 = await http.get(Uri.parse(url), headers: headers);
     if (response1.statusCode == 200) {
-      var jsonData = json.decode(response1.body);
       var jsonResponse = json.decode(response1.body);
       var jsonArray = jsonResponse['companies'];
       print(response1.body);
@@ -74,10 +81,54 @@ class _SelectCompany extends State<SelectCompany> {
     setState(() {
       _isLoading = false;
       companyList = companyList2;
-      if(companyList.isNotEmpty) {
+      if (companyList.isNotEmpty) {
         _companyList = companyList[1];
-        companyID= companyList[1].companyID;
+        companyID = companyList[1].companyID;
+        print(selectedCompanyID.toString());
+        if (selectedCompanyID != "") {
+          header = "Change Company";
+          for (int m = 0; m < companyList.length; m++) {
+            if (companyList[m].companyID.toString() ==
+                selectedCompanyID.toString()) {
+              _companyList = companyList[m];
+              companyID = companyList[m].companyID;
+              break;
+            }
+          }
+        }
       }
+    });
+  }
+
+  void callGetCompanyLogoApi() async {
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? _token = myPrefs.getString("token");
+    var url = "https://api.langlobal.com/common/v1/CompanyLogo?companyID=" +
+        companyID.toString();
+
+    Map<String, String> headers = {'Authorization': 'Bearer ' + _token!};
+
+    final response1 = await http.get(Uri.parse(url), headers: headers);
+    if (response1.statusCode == 200) {
+      var jsonResponse = json.decode(response1.body);
+      if (jsonResponse["returnCode"] == "1") {
+        SharedPreferences myPrefs = await SharedPreferences.getInstance();
+        myPrefs.setString('companyLogo', jsonResponse["logoPath"]);
+        print(jsonResponse["logoPath"]);
+        if (header == "Change Company") {
+          Navigator.of(context).pop();
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DashboardPage(token)),
+          );
+        }
+      }
+    }
+    print(response1.body);
+    print(response1.statusCode);
+    setState(() {
+      _isLoading = false;
     });
   }
 
@@ -90,7 +141,7 @@ class _SelectCompany extends State<SelectCompany> {
           borderRadius: BorderRadius.circular(2.0)),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<CompanyList>(
-          hint: const Text('Select Company'),
+          hint: Text(header),
           icon: const Icon(Icons.arrow_drop_down),
           iconSize: 36.0,
           isExpanded: true,
@@ -121,10 +172,10 @@ class _SelectCompany extends State<SelectCompany> {
         onPressed: () async {
           SharedPreferences myPrefs = await SharedPreferences.getInstance();
           myPrefs.setString('companyID', companyID.toString());
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => DashboardPage(token)),
-          );
+          setState(() {
+            _isLoading = true;
+          });
+          callGetCompanyLogoApi();
         },
         child: Text("Go",
             textAlign: TextAlign.center,
@@ -137,8 +188,8 @@ class _SelectCompany extends State<SelectCompany> {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          'Lan Global',
+        title: Text(
+          header,
           style: TextStyle(fontFamily: 'Montserrat', color: Colors.white),
         ),
       ),

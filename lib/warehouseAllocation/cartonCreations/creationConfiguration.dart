@@ -317,23 +317,29 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
                           height: 20,
                         ),
                         locationField,
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child:  Row(
-                            children: <Widget>[
-                              sourceCarton,
-                              SizedBox(
-                                width: 0,
-                              ),
-                              Text('Source Carton',style: TextStyle(
-                                  fontWeight: FontWeight.bold,color: Colors.black,fontSize: 18
-                              ),),
-                            ],
-                          ),
-                        )
+                        Visibility(
+                          visible: false,
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child:  Row(
+                                    children: <Widget>[
+                                      sourceCarton,
+                                      SizedBox(
+                                        width: 0,
+                                      ),
+                                      Text('Source Carton',style: TextStyle(
+                                          fontWeight: FontWeight.bold,color: Colors.black,fontSize: 18
+                                      ),),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ) )
                       ],
                     ),
                   ),
@@ -421,7 +427,14 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
       var jsonResponse = json.decode(response1.body);
       var returnCode=jsonResponse['returnCode'];
       if(returnCode=="1"){
-        if(isChecked){
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ValidateSourceCartonPage(cartonID,skuController.text.toString(),
+                  conditionValue,QtyCartonController.text.toString(),
+                  locationController.text.toString(),jsonResponse,jsonResponse['isEsnRequired'])),
+        );
+       /* if(isChecked){
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -438,7 +451,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
                     QtyCartonController.text.toString(),
                     "","0",jsonResponse['isEsnRequired'])),
           );
-        }
+        }*/
 
       }else{
          _showToast(jsonResponse['returnMessage']);

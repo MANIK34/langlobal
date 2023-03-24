@@ -16,6 +16,7 @@ class CartonAssignmentSubmitPage extends StatefulWidget {
   var itemCount;
   List<CartonList2> obj_cartonList;
   var location;
+  var conditionValue;
 
   CartonAssignmentSubmitPage(
       this.sku,
@@ -25,6 +26,7 @@ class CartonAssignmentSubmitPage extends StatefulWidget {
       this.itemCount,
       this.obj_cartonList,
       this.location,
+      this.conditionValue,
       {Key? key})
       : super(key: key);
 
@@ -36,7 +38,8 @@ class CartonAssignmentSubmitPage extends StatefulWidget {
       this.totalCartons,
       this.itemCount,
       this.obj_cartonList,
-      this.location);
+      this.location,
+      this.conditionValue);
 }
 
 class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
@@ -47,6 +50,7 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
   var itemCount;
   List<CartonList2> obj_cartonList;
   var location;
+  var conditionValue;
 
   _CartonAssignmentSubmitPage(
       this.sku,
@@ -55,7 +59,8 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
       this.totalCartons,
       this.itemCount,
       this.obj_cartonList,
-      this.location);
+      this.location,
+      this.conditionValue);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -206,35 +211,48 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
                       ),
                       Row(
                         children: [
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                sku,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          )),
+                          Text(
+                            category,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            )),
                           SizedBox(
-                            width: 2,
+                            width: 5,
                           ),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                category,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
-                          )),
+                          Text(
+                              "I",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                              )),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                              sku,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              )),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                              "I",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                              )),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                              conditionValue.toString(),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              )),
                         ],
                       ),
                       SizedBox(
@@ -272,13 +290,13 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
                                     'Total Cartons: ',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   Text(
                                     totalCartons.toString(),
                                     style: TextStyle(
                                       fontSize: 14,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                 ],
@@ -298,19 +316,39 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
                                     'Items Count: ',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   Text(
                                     itemCount.toString(),
                                     style: TextStyle(
                                       fontSize: 14,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                 ],
                               ),
                             ],
                           )),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          const Text(
+                            'Warehouse Location: ',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            location.toString(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -477,7 +515,7 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => CartonAssignmentSuccessfulPage(sku,category,productName
-                ,totalCartons,itemCount)),
+                ,totalCartons,itemCount,conditionValue)),
           );
         }else{
           _showToast("Something went wrong!!");

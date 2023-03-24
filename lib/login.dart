@@ -95,7 +95,9 @@ class _LoginPage extends State<LoginPage> {
       ),
     );
 
-    return Scaffold(
+    return WillPopScope(
+    onWillPop: () async => false,
+    child:Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -146,7 +148,7 @@ class _LoginPage extends State<LoginPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   void callLoginApi() async {
@@ -179,6 +181,9 @@ class _LoginPage extends State<LoginPage> {
           myPrefs.setString('token', token.toString());
           myPrefs.setString('userId', userId.toString());
           myPrefs.setString('userName', userName.toString());
+          myPrefs.setString('userType', userType.toString());
+          myPrefs.setString('companyLogo', companyInfo['companyLogo'].toString());
+          myPrefs.setString('companyID', "");
           _showToast("Login successfully!");
           if(userType=="LANGlobal"){
             Navigator.push(

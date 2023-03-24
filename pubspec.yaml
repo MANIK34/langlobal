@@ -40,6 +40,8 @@ dependencies:
   shared_preferences: ^2.0.17
   font_awesome_flutter: ^10.4.0
   intl:
+  cached_network_image: ^3.2.3
+  flutter_launcher_icons: ^0.12.0
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +56,13 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/app_icon.png"
+  adaptive_icon_background: "assets/app_icon.png"
+  adaptive_icon_foreground: "assets/app_icon.png"
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -108,6 +117,7 @@ flutter:
     - generate_report.png
     - read.png
     - right_arrow.png
+    - app_icon.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

@@ -10,14 +10,15 @@ class CartonAssignmentSuccessfulPage extends StatefulWidget {
   var name;
   var totalCartons;
   var itemsCount;
+  var conditionValue;
 
   CartonAssignmentSuccessfulPage(this.sku,this.category,this.name,
-      this.totalCartons,this.itemsCount,{Key? key}) : super(key: key);
+      this.totalCartons,this.itemsCount,this.conditionValue,{Key? key}) : super(key: key);
 
   @override
   _CartonAssignmentSuccessfulPage createState() =>
       _CartonAssignmentSuccessfulPage(this.sku ,this.category,this.name,
-          this.totalCartons,this.itemsCount);
+          this.totalCartons,this.itemsCount,this.conditionValue);
 }
 
 class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPage> {
@@ -26,10 +27,10 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
   var name;
   var totalCartons;
   var itemsCount;
-
+  var conditionValue;
 
   _CartonAssignmentSuccessfulPage(this.sku ,this.category,this.name,
-      this.totalCartons,this.itemsCount);
+      this.totalCartons,this.itemsCount,this.conditionValue);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -196,34 +197,47 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                           ),
                           Row(
                             children: [
-                              Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        sku,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
+                              Text(
+                                  category,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
                                   )),
                               SizedBox(
-                                width: 2,
+                                width: 5,
                               ),
-                              Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        category,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
+                              Text(
+                                  "I",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.normal,
+                                  )),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                  sku,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  )),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                  "I",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.normal,
+                                  )),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                  conditionValue.toString(),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
                                   )),
                             ],
                           ),
@@ -263,13 +277,13 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                                             'Total Cartons: ' ,
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                           Text(
                                             totalCartons.toString(),
                                             style: TextStyle(
                                               fontSize: 14,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ],
@@ -290,13 +304,13 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                                             'Items Count: ' ,
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                           Text(
                                             itemsCount.toString(),
                                             style: TextStyle(
                                               fontSize: 14,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ],

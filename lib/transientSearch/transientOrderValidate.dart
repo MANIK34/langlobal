@@ -233,7 +233,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                                             orderDate.toString() ,
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                              fontWeight: FontWeight.normal,
                                             ),
                                           ),
                                         ],
@@ -267,7 +267,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                                             sku.toString(),
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                              fontWeight: FontWeight.normal,
                                             ),
                                           ),
                                         ],
@@ -283,7 +283,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                                             category.toString(),
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                              fontWeight: FontWeight.normal,
                                             ),
                                           ),
                                         ],
@@ -303,7 +303,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                                             name.toString() ,
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                              fontWeight: FontWeight.normal,
                                             ),
                                           ),
                                         ],
@@ -316,7 +316,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                                             supplier.toString() ,
                                             style: TextStyle(
                                               fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                              fontWeight: FontWeight.normal,
                                             ),
                                           ),
                                         ],
@@ -548,7 +548,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
             ,customerOrderNumber,condition,orderDateTime,companyID,itemCompanyGUID,userID)),
           );
         }else{
-          _showToast("Something went wrong!!");
+          _showResultDialog(jsonResponse['returnMessage']);
         }
       } catch (e) {
         Navigator.of(context).pop();
@@ -561,5 +561,32 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     }
   }
 
+  Future<void> _showResultDialog(String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 }

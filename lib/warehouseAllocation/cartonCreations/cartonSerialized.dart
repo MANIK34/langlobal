@@ -182,7 +182,9 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
                                   child: Row(
                                     children: <Widget>[
                                       Text('Carton ID:'),
-                                      Spacer(),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
                                       Text(cartonID.toString(),style: TextStyle(
                                         fontWeight: FontWeight.bold
                                       ),),
@@ -191,29 +193,33 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('SKU:'),
-                                      Spacer(),
-                                      Text(sku,style: TextStyle(
-                                          fontWeight: FontWeight.bold
-                                      )),
-                                    ],
-                                  ),),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Condition:'),
-                                      Spacer(),
-                                      Text(condition,style: TextStyle(
-                                          fontWeight: FontWeight.bold
-                                      )),
-                                    ],
-                                  ),),
+                               Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                 child: Row(
+                                   children: <Widget>[
+                                     Text('SKU:'),
+                                     const SizedBox(
+                                       width: 5,
+                                     ),
+                                     Text(sku,style: TextStyle(
+                                         fontWeight: FontWeight.bold
+                                     )),
+                                     const SizedBox(
+                                       width: 5,
+                                     ),
+                                     Text('I'),
+                                     const SizedBox(
+                                       width: 5,
+                                     ),
+                                     Text('Condition:'),
+                                     const SizedBox(
+                                       width: 5,
+                                     ),
+                                     Text(condition,style: TextStyle(
+                                         fontWeight: FontWeight.bold
+                                     )),
+                                   ],
+                                 ),
+                               ),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -221,7 +227,9 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
                                   child: Row(
                                     children: <Widget>[
                                       Text('Product Name:'),
-                                      Spacer(),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
                                       Text(productName,style: TextStyle(
                                           fontWeight: FontWeight.bold
                                       )),

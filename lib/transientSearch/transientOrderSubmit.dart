@@ -210,7 +210,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                                         orderDate.toString() ,
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.normal,
                                         ),
                                       ),
                                     ],
@@ -244,7 +244,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                                         sku.toString(),
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.normal,
                                         ),
                                       ),
                                     ],
@@ -260,7 +260,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                                         category.toString(),
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.normal,
                                         ),
                                       ),
                                     ],
@@ -280,7 +280,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                                         name.toString() ,
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.normal,
                                         ),
                                       ),
                                     ],
@@ -293,7 +293,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                                         supplier.toString() ,
                                         style: TextStyle(
                                           fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.normal,
                                         ),
                                       ),
                                     ],

@@ -6,6 +6,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentSubmitPage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonValidatePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
 
@@ -35,6 +36,11 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
   TextEditingController skuController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   bool isReverse=false;
+
+  List<String> conditionList = <String>[];
+  List<String> conditionList2 = <String>[];
+  late String? _conditionList = null;
+  var conditionValue;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -70,6 +76,10 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     // TODO: implement initState
     super.initState();
     textFeildList.add(customField());
+    callGetConditionApi();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      buildShowDialog(context);
+    });
   }
 
   @override
@@ -79,6 +89,34 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final conditionField = Container(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(2.0)),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          hint: const Text('Select Condition'),
+          icon: const Icon(Icons.arrow_drop_down),
+          iconSize: 36.0,
+          isExpanded: true,
+          value: _conditionList,
+          onChanged: (value) {
+            setState(() {
+              _conditionList = value!;
+              conditionValue = value!;
+            });
+          },
+          items: conditionList.map((String map) {
+            return DropdownMenuItem<String>(
+              value: map,
+              child: Text(map),
+            );
+          }).toList(),
+        ),
+      ),
+    );
 
     final skuField = TextField(
         maxLength: null,
@@ -227,7 +265,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
                               SizedBox(
                                 height: 20,
                               ),
-                              locationField,
+                              conditionField,
                               SizedBox(
                                 height: 20,
                               ),
@@ -337,6 +375,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
   void callCartonAssignmentApi() async{
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
     String? token = myPrefs.getString("token");
     print(token);
     cartonList= <CartonList2>[];
@@ -361,8 +400,10 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
       "content-type":"application/json"
     };
     var body = json.encode({
+      "userID": int.parse(userID!),
       "companyID": int.parse(companyID!),
       "sku": skuController.text!,
+      "condition": conditionValue,
       "location": locationController.text!,
       "cartons":jsonstringmap,
     });
@@ -375,7 +416,6 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
       print(response.body);
-      Navigator.of(context).pop();
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
@@ -389,24 +429,51 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
             cartonList.add(list);
 
           }
-          Navigator.push(
+         /* Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CartonAssignmentSubmitPage(cartonAssignment['sku'],
                 cartonAssignment['category'],cartonAssignment['productName'],cartonAssignment['cartonCount'],
                 cartonAssignment['cartornItemsCount'],cartonList,locationController.text)),
+          );*/
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonValidatePage(cartonAssignment['sku'],
+                cartonAssignment['category'],cartonAssignment['productName'],cartonAssignment['cartonCount'],
+                cartonAssignment['cartornItemsCount'],cartonList,locationController.text,conditionValue)),
           );
         }else{
           _showToast(jsonResponse['returnMessage']);
         }
       } catch (e) {
-        Navigator.of(context).pop();
         print("error message ::"+e.toString());
         print('returnCode'+e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
-      Navigator.of(context).pop();
       print(response.statusCode);
     }
+    Navigator.of(context).pop();
+  }
+
+  void callGetConditionApi() async {
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? _token = myPrefs.getString("token");
+    var url = "https://api.langlobal.com/common/v1/Conditions/";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ' + _token!,
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    final response1 = await http.get(Uri.parse(url), headers: headers);
+    if (response1.statusCode == 200) {
+      var jsonResponse = json.decode(response1.body);
+      String jsonString = json.encode(jsonResponse);
+      conditionList= (jsonDecode(jsonString) as List<dynamic>).cast<String>();
+      _conditionList = conditionList[0];
+      conditionValue= conditionList[0];
+    } else {
+      print(response1.statusCode);
+    }
+    Navigator.of(context).pop();
   }
 }
