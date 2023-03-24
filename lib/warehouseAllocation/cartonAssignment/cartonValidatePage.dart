@@ -1,3 +1,4 @@
+import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,6 +90,14 @@ class _CartonValidatePage extends State<CartonValidatePage> {
         controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,
+        onSubmitted: (value){
+          if(locationController.text == ""){
+            _showToast("Location can't be empty!");
+          }else{
+            buildShowDialog(context);
+            callCartonAssignmentApi();
+          }
+        },
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         decoration: InputDecoration(
           filled: true,
@@ -137,7 +146,8 @@ class _CartonValidatePage extends State<CartonValidatePage> {
             const Text('Inventory Allocation',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
-            GestureDetector(
+            ExpandTapWidget(
+              tapPadding: EdgeInsets.all(55.0),
               onTap: (){
                 Navigator.of(context).pop();
               },
@@ -276,7 +286,7 @@ class _CartonValidatePage extends State<CartonValidatePage> {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
           var cartonAssignment=jsonResponse['cartonAssignment'];
-          _showToast("Validate successfully!");
+         // _showToast("Validate successfully!");
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CartonAssignmentSubmitPage(cartonAssignment['sku'],

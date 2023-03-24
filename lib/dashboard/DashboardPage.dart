@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentPage.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolidationPage.dart';
 import 'package:langlobal/warehouseAllocation/cartonCreations/creationConfiguration.dart';
+import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupPage.dart';
 import '../drawer/drawerElement.dart';
 import '../transientSearch/transientOrderSearch.dart';
 import '../warehouseAllocation/movement/cartonMovement.dart';
@@ -779,6 +780,27 @@ class _DashboardPage extends State<DashboardPage> {
                     },
                     child: const Text(
                         'Creations')),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CartonLookupPage('')),
+                      );
+                    },
+                    child: const Text(
+                        'Lookup')),
                 const SizedBox(
                   height: 10,
                 ),

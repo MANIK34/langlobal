@@ -1,3 +1,4 @@
+import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -156,7 +157,6 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     );
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
         child: validateButton,
@@ -169,7 +169,8 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
             const Text('Transient Receive',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
-            GestureDetector(
+            ExpandTapWidget(
+              tapPadding: EdgeInsets.all(55.0),
               onTap: (){
                 Navigator.of(context).pop();
               },
@@ -185,9 +186,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
             reverse: true,
             child: Padding(
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child:  _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  :Column(
+              child:Column(
                 children: <Widget>[
                   SizedBox(
                     height: 10,
@@ -531,7 +530,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
       try {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
-          _showToast("Validate successfully!");
+          //_showToast("Validate successfully!");
 
           var jsonArray = jsonResponse['cartons'];
           for (int m = 0; m < jsonArray.length; m++) {

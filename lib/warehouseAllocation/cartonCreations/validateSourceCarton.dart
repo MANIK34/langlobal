@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -139,7 +140,8 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
               const Text('Carton Creation',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
               ),
-              GestureDetector(
+              ExpandTapWidget(
+                tapPadding: EdgeInsets.all(55.0),
                 onTap: (){
                   Navigator.of(context).pop();
                 },
@@ -247,8 +249,9 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
                     jsonResponse['productName'],_jsonResponse,jsonResponse,qty,
                     cartonIDController.text.toString(),conditionID.toString(),isEsnRequired)),
           );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
         }
-        _showToast(jsonResponse['returnMessage']);
       } catch (e) {
         print('returnCode' + e.toString());
         // TODO: handle exception, for example by showing an alert to the user

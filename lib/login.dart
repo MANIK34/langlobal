@@ -57,6 +57,18 @@ class _LoginPage extends State<LoginPage> {
         enableSuggestions: false,
         autocorrect: false,
         textInputAction: TextInputAction.done,
+        onSubmitted: (value) {
+          if (emailController.text == "") {
+            _showToast("Username can't be empty");
+          } else if (passwordController.text == "") {
+            _showToast("Password can't be empty");
+          } else {
+            setState(() {
+              _isLoading = true;
+            });
+            callLoginApi();
+          }
+        },
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         decoration: InputDecoration(
           filled: true,

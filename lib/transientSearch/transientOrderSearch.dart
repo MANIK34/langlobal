@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -66,6 +67,16 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
         controller: memoController,
         style: style,
         textInputAction: TextInputAction.done,
+        onSubmitted: (value) {
+          if(memoController.text.toString()==""){
+            _showToast("Order Number can't be empty");
+          }else{
+            setState(() {
+              _isLoading = true;
+            });
+            callGetTransientOrderApi();
+          }
+        },
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         decoration: InputDecoration(
           filled: true,
@@ -165,10 +176,14 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          setState(() {
-            _isLoading = true;
-          });
-          callGetTransientOrderApi();
+          if(memoController.text.toString()==""){
+            _showToast("Order Number can't be empty");
+          }else{
+            setState(() {
+              _isLoading = true;
+            });
+            callGetTransientOrderApi();
+          }
         },
         child: Text("Search",
             textAlign: TextAlign.center,
@@ -181,9 +196,22 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
         key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
-          title: const Text(
-            'Transient Order Search',
-            style: TextStyle(fontFamily: 'Montserrat', color: Colors.white),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children:  [
+              const Text('Transient Order Search',textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
+              ),
+              ExpandTapWidget(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                tapPadding: EdgeInsets.all(55.0),
+                child: Text('Cancel',textAlign: TextAlign.center,
+                  style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         ),
         drawer: DrawerElement(),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -210,7 +211,8 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
             const Text('Carton Creation',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
-            GestureDetector(
+              ExpandTapWidget(
+              tapPadding: EdgeInsets.all(55.0),
               onTap: (){
                 Navigator.of(context).pop();
                 Navigator.push(

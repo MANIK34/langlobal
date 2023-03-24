@@ -1,3 +1,4 @@
+import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -190,7 +191,8 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
             const Text('Inventory Allocation',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
-            GestureDetector(
+            ExpandTapWidget(
+              tapPadding: EdgeInsets.all(55.0),
               onTap: (){
                 Navigator.of(context).pop();
                 Navigator.push(
@@ -415,13 +417,14 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     var response =
     await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
+      Navigator.of(context).pop();
       print(response.body);
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
           var cartonAssignment=jsonResponse['cartonAssignment'];
-          _showToast("Validate successfully!");
+          //_showToast("Validate successfully!");
           cartonList = <CartonList2>[];
           var jsonArray = cartonAssignment['cartons'];
           for (int m = 0; m < jsonArray.length; m++) {
@@ -450,9 +453,9 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
+      Navigator.of(context).pop();
       print(response.statusCode);
     }
-    Navigator.of(context).pop();
   }
 
   void callGetConditionApi() async {
