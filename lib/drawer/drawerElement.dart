@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../locationLookup/locationLookupPage.dart';
 import '../select_company.dart';
 import '../transientSearch/transientOrderSearch.dart';
 
@@ -95,6 +96,23 @@ class _DrawerElement extends State<DrawerElement> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => TransientOrderSearchPage('3')),
+                    );
+                  },
+                ),
+                Divider(
+                    color: Colors.black
+                ),
+                ListTile(
+                  minLeadingWidth : 2,
+                  //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
+                  title: const Text(
+                    'Location Lookup',
+                    style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LocationLookupPage('')),
                     );
                   },
                 ),
