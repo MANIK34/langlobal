@@ -53,6 +53,7 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
+  BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -384,7 +385,7 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
 
     final response1 = await http.post(Uri.parse(url), body:body,headers: headers);
     if (response1.statusCode == 200) {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response1.body);
       var returnCode=jsonResponse['returnCode'];
       if(returnCode=="1"){
@@ -408,6 +409,7 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
+          _context=context;
           return const Center(
             child: CircularProgressIndicator(),
           );

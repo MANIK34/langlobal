@@ -76,6 +76,7 @@ class _DrawerElement extends State<DrawerElement> {
                     style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DashboardPage('')),
@@ -93,6 +94,7 @@ class _DrawerElement extends State<DrawerElement> {
                     style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => TransientOrderSearchPage('3')),
@@ -110,6 +112,7 @@ class _DrawerElement extends State<DrawerElement> {
                     style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LocationLookupPage('')),

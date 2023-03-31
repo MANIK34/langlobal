@@ -55,6 +55,7 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
   List<SourceCartonConditions> conditionList = <SourceCartonConditions>[];
   late SourceCartonConditions? _conditionList = null;
 
+  BuildContext? _context;
   @override
   void initState() {
     // TODO: implement initState
@@ -237,7 +238,7 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
     print("requestParams$body" );
     var response = await http.post(Uri.parse(url), headers: headers, body: body);
     if (response.statusCode == 200) {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode = jsonResponse['returnCode'];
@@ -273,7 +274,7 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
     };
     final response1 = await http.get(Uri.parse(url), headers: headers);
     if (response1.statusCode == 200) {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response1.body);
       //var jsonArray= jsonResponse[''];
       for (int m = 0; m < jsonResponse.length; m++) {
@@ -297,6 +298,7 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
+          _context=context;
           return const Center(
             child: CircularProgressIndicator(),
           );

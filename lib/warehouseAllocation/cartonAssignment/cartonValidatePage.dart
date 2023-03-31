@@ -66,7 +66,7 @@ class _CartonValidatePage extends State<CartonValidatePage> {
 
   TextEditingController locationController = TextEditingController();
   bool isReverse=false;
-
+  BuildContext? _context;
 
 
 
@@ -236,6 +236,7 @@ class _CartonValidatePage extends State<CartonValidatePage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
+          _context=context;
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -280,7 +281,7 @@ class _CartonValidatePage extends State<CartonValidatePage> {
     await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
       print(response.body);
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
@@ -297,13 +298,13 @@ class _CartonValidatePage extends State<CartonValidatePage> {
           _showToast(jsonResponse['returnMessage']);
         }
       } catch (e) {
-        Navigator.of(context).pop();
+        Navigator.of(_context!).pop();
         print("error message ::"+e.toString());
         print('returnCode'+e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       print(response.statusCode);
     }
   }

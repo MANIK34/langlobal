@@ -70,6 +70,7 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool readOnly = true;
   String cartonId = "";
+  BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -508,7 +509,7 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
     await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
       print(response.body);
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
@@ -523,13 +524,13 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
           _showToast("Something went wrong!!");
         }
       } catch (e) {
-        Navigator.of(context).pop();
+        Navigator.of(_context!).pop();
         print("error message ::"+e.toString());
         print('returnCode'+e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       print(response.statusCode);
     }
   }
@@ -539,6 +540,7 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
+          _context=context;
           return const Center(
             child: CircularProgressIndicator(),
           );

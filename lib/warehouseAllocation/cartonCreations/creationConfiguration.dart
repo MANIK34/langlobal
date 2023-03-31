@@ -44,7 +44,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
   late String? _conditionList = null;
   bool isChecked = false;
   String cartonID='';
-
+  BuildContext? _context;
   @override
   void initState() {
     // TODO: implement initState
@@ -404,7 +404,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
     } else {
       print(response1.statusCode);
     }
-    Navigator.of(context).pop();
+    Navigator.of(_context!).pop();
   }
 
   void callValidateApi() async{
@@ -425,7 +425,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
 
     final response1 = await http.post(Uri.parse(url), body:body,headers: headers);
     if (response1.statusCode == 200) {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response1.body);
       var returnCode=jsonResponse['returnCode'];
       if(returnCode=="1"){
@@ -468,6 +468,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
+          _context=context;
           return const Center(
             child: CircularProgressIndicator(),
           );

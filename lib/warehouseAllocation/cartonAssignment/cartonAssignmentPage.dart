@@ -42,6 +42,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
   List<String> conditionList2 = <String>[];
   late String? _conditionList = null;
   var conditionValue;
+  BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -364,14 +365,17 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
   }
 
   buildShowDialog(BuildContext context) {
+
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
+          _context=context;
           return const Center(
             child: CircularProgressIndicator(),
           );
         });
+
   }
 
   void callCartonAssignmentApi() async{
@@ -417,7 +421,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     var response =
     await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       print(response.body);
       var jsonResponse = json.decode(response.body);
       try {
@@ -453,7 +457,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       print(response.statusCode);
     }
   }
@@ -477,6 +481,6 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     } else {
       print(response1.statusCode);
     }
-    Navigator.of(context).pop();
+    Navigator.of(_context!).pop();
   }
 }

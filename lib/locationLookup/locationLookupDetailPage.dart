@@ -106,7 +106,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
       drawer: DrawerElement(),
       body: SafeArea(
         child: SingleChildScrollView(
-            reverse: true,
+            reverse: false,
             child: Padding(
               padding:EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child:  Column(
@@ -282,36 +282,52 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                         Padding(padding: EdgeInsets.only(left: 10,right: 10),child: ListView.builder(
                           shrinkWrap: true,
                           primary: false,
+                          physics: NeverScrollableScrollPhysics(),
                           itemCount: cartonContent['skuList'].length,
                           itemBuilder: (BuildContext context, int index) {
                             return Column(
                               children: <Widget>[
                                 Container(
-                                  height: 40,
                                   color: Colors.grey,
                                   child: Padding(
                                     padding: EdgeInsets.only(left: 10,right: 10),
-                                    child: Row(
-                                      children: [
-                                        Text(cartonContent['skuList'][index]['categoryName'],style: TextStyle(
-                                            fontWeight: FontWeight.bold
-                                        ),),
-                                        Padding(padding: EdgeInsets.only(left: 5,right: 5),
-                                          child:Text("I"),),
-                                        Text(cartonContent['skuList'][index]['sku'],style: TextStyle(
-                                            fontWeight: FontWeight.bold
-                                        ),),
-                                        Padding(padding: EdgeInsets.only(left: 5,right: 5),
-                                          child:Text("I"),),
-                                        Text(cartonContent['skuList'][index]['condition'],style: TextStyle(
-                                            fontWeight: FontWeight.bold
-                                        ),),
-                                        Spacer(),
-                                        Text(cartonContent['skuList'][index]['productName'],style: TextStyle(
-                                            fontWeight: FontWeight.bold
-                                        ),),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        const SizedBox(height: 2,),
+                                        Wrap(
+                                          children: <Widget>[
+                                            Row(
+                                              children: [
+                                                Text(cartonContent['skuList'][index]['categoryName'],style: TextStyle(
+                                                    fontWeight: FontWeight.normal
+                                                ),),
+                                                Padding(padding: EdgeInsets.only(left: 5,right: 5),
+                                                  child:Text("I"),),
+                                                Text(cartonContent['skuList'][index]['condition'],style: TextStyle(
+                                                    fontWeight: FontWeight.bold
+                                                ),),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 2,),
+                                        Align(
+                                          child: Text(cartonContent['skuList'][index]['sku'],style: TextStyle(
+                                              fontWeight: FontWeight.normal
+                                          ),),
+                                          alignment: Alignment.centerLeft,
+                                        ),
+
+                                        Align(
+                                          child: Text(cartonContent['skuList'][index]['productName'],style: TextStyle(
+                                              fontWeight: FontWeight.normal
+                                          ),),
+                                          alignment:Alignment.centerLeft ,
+                                        ),
+                                        const SizedBox(height: 2,),
                                       ],
-                                    ),
+                                    )
                                   )
                                 ),
                                 Padding(padding: EdgeInsets.only(left: 12,right: 12),
@@ -319,6 +335,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     primary: false,
+                                    physics: NeverScrollableScrollPhysics(),
                                     itemCount: cartonContent['skuList'][index]['cartons'].length,
                                     itemBuilder: (BuildContext context, int indexx) {
                                       return Column(

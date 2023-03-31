@@ -5,6 +5,7 @@ import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolid
 import 'package:langlobal/warehouseAllocation/cartonCreations/creationConfiguration.dart';
 import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupPage.dart';
 import '../drawer/drawerElement.dart';
+import '../locationLookup/locationLookupPage.dart';
 import '../transientSearch/transientOrderSearch.dart';
 import '../warehouseAllocation/movement/cartonMovement.dart';
 
@@ -461,7 +462,7 @@ class _DashboardPage extends State<DashboardPage> {
                                 width: 160,
                                 child: GestureDetector(
                                     onTap: () {
-
+                                      showWarehouseDialog();
                                     },
                                     child: Card(
                                       color: Colors.blueGrey.shade600,
@@ -489,7 +490,7 @@ class _DashboardPage extends State<DashboardPage> {
                                               child: Align(
                                                 alignment:
                                                 Alignment.center,
-                                                child: Text('Customer',
+                                                child: Text('Warehouse',
                                                     style: TextStyle(
                                                         color:
                                                         Colors.white,
@@ -561,6 +562,71 @@ class _DashboardPage extends State<DashboardPage> {
               ],
             )),
       ),
+    );
+  }
+
+  void showWarehouseDialog(){
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+              BorderRadius.only(
+                  topRight: Radius
+                      .circular(
+                      50.0),
+                  topLeft: Radius
+                      .circular(
+                      50.0))),
+          height: 150,
+          child: Center(
+            child: Column(
+              mainAxisAlignment:
+              MainAxisAlignment
+                  .center,
+              mainAxisSize:
+              MainAxisSize.min,
+              children: <Widget>[
+                const Text(
+                  'Select Option',
+                  style: TextStyle(
+                      fontWeight:
+                      FontWeight
+                          .bold,
+                      color:
+                      Colors.black),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    child: const Text(
+                        'Location Lookup'),
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LocationLookupPage('')),
+                      );
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -732,6 +798,7 @@ class _DashboardPage extends State<DashboardPage> {
                             50) // put the width and height you want
                     ),
                     onPressed: () {
+                      Navigator.of(context).pop();
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => CartonAssignmentPage('')),
@@ -773,6 +840,7 @@ class _DashboardPage extends State<DashboardPage> {
                             50) // put the width and height you want
                     ),
                     onPressed: () {
+                      Navigator.of(context).pop();
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => CreationConfigurationPage('')),

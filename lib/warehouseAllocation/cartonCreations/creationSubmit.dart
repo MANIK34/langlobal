@@ -61,6 +61,7 @@ class _CreationSubmitPage extends State<CreationSubmitPage> {
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
   String cartonId="";
+  BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -372,7 +373,7 @@ class _CreationSubmitPage extends State<CreationSubmitPage> {
 
     final response1 = await http.post(Uri.parse(url), body:body,headers: headers);
     if (response1.statusCode == 200) {
-      Navigator.of(context).pop();
+      Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response1.body);
       var returnCode=jsonResponse['returnCode'];
       if(returnCode=="1"){
@@ -393,6 +394,7 @@ class _CreationSubmitPage extends State<CreationSubmitPage> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
+          _context=context;
           return const Center(
             child: CircularProgressIndicator(),
           );
