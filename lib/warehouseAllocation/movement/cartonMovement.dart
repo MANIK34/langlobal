@@ -1,11 +1,14 @@
+import 'dart:convert';
+
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
-import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
+import 'package:http/http.dart' as http;
 import 'package:langlobal/warehouseAllocation/movement/validateCartonMovement.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartonMovementPage extends StatefulWidget {
   var heading;
@@ -27,9 +30,9 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool readOnly = true;
-  TextEditingController skuController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   String btn_text="Validate Location";
+  BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -71,7 +74,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
     final sourceField = TextField(
         maxLength: null,
         autofocus: true,
-        controller: skuController,
+        controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
@@ -94,11 +97,8 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ValidateCartonMovementPage('')),
-          );
-
+          buildShowDialog(context);
+          callCartonMovementApi();
         },
         child: Text(btn_text,
             textAlign: TextAlign.center,
@@ -215,5 +215,68 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+
+  void callCartonMovementApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+
+    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonmovement/validate";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var body = json.encode({
+      "companyID": int.parse(companyID!),
+      "sourceLocation": locationController.text!,
+      "destinationLocation": '',
+      "cartons":'[]',
+    });
+    body=body.replaceAll("\"[", "[");
+    body=body.replaceAll("]\"", "]");
+    body=body.replaceAll("\\\"", "\"");
+    print("requestParams$body" );
+    var response =
+    await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ValidateCartonMovementPage(locationController.text!)),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
   }
 }

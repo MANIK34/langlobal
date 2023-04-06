@@ -1,25 +1,34 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/movement/cartonMovementConfirmation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../model/requestParams/cartonList2.dart';
+import '../../model/requestParams/locationList.dart';
 
 class CartonMovementSubmit extends StatefulWidget {
-  var heading;
+  var movementInfo;
+  var sourceLocation;
+  var destinationLocation;
 
-  CartonMovementSubmit(this.heading,  {Key? key}) : super(key: key);
+  CartonMovementSubmit(this.movementInfo,this.sourceLocation,this.destinationLocation,
+      {Key? key}) : super(key: key);
 
   @override
   _CartonMovementSubmit createState() =>
-      _CartonMovementSubmit(this.heading );
+      _CartonMovementSubmit(this.movementInfo,this.sourceLocation, this.destinationLocation);
 }
 
 class _CartonMovementSubmit extends State<CartonMovementSubmit> {
-  var heading;
+  var movementInfo;
+  var sourceLocation;
+  var destinationLocation;
 
-
-  _CartonMovementSubmit(this.heading );
+  _CartonMovementSubmit(this.movementInfo,this.sourceLocation,this.destinationLocation);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -27,15 +36,18 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool readOnly=true;
-  TextEditingController skuController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
+
+  BuildContext? _context;
+  List<CartonList2> cartonList = <CartonList2>[];
+  List<LocationList> locationList=<LocationList>[];
+  var cartonValue;
 
   Widget customField({GestureTapCallback? removeWidget}) {
-
     TextEditingController controller = TextEditingController();
+    controller.text=cartonValue;
     controllers.add(controller);
     return Text(
-        'Carton ID'
+        cartonValue.toString()
     );
   }
 
@@ -43,7 +55,10 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    textFeildList.add(customField());
+    for(int m=0;m<movementInfo['cartons'].length;m++){
+      cartonValue=movementInfo['cartons'][m]['cartonID'];
+      textFeildList.add(customField());
+    }
   }
 
   @override
@@ -54,40 +69,6 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
   @override
   Widget build(BuildContext context) {
 
-    final skuField = TextField(
-        maxLength: null,
-        controller: skuController,
-        style: style,
-        textInputAction: TextInputAction.next,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          labelText: "SKU",
-          alignLabelWithHint: true,
-          hintText: "SKU",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
-    final locationField = TextField(
-        maxLength: null,
-        controller: locationController,
-        style: style,
-        textInputAction: TextInputAction.done,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          labelText: "Location",
-          alignLabelWithHint: true,
-          hintText: "Location",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
     final validateButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
@@ -96,10 +77,8 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CartonMovementConfirmation('')),
-          );
+          buildShowDialog(context);
+          callCartonMovementApi();
         },
         child: Text("Submit",
             textAlign: TextAlign.center,
@@ -200,11 +179,17 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                           Row(
                             children: [
                               Expanded(
-                                  child: Column(
+                                  child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Source Location:',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                       sourceLocation,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
@@ -223,32 +208,17 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                           Row(
                             children: [
                               Expanded(
-                                  child: Column(
+                                  child:Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Destination Location:" ,
+                                        'Destination Location:',
                                         style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
                                         ),
                                       ),
-                                    ],
-                                  )),
-
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
                                       Text(
-                                        "Location Type:" ,
+                                        destinationLocation,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
@@ -269,18 +239,50 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        children: const <Widget>[
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
                                           Text(
-                                            'Total Cartons: ' ,
+                                            'Location Type:',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          Text(
+                                            movementInfo['sourceLocationType'],
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w700,
                                             ),
                                           ),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children:   <Widget>[
                                           Text(
-                                            "",
+                                            'Total Cartons: ' ,
                                             style: TextStyle(
                                               fontSize: 14,
+                                            ),
+                                          ),
+                                          Text(
+                                            movementInfo['cartonCount'].toString(),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ],
@@ -300,14 +302,14 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                                           Text(
                                             'Items Count: ' ,
                                             style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                              fontSize: 14,
                                             ),
                                           ),
                                           Text(
-                                            "",
+                                            movementInfo['cartornItemsCount'].toString(),
                                             style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ],
@@ -346,7 +348,6 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: const [
-
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -377,9 +378,7 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(
-                          width: 80,
-                        ),
+                        Spacer(),
                         Text(
                           'SKU',
                           style: TextStyle(
@@ -387,7 +386,9 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        Spacer(),
+                        SizedBox(
+                          width: 45,
+                        ),
                         Text(
                           'QTY',
                           style: TextStyle(
@@ -409,23 +410,25 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                         ListView.builder(
                           shrinkWrap: true,
                           primary: false,
-                          itemCount: textFeildList.length,
+                          itemCount: movementInfo['cartons'].length,
                           itemBuilder: (BuildContext context, int index) {
                             return Column(
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
-                                  Expanded(child: textFeildList[index]),
-                                    const SizedBox(
-                                      width: 0,
-                                    ),
                                     Text(
-                                      'SKU',
-
+                                      movementInfo['cartons'][index]['cartonID'],
                                     ),
                                     Spacer(),
                                     Text(
-                                      '10',
+                                      movementInfo['cartons'][index]['sku'],
+
+                                    ),
+                                    SizedBox(
+                                      width: 50,
+                                    ),
+                                    Text(
+                                      movementInfo['cartons'][index]['assignedQty'].toString(),
                                     ),
                                   ],
                                 ),
@@ -473,6 +476,8 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
     );
   }
 
+
+
   void _showToast(String errorMessage) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(errorMessage),
@@ -481,5 +486,106 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+
+  void callCartonMovementApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+
+    cartonList= <CartonList2>[];
+    for (int i = 0; i < textFeildList.length; i++) {
+      if(controllers[i].text! != ""){
+        CartonList2 obj= CartonList2(cartonID: controllers[i].text!,assignedQty: 0,);
+        cartonList.add(obj);
+      }
+    }
+    var _cartonList = cartonList.map((e){
+      return {
+        "cartonID": e.cartonID,
+        "assignedQty": e.assignedQty,
+      };
+    }).toList();
+
+    var jsonstringmap = json.encode(_cartonList);
+
+    locationList= <LocationList>[];
+    LocationList obj= LocationList(warehouseLocation: sourceLocation,locationCategory: 'Source',locationType:'');
+    locationList.add(obj);
+
+    obj= LocationList(warehouseLocation: destinationLocation,locationCategory: 'Destination',locationType:'');
+    locationList.add(obj);
+
+    var _locationList = locationList.map((e){
+      return {
+        "warehouseLocation": e.warehouseLocation,
+        "locationCategory": e.locationCategory,
+        "locationType": e.locationType,
+      };
+    }).toList();
+
+    var jsonStringLocation = json.encode(_locationList);
+    print("_locationList$jsonStringLocation" );
+
+    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonmovement";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var body = json.encode({
+      "action": 'submit',
+      "userID": int.parse(userID!),
+      "companyID": int.parse(companyID!),
+      "sku": '',
+      "condition": '',
+      "locations":jsonStringLocation,
+      "cartons":jsonstringmap,
+    });
+    body=body.replaceAll("\"[", "[");
+    body=body.replaceAll("]\"", "]");
+    body=body.replaceAll("\\\"", "\"");
+    print("requestParams$body" );
+    var response =
+    await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonMovementConfirmation(movementInfo,
+                sourceLocation,destinationLocation)),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
   }
 }

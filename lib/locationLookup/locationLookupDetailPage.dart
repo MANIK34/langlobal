@@ -115,10 +115,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Column(
                       children: <Widget>[
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                        Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
                           child: Card(
                             shape: RoundedRectangleBorder(
                               side: const BorderSide(
@@ -278,7 +275,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                           ),
                           ],
                         )),
-                        const SizedBox(height: 20,),
+                        const SizedBox(height: 10,),
                         Padding(padding: EdgeInsets.only(left: 10,right: 10),child: ListView.builder(
                           shrinkWrap: true,
                           primary: false,

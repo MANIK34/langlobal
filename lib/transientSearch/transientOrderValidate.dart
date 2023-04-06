@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/transientSearch/transientOrderSubmit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../model/requestParams/cartonList.dart';
 
 class TransientOrderValidatePage extends StatefulWidget {
@@ -520,7 +519,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     body=body.replaceAll("]\"", "]");
     body=body.replaceAll("\\\"", "\"");
    // var jsonRequest = json.decode(body); \"
-    print("requestParams$body" );
+    print("StockInHandPage$body" );
     var response =
         await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
