@@ -7,20 +7,24 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'cartonMovement.dart';
 
 class CartonMovementConfirmation extends StatefulWidget {
-  var heading;
+  var movementInfo;
+  var sourceLocation;
+  var destinationLocation;
 
-  CartonMovementConfirmation(this.heading,  {Key? key}) : super(key: key);
+  CartonMovementConfirmation(this.movementInfo,this.sourceLocation,this.destinationLocation,  {Key? key}) : super(key: key);
 
   @override
   _CartonMovementConfirmation createState() =>
-      _CartonMovementConfirmation(this.heading );
+      _CartonMovementConfirmation(this.movementInfo,this.sourceLocation,this.destinationLocation,);
 }
 
 class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
-  var heading;
+  var movementInfo;
+  var sourceLocation;
+  var destinationLocation;
 
 
-  _CartonMovementConfirmation(this.heading );
+  _CartonMovementConfirmation(this.movementInfo,this.sourceLocation,this.destinationLocation,);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -224,11 +228,17 @@ class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
                           Row(
                             children: [
                               Expanded(
-                                  child: Column(
+                                  child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Source Location:',
+                                        'Source Location: ',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        sourceLocation,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
@@ -247,11 +257,17 @@ class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
                           Row(
                             children: [
                               Expanded(
-                                  child: Column(
+                                  child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Destination Location:" ,
+                                        'Destination Location: ',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        destinationLocation,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
@@ -268,18 +284,24 @@ class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
                           Row(
                             children: [
                               Expanded(
-                                  child: Column(
+                                  child:  Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Location Type:" ,
+                                        'Location Type:',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        movementInfo['sourceLocationType'],
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
                                     ],
-                                  )),
+                                  ),),
 
                             ],
                           ),
@@ -293,18 +315,18 @@ class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        children: const <Widget>[
+                                        children:   <Widget>[
                                           Text(
                                             'Total Cartons: ' ,
                                             style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                              fontSize: 14,
                                             ),
                                           ),
                                           Text(
-                                            "",
+                                            movementInfo['cartonCount'].toString(),
                                             style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ],
@@ -324,14 +346,14 @@ class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
                                           Text(
                                             'Items Count: ' ,
                                             style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
+                                              fontSize: 14,
                                             ),
                                           ),
                                           Text(
-                                            "",
+                                            movementInfo['cartornItemsCount'].toString(),
                                             style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                         ],

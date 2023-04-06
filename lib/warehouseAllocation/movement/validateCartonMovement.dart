@@ -1,24 +1,28 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../model/requestParams/cartonList2.dart';
 
 class ValidateCartonMovementPage extends StatefulWidget {
-  var heading;
+  var sourceLocation;
 
-  ValidateCartonMovementPage(this.heading, {Key? key}) : super(key: key);
+  ValidateCartonMovementPage(this.sourceLocation, {Key? key}) : super(key: key);
 
   @override
-  _ValidateCartonMovementPage createState() => _ValidateCartonMovementPage(this.heading);
+  _ValidateCartonMovementPage createState() => _ValidateCartonMovementPage(this.sourceLocation);
 }
 
 class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
-  var heading;
+  var sourceLocation;
 
-  _ValidateCartonMovementPage(this.heading);
+  _ValidateCartonMovementPage(this.sourceLocation);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -26,10 +30,9 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool readOnly = true;
-  TextEditingController skuController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
-
+  BuildContext? _context;
   String btn_text="Validate";
+  List<CartonList2> cartonList = <CartonList2>[];
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -46,11 +49,11 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
       onSubmitted: (value) {
         textFeildList.add(customField());
       },
-      onChanged: (value) {
+    /*  onChanged: (value) {
         if (value.length == 6) {
           textFeildList.add(customField());
         }
-      },
+      },*/
     );
   }
 
@@ -68,23 +71,6 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
 
   @override
   Widget build(BuildContext context) {
-    final sourceField = TextField(
-        maxLength: null,
-        autofocus: true,
-        controller: skuController,
-        style: style,
-        textInputAction: TextInputAction.done,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          labelText: "Source Location",
-          alignLabelWithHint: true,
-          hintText: "Source Location",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
 
     final validateButton = Material(
       elevation: 5.0,
@@ -94,11 +80,8 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CartonMovementValidate('')),
-          );
-
+          buildShowDialog(context);
+          callCartonMovementApi();
         },
         child: Text(btn_text,
             textAlign: TextAlign.center,
@@ -129,10 +112,6 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
               tapPadding: EdgeInsets.all(55.0),
               onTap: () {
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardPage('')),
-                );
               },
               child: const Text(
                 'Cancel',
@@ -213,6 +192,7 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
                                       GestureDetector(
                                           onTap: () {
                                             textFeildList.removeAt(index);
+                                            controllers.removeAt(index);
                                             setState(() {});
                                           },
                                           child: index < 0
@@ -246,5 +226,85 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+
+  void callCartonMovementApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+
+    cartonList= <CartonList2>[];
+    for (int i = 0; i < controllers.length; i++) {
+      if(controllers[i].text! != ""){
+        CartonList2 obj= CartonList2(cartonID: controllers[i].text!,assignedQty: 0,);
+        cartonList.add(obj);
+      }
+    }
+    var _cartonList = cartonList.map((e){
+      return {
+        "cartonID": e.cartonID,
+        "assignedQty": e.assignedQty,
+      };
+    }).toList();
+    var jsonstringmap = json.encode(_cartonList);
+    print("_cartonList$jsonstringmap" );
+
+    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonmovement/validate";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var body = json.encode({
+      "companyID": int.parse(companyID!),
+      "sourceLocation": sourceLocation,
+      "destinationLocation": '',
+      "cartons":jsonstringmap,
+    });
+    body=body.replaceAll("\"[", "[");
+    body=body.replaceAll("]\"", "]");
+    body=body.replaceAll("\\\"", "\"");
+    print("requestParams$body" );
+    var response =
+    await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) =>
+                CartonMovementValidate(jsonResponse['movementInfo'],sourceLocation)),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
   }
 }
