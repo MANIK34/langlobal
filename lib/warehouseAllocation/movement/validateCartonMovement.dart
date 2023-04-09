@@ -157,7 +157,7 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
                             ),
                             color: Color.fromRGBO(40, 40, 43, 6.0),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: const [
@@ -177,7 +177,7 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -188,6 +188,9 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
                                 itemBuilder: (BuildContext context, int index) {
                                   return Row(
                                     children: [
+                                      Text(
+                                        ""+ (index+1).toString()+". ",
+                                      ),
                                       Expanded(child: textFeildList[index]),
                                       GestureDetector(
                                           onTap: () {

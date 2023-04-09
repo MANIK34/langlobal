@@ -165,7 +165,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                     height: 20,
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -179,6 +179,9 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
+                                    Text(
+                                      ""+ (index+1).toString()+". ",
+                                    ),
                                     Expanded(child: textFeildList[index]),
                                     const SizedBox(
                                       width: 0,

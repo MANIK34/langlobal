@@ -426,7 +426,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                       ),
 
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -437,6 +437,9 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
                               itemBuilder: (BuildContext context, int index) {
                                 return Row(
                                   children: [
+                                    Text(
+                                      ""+ (index+1).toString()+". ",
+                                    ),
                                     Expanded(child: textFeildList[index]),
                                     GestureDetector(
                                         onTap: () {

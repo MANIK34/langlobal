@@ -316,7 +316,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -327,6 +327,9 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
                           itemBuilder: (BuildContext context, int index) {
                             return Row(
                               children: [
+                                Text(
+                                  ""+ (index+1).toString()+". ",
+                                ),
                                 Expanded(child: textFeildList[index]),
                                 GestureDetector(
                                     onTap: () {

@@ -276,7 +276,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                           ],
                         )),
                         const SizedBox(height: 10,),
-                        Padding(padding: EdgeInsets.only(left: 10,right: 10),child: ListView.builder(
+                        Padding(padding: EdgeInsets.only(left: 0,right: 0),child: ListView.builder(
                           shrinkWrap: true,
                           primary: false,
                           physics: NeverScrollableScrollPhysics(),
@@ -287,7 +287,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                                 Container(
                                   color: Colors.grey,
                                   child: Padding(
-                                    padding: EdgeInsets.only(left: 10,right: 10),
+                                    padding: EdgeInsets.only(left: 5,right: 5),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
@@ -327,7 +327,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                                     )
                                   )
                                 ),
-                                Padding(padding: EdgeInsets.only(left: 12,right: 12),
+                                Padding(padding: EdgeInsets.only(left: 0,right: 0),
                                 child: Container(
                                   child: ListView.builder(
                                     shrinkWrap: true,
@@ -341,6 +341,9 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                                            height: 30,
                                            child:  Row(
                                              children: [
+                                               Text(
+                                                 ""+ (indexx+1).toString()+". ",
+                                               ),
                                                Text(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString(),style: TextStyle(
                                                    fontWeight: FontWeight.bold
                                                ),),

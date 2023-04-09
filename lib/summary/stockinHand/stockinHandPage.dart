@@ -8,9 +8,7 @@ import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/summary/stockinHand/stockinHandDetailPage.dart';
-import 'package:langlobal/warehouseAllocation/cartonCreations/validateSourceCarton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../model/requestParams/categoryList.dart';
 
 
@@ -38,22 +36,22 @@ class _StockInHandPage extends State<StockInHandPage> {
   TextEditingController skuController = TextEditingController();
   bool isReverse=false;
 
-  var conditionValue;
+  String  conditionValue="";
   List<String> conditionList = <String>[];
   List<String> conditionList2 = <String>[];
   late String? _conditionList = null;
 
-  var skuValue;
+  String skuValue = "";
   List<String> skuList = <String>[];
   List<String> skuList2 = <String>[];
   late String? _skuList = null;
 
-  var categoryValue;
+  var categoryValue=0;
   List<CategoryList> categoryList = <CategoryList>[];
   List<CategoryList> categoryList2 = <CategoryList>[];
   late CategoryList? _categoryList = null;
 
-  var makersValue;
+  var makersValue=0;
   List<CategoryList> makersList = <CategoryList>[];
   List<CategoryList> makersList2 = <CategoryList>[];
   late CategoryList? _makersList = null;
@@ -232,13 +230,8 @@ class _StockInHandPage extends State<StockInHandPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          if(skuController.text == ""){
-            _showToast("SKU can't be empty!");
-          }else{
-            buildShowDialog(context);
-            callStockInHandApi();
-          }
-
+          buildShowDialog(context);
+          callStockInHandApi();
         },
         child: Text("Search",
             textAlign: TextAlign.center,
@@ -375,7 +368,9 @@ class _StockInHandPage extends State<StockInHandPage> {
       var jsonResponse = json.decode(response1.body);
       String jsonString = json.encode(jsonResponse);
       setState(() {
-        conditionList= (jsonDecode(jsonString) as List<dynamic>).cast<String>();
+        conditionList.add("All");
+        var conditionList2= (jsonDecode(jsonString) as List<dynamic>).cast<String>();
+        conditionList.addAll(conditionList2);
         _conditionList = conditionList[0];
         conditionValue= conditionList[0];
       });
@@ -400,6 +395,9 @@ class _StockInHandPage extends State<StockInHandPage> {
     if (response1.statusCode == 200) {
       var jsonResponse = json.decode(response1.body);
       var categories = jsonResponse['categories'];
+      CategoryList _list= CategoryList(categoryGUID: 0,
+          categoryName: "All");
+      categoryList.add(_list);
       for(int m=0;m<categories.length;m++){
         CategoryList _list= CategoryList(categoryGUID: categories[m]['categoryGUID'],
             categoryName: categories[m]['categoryName']);
@@ -433,7 +431,9 @@ class _StockInHandPage extends State<StockInHandPage> {
       var jsonResponse = json.decode(response1.body);
       String jsonString = json.encode(jsonResponse);
       setState(() {
-        skuList= (jsonDecode(jsonString) as List<dynamic>).cast<String>();
+        skuList.add("All.");
+        var skuList2= (jsonDecode(jsonString) as List<dynamic>).cast<String>();
+        skuList.addAll(skuList2);
         _skuList = skuList[0];
         skuValue= skuList[0];
       });
@@ -459,6 +459,9 @@ class _StockInHandPage extends State<StockInHandPage> {
     if (response1.statusCode == 200) {
       var jsonResponse = json.decode(response1.body);
       var categories = jsonResponse['makers'];
+      CategoryList _list= CategoryList(categoryGUID:0,
+          categoryName: "All");
+      makersList.add(_list);
       for(int m=0;m<categories.length;m++){
         CategoryList _list= CategoryList(categoryGUID: categories[m]['makerGUID'],
             categoryName: categories[m]['makerName']);
@@ -488,15 +491,21 @@ class _StockInHandPage extends State<StockInHandPage> {
       "Accept": "application/json",
       "content-type":"application/json"
     };
+    if(conditionValue=="All"){
+      conditionValue="";
+    }
+    if(skuValue=="All."){
+      skuValue="";
+    }
     var body = json.encode({
       "action": "search",
       "companyID": _companyID!,
       "userID": _userID!,
-      "categoryID": 0,
+      "categoryID": categoryValue,
       "sku": skuController.text.toString(),
-      "condition": "",
-      "makerGUID": 0,
-      "skuType": "",
+      "condition": conditionValue,
+      "makerGUID": makersValue,
+      "skuType": skuValue,
     });
     print("requestParams$body" );
     final response1 = await http.post(Uri.parse(url), body:body,headers: headers);
@@ -508,7 +517,8 @@ class _StockInHandPage extends State<StockInHandPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => StockInHandDetailPage(jsonResponse['stockInHands'])),
+              builder: (context) => StockInHandDetailPage(jsonResponse['stockInHands'],categoryValue,
+              skuValue,skuController.text.toString(),conditionValue,makersValue)),
         );
       }else{
         _showToast(jsonResponse['returnMessage']);

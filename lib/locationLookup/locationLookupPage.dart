@@ -54,7 +54,7 @@ class _LocationLookupPage extends State<LocationLookupPage> {
         textInputAction: TextInputAction.done,
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
-            _showToast("Carton Id can't be empty");
+            _showToast("Location can't be empty");
           }else{
             setState(() {
               _isLoading = true;

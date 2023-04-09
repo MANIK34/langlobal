@@ -361,7 +361,7 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -375,6 +375,9 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
+                                    Text(
+                                      ""+ (index+1).toString()+". ",
+                                    ),
                                     Expanded(child: textFeildList[index]),
                                     const SizedBox(
                                       width: 0,

@@ -268,7 +268,7 @@ class _CreationSubmitPage extends State<CreationSubmitPage> {
                                 ),
 
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -291,6 +291,9 @@ class _CreationSubmitPage extends State<CreationSubmitPage> {
                                             children: <Widget>[
                                               Row(
                                                 children: [
+                                                  Text(
+                                                    ""+ (index+1).toString()+". ",
+                                                  ),
                                                   Expanded(child: textFeildList[index]),
                                                 ],
                                               ),

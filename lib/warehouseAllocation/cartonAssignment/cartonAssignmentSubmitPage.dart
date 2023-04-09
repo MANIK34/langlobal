@@ -402,7 +402,7 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
                 height: 10,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -415,6 +415,9 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
                           children: <Widget>[
                             Row(
                               children: [
+                                Text(
+                                  ""+ (index+1).toString()+". ",
+                                ),
                                 Expanded(child: textFeildList[index]),
                                 const SizedBox(
                                   width: 60,

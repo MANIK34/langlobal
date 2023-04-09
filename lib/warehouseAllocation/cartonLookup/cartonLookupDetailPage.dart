@@ -345,6 +345,9 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                       children: <Widget>[
                                         Row(
                                           children: [
+                                            Text(
+                                              ""+ (index+1).toString()+". ",
+                                            ),
                                             Expanded(child: textFeildList[index]),
                                           ],
                                         ),

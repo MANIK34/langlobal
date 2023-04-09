@@ -5,24 +5,38 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/requestParams/locationList.dart';
 
 class StockInHandDetailPage extends StatefulWidget {
   var stockInHands;
+  var categoryId;
+  var skuType;
+  var sku;
+  var condition;
+  var makerID;
 
-  StockInHandDetailPage(this.stockInHands,
+  StockInHandDetailPage(this.stockInHands,this.categoryId,this.skuType,this.sku,this.condition
+      ,this.makerID,
       {Key? key}) : super(key: key);
 
   @override
   _StockInHandDetailPage createState() =>
-      _StockInHandDetailPage(this.stockInHands);
+      _StockInHandDetailPage(this.stockInHands,this.categoryId,this.skuType,this.sku,this.condition
+          ,this.makerID);
 }
 
 class _StockInHandDetailPage extends State<StockInHandDetailPage> {
   var stockInHands;
+  var categoryId;
+  var skuType;
+  var sku;
+  var condition;
+  var makerID;
 
-  _StockInHandDetailPage(this.stockInHands );
+  _StockInHandDetailPage(this.stockInHands,this.categoryId,this.skuType,this.sku,this.condition
+      ,this.makerID );
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -67,7 +81,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
         minWidth:150,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
+          Navigator.of(context).pop();
         },
         child: Text("Search",
             textAlign: TextAlign.center,
@@ -84,6 +98,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           buildShowDialog(context);
+          callStockInHandApi();
         },
         child: Text("Refresh",
             textAlign: TextAlign.center,
@@ -148,7 +163,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
                       ),
                       Spacer(),
                       Text(
-                        'Total SKUs:',
+                        'Total SKUs: '+ stockInHands.length.toString(),
                         style: TextStyle(
                           fontSize: 14,
                         ),
@@ -190,7 +205,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Padding(padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child:  Row(
                       children: <Widget>[
                         Text(
@@ -200,16 +215,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        SizedBox(
-                          width: 55,
-                        ),
-                        Text(
-                          'Name',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+
                         Spacer(),
                         Text(
                           'QTY',
@@ -224,7 +230,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -239,14 +245,10 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
                                 Row(
                                   children: <Widget>[
                                     Text(
-                                      stockInHands[index]['sku'],
-                                    ),
-                                    SizedBox(
-                                      width: 40,
+                                      ""+ (index+1).toString()+". ",
                                     ),
                                     Text(
-                                      stockInHands[index]['productName'],
-
+                                      stockInHands[index]['sku'],
                                     ),
                                     Spacer(),
                                     Text(
@@ -308,6 +310,45 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
+  }
+
+  void callStockInHandApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? _token = myPrefs.getString("token");
+    String? _companyID = myPrefs.getString("companyID");
+    String? _userID = myPrefs.getString("userId");
+    var url = "https://api.langlobal.com/inventory/v1/stockinhand";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ' + _token!,
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var body = json.encode({
+      "action": "search",
+      "companyID": _companyID!,
+      "userID": _userID!,
+      "categoryID": categoryId,
+      "sku": sku,
+      "condition": condition,
+      "makerGUID": makerID,
+      "skuType": skuType,
+    });
+    print("requestParams$body" );
+    final response1 = await http.post(Uri.parse(url), body:body,headers: headers);
+    if (response1.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      var jsonResponse = json.decode(response1.body);
+      var returnCode=jsonResponse['returnCode'];
+      if(returnCode=="1"){
+        setState(() {
+          stockInHands=jsonResponse['stockInHands'];
+        });
+      }else{
+        _showToast(jsonResponse['returnMessage']);
+      }
+    }
+    print(response1.statusCode);
+    print(response1.body);
   }
 
   buildShowDialog(BuildContext context) {

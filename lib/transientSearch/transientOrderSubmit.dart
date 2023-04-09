@@ -364,7 +364,7 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -377,6 +377,9 @@ class _TransientOrderSubmitPage extends State<TransientOrderSubmitPage> {
                               children: <Widget>[
                                 Row(
                                   children: [
+                                    Text(
+                                      ""+ (index+1).toString()+". ",
+                                    ),
                                     Expanded(child: textFeildList[index]),
                                     const SizedBox(width: 60,),
                                     GestureDetector(

@@ -368,7 +368,7 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Padding(padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child:  Row(
                       children: <Widget>[
                         Text(
@@ -402,7 +402,7 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -416,6 +416,9 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
+                                    Text(
+                                      ""+ (index+1).toString()+". ",
+                                    ),
                                     Text(
                                       movementInfo['cartons'][index]['cartonID'],
                                     ),
