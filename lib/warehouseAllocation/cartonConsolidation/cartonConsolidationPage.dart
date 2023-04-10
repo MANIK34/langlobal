@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:langlobal/drawer/drawerElement.dart'; 
-import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
-
+import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import '../../model/requestParams/cartonList2.dart';
 import 'cartonDestinationPage.dart';
 
 class CartonConsolidationPage extends StatefulWidget {
@@ -32,6 +35,10 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
   TextEditingController skuController = TextEditingController();
   TextEditingController locationController = TextEditingController();
 
+  var cartonValue;
+  BuildContext? _context;
+  List<CartonList2> cartonList = <CartonList2>[];
+
   Widget customField({GestureTapCallback? removeWidget}) {
 
     TextEditingController controller = TextEditingController();
@@ -41,6 +48,7 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
           controllers[i].text); //printing the values to show that it's working
     }
     return TextField(
+      maxLength: 20,
       autofocus: true,
       showCursor: true,
       controller: controller,
@@ -50,9 +58,9 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
       },
 
       onChanged: (value) {
-        if (value.length == 6) {
+       /* if (value.length == 6) {
           textFeildList.add(customField());
-        }
+        }*/
       },
     );
   }
@@ -80,10 +88,8 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CartonDestinationPage('')),
-          );
+          buildShowDialog(context);
+          callCartonMovementApi();
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -127,48 +133,53 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
                   SizedBox(
                     height: 20,
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Cartons',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                    child:  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      color: Color.fromRGBO(	40, 40, 43, 6.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
+                  Padding(padding: EdgeInsets.only(left: 10,right: 10),
+                    child: Column(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Cartons',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                          child:  Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2.0),
+                            ),
+                            color: Color.fromRGBO(	40, 40, 43, 6.0),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: const [
 
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      ' ',
+                                      style: TextStyle(
+                                        fontSize: 1,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+
+                                ],
                               ),
                             ),
-
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -204,6 +215,84 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
         ),
       ),
     );
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+  void callCartonMovementApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+
+    cartonList= <CartonList2>[];
+    for (int i = 0; i < controllers.length; i++) {
+      if(controllers[i].text! != ""){
+        CartonList2 obj= CartonList2(cartonID: controllers[i].text!,assignedQty: 0,);
+        cartonList.add(obj);
+      }
+    }
+    var _cartonList = cartonList.map((e){
+      return {
+        "cartonID": e.cartonID,
+        "assignedQty": e.assignedQty,
+      };
+    }).toList();
+    var jsonstringmap = json.encode(_cartonList);
+    print("_cartonList$jsonstringmap" );
+
+    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonmovement/validate";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var body = json.encode({
+      "companyID": int.parse(companyID!),
+      "sourceLocation": "",
+      "destinationLocation": "",
+      "cartons":jsonstringmap,
+    });
+    body=body.replaceAll("\"[", "[");
+    body=body.replaceAll("]\"", "]");
+    body=body.replaceAll("\\\"", "\"");
+    print("requestParams$body" );
+    var response =
+    await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonDestinationPage('')),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
   }
 
   void _showToast(String errorMessage) {

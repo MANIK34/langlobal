@@ -90,6 +90,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     return TextField(
       autofocus: true,
       showCursor: true,
+      maxLength: 20,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {

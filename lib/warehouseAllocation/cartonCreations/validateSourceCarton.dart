@@ -97,7 +97,7 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
     );
 
     final cartonIdField = TextField(
-        maxLength: null,
+        maxLength: 20,
         controller: cartonIDController,
         style: style,
         textInputAction: TextInputAction.done,

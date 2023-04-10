@@ -104,7 +104,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
     );
 
     final skuField = TextField(
-        maxLength: null,
+        maxLength: 50,
         autofocus: true,
         showCursor: true,
         controller: skuController,
@@ -123,7 +123,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
         ));
 
     final qtyCarton = TextField(
-        maxLength: null,
+        maxLength: 5,
         controller: QtyCartonController,
         style: style,
         textInputAction: TextInputAction.next,
@@ -140,7 +140,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
         ));
 
     final locationField = TextField(
-        maxLength: null,
+        maxLength: 11,
         controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,

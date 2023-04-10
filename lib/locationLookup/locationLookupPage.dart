@@ -48,7 +48,7 @@ class _LocationLookupPage extends State<LocationLookupPage> {
   Widget build(BuildContext context) {
 
     final cartonIdField = TextField(
-        maxLength: null,
+        maxLength: 20,
         controller: memoController,
         style: style,
         textInputAction: TextInputAction.done,

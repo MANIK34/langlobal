@@ -42,6 +42,7 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
           controllers[i].text); //printing the values to show that it's working
     }
     return TextField(
+      maxLength: 20,
       autofocus: true,
       showCursor: true,
       controller: controller,

@@ -60,7 +60,7 @@ class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
   Widget build(BuildContext context) {
 
     final skuField = TextField(
-        maxLength: null,
+        maxLength: 50,
         controller: skuController,
         style: style,
         textInputAction: TextInputAction.next,
@@ -77,7 +77,7 @@ class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
         ));
 
     final locationField = TextField(
-        maxLength: null,
+        maxLength: 11,
         controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,

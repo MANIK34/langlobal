@@ -2,24 +2,24 @@ import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
-import 'package:langlobal/warehouseAllocation/cartonConsolidation/consolidationConfirmationPage.dart';
 
-class CartonSubmitPage extends StatefulWidget {
+class ConsolidationConfirmationPage extends StatefulWidget {
   var heading;
 
-  CartonSubmitPage(this.heading,  {Key? key}) : super(key: key);
+  ConsolidationConfirmationPage(this.heading,  {Key? key}) : super(key: key);
 
   @override
-  _CartonSubmitPage createState() =>
-      _CartonSubmitPage(this.heading );
+  _ConsolidationConfirmationPage createState() =>
+      _ConsolidationConfirmationPage(this.heading );
 }
 
-class _CartonSubmitPage extends State<CartonSubmitPage> {
+class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage> {
   var heading;
 
 
-  _CartonSubmitPage(this.heading );
+  _ConsolidationConfirmationPage(this.heading );
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -81,11 +81,10 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ConsolidationConfirmationPage('')),
+            MaterialPageRoute(builder: (context) => DashboardPage('')),
           );
-
         },
-        child: Text("Submit",
+        child: Text("New Consolidation",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -129,7 +128,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Cartons Consolidation - View & Submit',
+                      'Cartons Consolidation - Confirmation',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
@@ -165,12 +164,22 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Cartons are successfully consolidated.',style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 16
+                    ),),
+                  ),
+                  SizedBox(
+                    height: 20,
                   ),
                   Row(
                     children: <Widget>[
                       Text('Category',style: TextStyle(
-                        fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold
                       ),),
                       Text(' I ',style: TextStyle(
                           fontWeight: FontWeight.bold
@@ -245,114 +254,6 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                         ],
                       ),
                     ),),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Carton Allocations',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                    child:  Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      color: Color.fromRGBO(	40, 40, 43, 6.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const [
-
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                ' ',
-                                style: TextStyle(
-                                  fontSize: 1,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        ListView.builder(
-                          shrinkWrap: true,
-                          primary: false,
-                          itemCount: textFeildList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      ""+ (index+1).toString()+". ",
-                                    ),
-                                    Expanded(child: textFeildList[index]),
-                                    const SizedBox(
-                                      width: 0,
-                                    ),
-                                    Spacer(),
-                                    GestureDetector(
-                                        onTap: () {
-                                          textFeildList.removeAt(index);
-                                          setState(() {});
-                                        },
-                                        child: index < 0
-                                            ? Container()
-                                            : const Icon(Icons.delete,color: Colors.red,)),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 12,
-                                  child:  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(1.0),
-                                    ),
-
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: const [
-
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              ' ',
-                                              style: TextStyle(
-                                                fontSize: 1,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ),
-
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        )
-                      ],
-                    ),
-                  ),
                 ],
               ),
             )

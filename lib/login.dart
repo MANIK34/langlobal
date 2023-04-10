@@ -32,7 +32,7 @@ class _LoginPage extends State<LoginPage> {
   Widget build(BuildContext context) {
 
     final emailField = TextField(
-        maxLength: null,
+        maxLength: 20,
         controller: emailController,
         style: style,
         textInputAction: TextInputAction.next,
@@ -51,6 +51,7 @@ class _LoginPage extends State<LoginPage> {
     final passwordField = TextField(
         textAlign: TextAlign.start,
         keyboardType: TextInputType.visiblePassword,
+        maxLength: 20,
         controller: passwordController,
         style: style,
         obscureText: true,

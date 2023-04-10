@@ -45,25 +45,9 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final supplierNameField = TextField(
-        maxLength: null,
-        controller: supplierNameController,
-        style: style,
-        textInputAction: TextInputAction.next,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          labelText: "Supplier Name",
-          alignLabelWithHint: true,
-          hintText: "Supplier Name",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
 
     final memoField = TextField(
-        maxLength: null,
+        maxLength: 9,
         controller: memoController,
         style: style,
         textInputAction: TextInputAction.done,
@@ -84,23 +68,6 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
           labelText: "Order Number",
           alignLabelWithHint: true,
           hintText: "Order Number",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
-    final skuField = TextField(
-        maxLength: null,
-        controller: skuController,
-        style: style,
-        textInputAction: TextInputAction.done,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          labelText: "SKU",
-          alignLabelWithHint: true,
-          hintText: "SKU",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
           ),

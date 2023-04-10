@@ -65,6 +65,7 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
     return TextField(
       autofocus: autoFocus,
       showCursor: true,
+      maxLength: 20,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {

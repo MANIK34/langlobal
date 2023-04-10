@@ -68,7 +68,7 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
   Widget build(BuildContext context) {
 
     final destinationField = TextField(
-        maxLength: null,
+        maxLength: 11,
         controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,

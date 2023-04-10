@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonSubmitPage.dart';
-import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class CartonDestinationPage extends StatefulWidget {
   var heading;
@@ -28,8 +31,12 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool readOnly=true;
-  TextEditingController skuController = TextEditingController();
+  TextEditingController cartonController = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  String cartonID='';
+  BuildContext? _context;
+  String carton_text="Generate Carton ID";
+  bool _showCursor=false;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -42,6 +49,7 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
     return TextField(
       autofocus: true,
       showCursor: true,
+      maxLength: 20,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
@@ -72,10 +80,11 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
   Widget build(BuildContext context) {
 
     final cartonField = TextField(
-        maxLength: null,
-        controller: skuController,
+        maxLength: 20,
+        readOnly: _showCursor,
+        controller: cartonController,
         style: style,
-        textInputAction: TextInputAction.next,
+        textInputAction: TextInputAction.done,
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         decoration: InputDecoration(
           filled: true,
@@ -83,6 +92,23 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
           labelText: "Carton",
           alignLabelWithHint: true,
           hintText: "Carton",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ));
+
+    final locationField = TextField(
+        maxLength: 11,
+        controller: locationController,
+        style: style,
+        textInputAction: TextInputAction.done,
+        onEditingComplete: () => FocusScope.of(context).nextFocus(),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          labelText: "Warehouse Location",
+          alignLabelWithHint: true,
+          hintText: "Warehouse Location",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
           ),
@@ -117,8 +143,18 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+          if(carton_text=='Generate Carton ID'){
+            buildShowDialog(context);
+            callGetCartonIDApi();
+          }else{
+            cartonController.text="";
+            carton_text="Generate Carton ID";
+            _showCursor=false;
+            setState(() {});
+          }
+
         },
-        child: Text("Generate Container ID",
+        child: Text(carton_text,
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.black, fontWeight: FontWeight.bold)),
@@ -199,7 +235,7 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   SizedBox(
                     height: 50,
@@ -207,11 +243,11 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
                     child: cartonField,
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   const Text('OR',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   SizedBox(
                     height: 50,
@@ -219,7 +255,15 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
                     child: generateIDButton,
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 50,
+                  ),
+                  SizedBox(
+                    height: 50,
+                    width: 300,
+                    child: locationField,
+                  ),
+                  const SizedBox(
+                    height: 00,
                   ),
                   Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Card(
@@ -269,6 +313,41 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
     );
   }
 
+  void callGetCartonIDApi() async {
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? _token = myPrefs.getString("token");
+    String? _companyID = myPrefs.getString("companyID");
+    var url = "https://api.langlobal.com/inventoryallocation/v1/generatecarton/"+_companyID!;
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ' + _token!,
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    final response1 = await http.get(Uri.parse(url), headers: headers);
+    if (response1.statusCode == 200) {
+      var jsonResponse = json.decode(response1.body);
+      cartonID=jsonResponse.toString();
+      cartonController.text=cartonID;
+      carton_text="Remove Carton ID";
+      _showCursor=true;
+      setState(() {});
+    } else {
+      print(response1.statusCode);
+    }
+    Navigator.of(_context!).pop();
+  }
+
+  buildShowDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
   void _showToast(String errorMessage) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(errorMessage),

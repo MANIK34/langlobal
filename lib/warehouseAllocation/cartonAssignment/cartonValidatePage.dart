@@ -86,7 +86,7 @@ class _CartonValidatePage extends State<CartonValidatePage> {
 
 
     final locationField = TextField(
-        maxLength: null,
+        maxLength: 11,
         controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,

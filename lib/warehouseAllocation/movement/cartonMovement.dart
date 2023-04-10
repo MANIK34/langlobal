@@ -44,6 +44,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
     return TextField(
       autofocus: true,
       showCursor: true,
+      maxLength: 20,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
@@ -72,7 +73,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   @override
   Widget build(BuildContext context) {
     final sourceField = TextField(
-        maxLength: null,
+        maxLength: 11,
         autofocus: true,
         controller: locationController,
         style: style,

@@ -55,6 +55,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     return TextField(
       autofocus: true,
       showCursor: true,
+      maxLength: 20,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
@@ -121,7 +122,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     );
 
     final skuField = TextField(
-        maxLength: null,
+        maxLength: 50,
         autofocus: true,
         showCursor: true,
         controller: skuController,
@@ -140,7 +141,7 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         ));
 
     final locationField = TextField(
-        maxLength: null,
+        maxLength: 11,
         controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,

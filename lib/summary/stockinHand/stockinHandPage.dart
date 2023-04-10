@@ -202,7 +202,7 @@ class _StockInHandPage extends State<StockInHandPage> {
     );
 
     final skuField = TextField(
-        maxLength: null,
+        maxLength: 50,
         autofocus: false,
         showCursor: true,
         controller: skuController,
