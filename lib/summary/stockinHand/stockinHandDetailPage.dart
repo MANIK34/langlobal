@@ -49,6 +49,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
   List<CartonList2> cartonList = <CartonList2>[];
   List<LocationList> locationList=<LocationList>[];
   var cartonValue;
+  var previousindx=-1;
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -63,6 +64,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("stockLength ::"+stockInHands.length.toString());
   }
 
   @override
@@ -230,7 +232,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

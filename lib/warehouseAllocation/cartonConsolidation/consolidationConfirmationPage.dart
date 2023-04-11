@@ -4,22 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolidationPage.dart';
 
 class ConsolidationConfirmationPage extends StatefulWidget {
-  var heading;
+  var jsonResponse;
+  var destinationCarton;
+  var location;
+  var sku;
 
-  ConsolidationConfirmationPage(this.heading,  {Key? key}) : super(key: key);
+  ConsolidationConfirmationPage(this.jsonResponse,this.destinationCarton,this.location ,this.sku,
+      {Key? key}) : super(key: key);
 
   @override
   _ConsolidationConfirmationPage createState() =>
-      _ConsolidationConfirmationPage(this.heading );
+      _ConsolidationConfirmationPage(this.jsonResponse,this.destinationCarton,this.location,this.sku );
 }
 
 class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage> {
-  var heading;
+  var jsonResponse;
+  var destinationCarton;
+  var location;
+  var sku;
 
-
-  _ConsolidationConfirmationPage(this.heading );
+  _ConsolidationConfirmationPage(this.jsonResponse ,this.destinationCarton,this.location,this.sku);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -79,9 +86,10 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => DashboardPage('')),
+            MaterialPageRoute(builder: (context) => CartonConsolidationPage('')),
           );
         },
         child: Text("New Consolidation",
@@ -178,13 +186,7 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
                   ),
                   Row(
                     children: <Widget>[
-                      Text('Category',style: TextStyle(
-                          fontWeight: FontWeight.bold
-                      ),),
-                      Text(' I ',style: TextStyle(
-                          fontWeight: FontWeight.bold
-                      ),),
-                      Text('SKU',style: TextStyle(
+                      Text(sku,style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                     ],
@@ -212,7 +214,7 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
                               children: <Widget>[
                                 Text('Destination Cartons:'),
                                 Spacer(),
-                                Text('1'),
+                                Text(destinationCarton.toString()),
                               ],
                             ),),
                           const SizedBox(
@@ -223,7 +225,7 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
                               children: <Widget>[
                                 Text('Warehouse Location:'),
                                 Spacer(),
-                                Text('1'),
+                                Text(location),
                               ],
                             ),),
                           const SizedBox(
@@ -234,7 +236,7 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
                               children: <Widget>[
                                 Text('Total Qty:'),
                                 Spacer(),
-                                Text('5'),
+                                Text(jsonResponse['movementInfo']['cartornItemsCount'].toString()),
                               ],
                             ),),
                           const SizedBox(
@@ -245,7 +247,7 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
                               children: <Widget>[
                                 Text('Source Cartons:'),
                                 Spacer(),
-                                Text('10'),
+                                Text(jsonResponse['movementInfo']['cartons'].length.toString()),
                               ],
                             ),),
                           const SizedBox(

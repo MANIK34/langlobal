@@ -1,25 +1,40 @@
+import 'dart:convert';
+
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/consolidationConfirmationPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import '../../model/requestParams/cartonList2.dart';
+import '../../model/requestParams/locationList.dart';
 
 class CartonSubmitPage extends StatefulWidget {
-  var heading;
+  var jsonResponse;
+  var destinationCarton;
+  var location;
+  var sourceJsonStringMap;
+  var sku;
 
-  CartonSubmitPage(this.heading,  {Key? key}) : super(key: key);
+  CartonSubmitPage(this.jsonResponse,this.destinationCarton,this.location ,this.sourceJsonStringMap
+  ,this.sku,{Key? key}) : super(key: key);
 
   @override
   _CartonSubmitPage createState() =>
-      _CartonSubmitPage(this.heading );
+      _CartonSubmitPage(this.jsonResponse,this.destinationCarton,this.location, this.sourceJsonStringMap
+          ,this.sku);
 }
 
 class _CartonSubmitPage extends State<CartonSubmitPage> {
-  var heading;
-
-
-  _CartonSubmitPage(this.heading );
+  var jsonResponse;
+  var destinationCarton;
+  var location;
+  var sourceJsonStringMap;
+  var sku;
+  _CartonSubmitPage(this.jsonResponse,this.destinationCarton,this.location, this.sourceJsonStringMap
+      ,this.sku);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -29,13 +44,15 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
   bool readOnly=true;
   TextEditingController skuController = TextEditingController();
   TextEditingController locationController = TextEditingController();
-
+  var cartonValue;
+  BuildContext? _context;
   Widget customField({GestureTapCallback? removeWidget}) {
 
     TextEditingController controller = TextEditingController();
+    controller.text=cartonValue;
     controllers.add(controller);
     return Text(
-        'Carton ID'
+        cartonValue
     );
   }
 
@@ -43,7 +60,11 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    textFeildList.add(customField());
+    for(int m=0;m<jsonResponse['movementInfo']['cartons'].length;m++){
+      cartonValue=jsonResponse['movementInfo']['cartons'][m]['cartonID'];
+      textFeildList.add(customField());
+    }
+
   }
 
   @override
@@ -54,23 +75,6 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
   @override
   Widget build(BuildContext context) {
 
-    final destinationField = TextField(
-        maxLength: 11,
-        controller: locationController,
-        style: style,
-        textInputAction: TextInputAction.done,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-
-          alignLabelWithHint: true,
-          hintText: "Destination Location",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
-
     final validateButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
@@ -79,11 +83,8 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ConsolidationConfirmationPage('')),
-          );
-
+          buildShowDialog(context);
+          callCartonMovementApi();
         },
         child: Text("Submit",
             textAlign: TextAlign.center,
@@ -169,13 +170,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                   ),
                   Row(
                     children: <Widget>[
-                      Text('Category',style: TextStyle(
-                        fontWeight: FontWeight.bold
-                      ),),
-                      Text(' I ',style: TextStyle(
-                          fontWeight: FontWeight.bold
-                      ),),
-                      Text('SKU',style: TextStyle(
+                      Text(sku,style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                     ],
@@ -203,7 +198,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                               children: <Widget>[
                                 Text('Destination Cartons:'),
                                 Spacer(),
-                                Text('1'),
+                                Text(destinationCarton.toString()),
                               ],
                             ),),
                           const SizedBox(
@@ -214,7 +209,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                               children: <Widget>[
                                 Text('Warehouse Location:'),
                                 Spacer(),
-                                Text('1'),
+                                Text(location),
                               ],
                             ),),
                           const SizedBox(
@@ -225,7 +220,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                               children: <Widget>[
                                 Text('Total Qty:'),
                                 Spacer(),
-                                Text('5'),
+                                Text(jsonResponse['movementInfo']['cartornItemsCount'].toString()),
                               ],
                             ),),
                           const SizedBox(
@@ -236,7 +231,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                               children: <Widget>[
                                 Text('Source Cartons:'),
                                 Spacer(),
-                                Text('10'),
+                                Text(jsonResponse['movementInfo']['cartons'].length.toString()),
                               ],
                             ),),
                           const SizedBox(
@@ -306,7 +301,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                                     const SizedBox(
                                       width: 0,
                                     ),
-                                    Spacer(),
+                                  /*  Spacer(),
                                     GestureDetector(
                                         onTap: () {
                                           textFeildList.removeAt(index);
@@ -314,7 +309,7 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                                         },
                                         child: index < 0
                                             ? Container()
-                                            : const Icon(Icons.delete,color: Colors.red,)),
+                                            : const Icon(Icons.delete,color: Colors.red,)),*/
                                   ],
                                 ),
                                 SizedBox(
@@ -359,6 +354,102 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
         ),
       ),
     );
+  }
+
+  buildShowDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
+  void callCartonMovementApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+
+    List<CartonList2>  cartonList= <CartonList2>[];
+    for (int i = 0; i < controllers.length; i++) {
+      if(controllers[i].text! != ""){
+        CartonList2 obj= CartonList2(cartonID: controllers[i].text!,assignedQty: 0,);
+        cartonList.add(obj);
+      }
+    }
+    var _cartonList = cartonList.map((e){
+      return {
+        "cartonID": e.cartonID,
+        "assignedQty": e.assignedQty,
+      };
+    }).toList();
+    var jsonstringmap = json.encode(_cartonList);
+    print("_cartonList$jsonstringmap" );
+
+
+    List<LocationList> locationList= <LocationList>[];
+    LocationList obj= LocationList(warehouseLocation: location,locationCategory: 'Destination',locationType:'');
+    locationList.add(obj);
+
+    var _locationList = locationList.map((e){
+      return {
+        "warehouseLocation": e.warehouseLocation,
+        "locationCategory": e.locationCategory,
+        "locationType": e.locationType,
+      };
+    }).toList();
+
+    var jsonStringLocation = json.encode(_locationList);
+    print("_locationList$jsonStringLocation" );
+
+    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonconsolidation";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var body = json.encode({
+      "action":"submit",
+      "userID": int.parse(userID!),
+      "companyID": int.parse(companyID!),
+      "destinationCarton": destinationCarton,
+      "cartons":sourceJsonStringMap,
+      "locations":jsonStringLocation
+    });
+    body=body.replaceAll("\"[", "[");
+    body=body.replaceAll("]\"", "]");
+    body=body.replaceAll("\\\"", "\"");
+    print("requestParams Consolidation$body" );
+    var response =
+    await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var _jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=_jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ConsolidationConfirmationPage(jsonResponse,
+                destinationCarton, location,sku)),
+          );
+        }else{
+          _showToast(_jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
   }
 
   void _showToast(String errorMessage) {

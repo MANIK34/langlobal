@@ -4,6 +4,7 @@ import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -115,6 +116,10 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
               tapPadding: EdgeInsets.all(55.0),
               onTap: (){
                 Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DashboardPage('')),
+                );
               },
               child: const Text('Cancel',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
@@ -249,8 +254,8 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
         "assignedQty": e.assignedQty,
       };
     }).toList();
-    var jsonstringmap = json.encode(_cartonList);
-    print("_cartonList$jsonstringmap" );
+    var sourceJsonStringMap = json.encode(_cartonList);
+    print("_cartonList$sourceJsonStringMap" );
 
     var url = "https://api.langlobal.com/inventoryallocation/v1/cartonmovement/validate";
     Map<String, String> headers = {
@@ -262,7 +267,7 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
       "companyID": int.parse(companyID!),
       "sourceLocation": "",
       "destinationLocation": "",
-      "cartons":jsonstringmap,
+      "cartons":sourceJsonStringMap,
     });
     body=body.replaceAll("\"[", "[");
     body=body.replaceAll("]\"", "]");
@@ -279,7 +284,8 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
         if(returnCode=="1"){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CartonDestinationPage('')),
+            MaterialPageRoute(builder: (context) => CartonDestinationPage(jsonResponse,sourceJsonStringMap,
+                jsonResponse['movementInfo']['cartons'][0]['sku'])),
           );
         }else{
           _showToast(jsonResponse['returnMessage']);

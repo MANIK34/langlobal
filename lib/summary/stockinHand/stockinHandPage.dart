@@ -514,6 +514,7 @@ class _StockInHandPage extends State<StockInHandPage> {
       var jsonResponse = json.decode(response1.body);
       var returnCode=jsonResponse['returnCode'];
       if(returnCode=="1"){
+        print("stockLength ::::"+jsonResponse['stockInHands'].length.toString());
         Navigator.push(
           context,
           MaterialPageRoute(

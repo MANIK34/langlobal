@@ -8,22 +8,27 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonSubmitPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import '../../model/requestParams/cartonList2.dart';
 
 class CartonDestinationPage extends StatefulWidget {
-  var heading;
+  var jsonResponse;
+  var sourceJsonStringMap;
+  var sku;
 
-  CartonDestinationPage(this.heading,  {Key? key}) : super(key: key);
+  CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku,
+      {Key? key}) : super(key: key);
 
   @override
   _CartonDestinationPage createState() =>
-      _CartonDestinationPage(this.heading );
+      _CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku );
 }
 
 class _CartonDestinationPage extends State<CartonDestinationPage> {
-  var heading;
+  var jsonResponse;
+  var sourceJsonStringMap;
+  var sku;
 
-
-  _CartonDestinationPage(this.heading );
+  _CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku );
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -124,10 +129,13 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CartonSubmitPage('')),
-          );
+          if(carton_text=='Generate Carton ID' && locationController.text.toString().isEmpty){
+              _showToast("Warehouse location can't be empty!");
+          }else{
+            buildShowDialog(context);
+            callCartonMovementApi();
+          }
+
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -238,7 +246,7 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
                     height: 20,
                   ),
                   SizedBox(
-                    height: 50,
+                    height: 70,
                     width: 300,
                     child: cartonField,
                   ),
@@ -258,7 +266,7 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
                     height: 50,
                   ),
                   SizedBox(
-                    height: 50,
+                    height: 70,
                     width: 300,
                     child: locationField,
                   ),
@@ -277,29 +285,29 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
                     child: Column(
                       children: <Widget>[
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Row(
                           children: <Widget>[
                             Text('Total Cartons:'),
                             Spacer(),
-                            Text('10'),
+                            Text(jsonResponse['movementInfo']['cartonCount'].toString()),
                           ],
                         ),),
                         const SizedBox(
-                          height: 20,
+                          height: 5,
                         ),
                         Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: Row(
                             children: <Widget>[
                               Text('Total Qty:'),
                               Spacer(),
-                              Text('5'),
+                              Text(jsonResponse['movementInfo']['cartornItemsCount'].toString()),
                             ],
                           ),),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                       ],
                     ),
@@ -348,6 +356,70 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
           );
         });
   }
+
+  void callCartonMovementApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+
+    List<CartonList2> cartonList = <CartonList2>[];
+    CartonList2 obj= CartonList2(cartonID: cartonController.text.toString()!,assignedQty: 0,);
+    cartonList.add(obj);
+    var _cartonList = cartonList.map((e){
+      return {
+        "cartonID": e.cartonID,
+        "assignedQty": e.assignedQty,
+      };
+    }).toList();
+    var jsonstringmap = json.encode(_cartonList);
+    print("_cartonList$jsonstringmap" );
+
+    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonmovement/validate";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var body = json.encode({
+      "companyID": int.parse(companyID!),
+      "sourceLocation": "",
+      "sku":jsonResponse['movementInfo']['cartons'][0]['sku'],
+      "destinationLocation": locationController.text.toString(),
+      "cartons":jsonstringmap,
+    });
+    body=body.replaceAll("\"[", "[");
+    body=body.replaceAll("]\"", "]");
+    body=body.replaceAll("\\\"", "\"");
+    print("requestParams$body" );
+    var response =
+    await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonSubmitPage(jsonResponse,cartonController.text.toString(),
+            locationController.text.toString(),sourceJsonStringMap,sku)),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
+  }
+
   void _showToast(String errorMessage) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(errorMessage),
