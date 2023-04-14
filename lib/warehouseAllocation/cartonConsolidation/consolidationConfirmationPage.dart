@@ -2,22 +2,29 @@ import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolidationPage.dart';
+
+import '../../model/requestParams/cartonList2.dart';
 
 class ConsolidationConfirmationPage extends StatefulWidget {
   var jsonResponse;
   var destinationCarton;
   var location;
   var sku;
+  List<CartonList2> cartonList;
+  var sourceQty;
+  var sourceCount;
+  var condition;
 
   ConsolidationConfirmationPage(this.jsonResponse,this.destinationCarton,this.location ,this.sku,
+      this.cartonList,this.sourceQty,this.sourceCount,this.condition,
       {Key? key}) : super(key: key);
 
   @override
   _ConsolidationConfirmationPage createState() =>
-      _ConsolidationConfirmationPage(this.jsonResponse,this.destinationCarton,this.location,this.sku );
+      _ConsolidationConfirmationPage(this.jsonResponse,this.destinationCarton,this.location,this.sku ,
+          this.cartonList,this.sourceQty,this.sourceCount,this.condition);
 }
 
 class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage> {
@@ -25,8 +32,13 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
   var destinationCarton;
   var location;
   var sku;
+  List<CartonList2> cartonList;
+  var sourceQty;
+  var sourceCount;
+  var condition;
 
-  _ConsolidationConfirmationPage(this.jsonResponse ,this.destinationCarton,this.location,this.sku);
+  _ConsolidationConfirmationPage(this.jsonResponse ,this.destinationCarton,this.location,this.sku,
+      this.cartonList,this.sourceQty,this.sourceCount,this.condition);
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -34,8 +46,7 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool readOnly=true;
-  TextEditingController skuController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
+  bool visibleWarehouse=true;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -51,6 +62,9 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
     // TODO: implement initState
     super.initState();
     textFeildList.add(customField());
+    if(location.toString().isEmpty){
+      visibleWarehouse=false;
+    }
   }
 
   @override
@@ -60,23 +74,6 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
 
   @override
   Widget build(BuildContext context) {
-
-    final destinationField = TextField(
-        maxLength: 11,
-        controller: locationController,
-        style: style,
-        textInputAction: TextInputAction.done,
-        onEditingComplete: () => FocusScope.of(context).nextFocus(),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-
-          alignLabelWithHint: true,
-          hintText: "Destination Location",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ));
 
     final validateButton = Material(
       elevation: 5.0,
@@ -186,16 +183,28 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
                   ),
                   Row(
                     children: <Widget>[
-                      Text(sku,style: TextStyle(
-                          fontWeight: FontWeight.bold
-                      ),),
+                      Text(
+                        sku +" I ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        condition+" I ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        jsonResponse['movementInfo']
+                        ['categoryName']
+                            .toString(),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ],
                   ),
                   Divider(
                     thickness: 2.0,
                     color: Colors.black,
                   ),
-                  Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
                     child: Card(
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(
@@ -209,53 +218,94 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
                           const SizedBox(
                             height: 10,
                           ),
-                          Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                             child: Row(
                               children: <Widget>[
                                 Text('Destination Cartons:'),
                                 Spacer(),
                                 Text(destinationCarton.toString()),
                               ],
-                            ),),
+                            ),
+                          ),
                           const SizedBox(
                             height: 5,
                           ),
-                          Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: Row(
+                          Visibility(
+                            visible: visibleWarehouse,
+                            child: Column(
                               children: <Widget>[
-                                Text('Warehouse Location:'),
-                                Spacer(),
-                                Text(location),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text('Warehouse Location:'),
+                                      Spacer(),
+                                      Text(location),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
                               ],
-                            ),),
-                          const SizedBox(
-                            height: 5,
+                            ),
                           ),
-                          Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                             child: Row(
                               children: <Widget>[
                                 Text('Total Qty:'),
                                 Spacer(),
-                                Text(jsonResponse['movementInfo']['cartornItemsCount'].toString()),
+                                Text(sourceQty.toString()),
+
                               ],
-                            ),),
+                            ),
+                          ),
+                          Divider(
+                            thickness: 1.0,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(
                             height: 5,
                           ),
-                          Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                             child: Row(
                               children: <Widget>[
                                 Text('Source Cartons:'),
                                 Spacer(),
-                                Text(jsonResponse['movementInfo']['cartons'].length.toString()),
+                                /* Text(jsonResponse['movementInfo']['cartons']
+                                .length
+                                .toString()),*/
+                                Text(sourceCount
+                                    .toString()),
+
                               ],
-                            ),),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: Row(
+                              children: <Widget>[
+                                Text('Total Qty:'),
+                                Spacer(),
+                                Text(jsonResponse['movementInfo']
+                                ['cartornItemsCount']
+                                    .toString()),
+                              ],
+                            ),
+                          ),
                           const SizedBox(
                             height: 10,
                           ),
                         ],
                       ),
-                    ),),
+                    ),
+                  ),
                 ],
               ),
             )

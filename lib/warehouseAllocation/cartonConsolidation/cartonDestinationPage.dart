@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,21 +13,25 @@ class CartonDestinationPage extends StatefulWidget {
   var jsonResponse;
   var sourceJsonStringMap;
   var sku;
+  List<CartonList2> sourceCartonList;
+  var condition;
 
-  CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku,
+  CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku,this.sourceCartonList,this.condition,
       {Key? key}) : super(key: key);
 
   @override
   _CartonDestinationPage createState() =>
-      _CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku );
+      _CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku ,this.sourceCartonList,this.condition);
 }
 
 class _CartonDestinationPage extends State<CartonDestinationPage> {
   var jsonResponse;
   var sourceJsonStringMap;
   var sku;
+  List<CartonList2> sourceCartonList;
+  var condition;
 
-  _CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku );
+  _CartonDestinationPage(this.jsonResponse,this.sourceJsonStringMap,this.sku,this.sourceCartonList,this.condition );
 
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = []; //the controllers list
@@ -42,6 +45,9 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
   BuildContext? _context;
   String carton_text="Generate Carton ID";
   bool _showCursor=false;
+  bool _focusLocation=false;
+  var sourceQty;
+  var sourceCount;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -74,6 +80,8 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
     // TODO: implement initState
     super.initState();
     textFeildList.add(customField());
+    sourceQty=jsonResponse['movementInfo']['cartornItemsCount'].toString();
+    sourceCount=jsonResponse['movementInfo']['cartons'].length.toString();
   }
 
   @override
@@ -129,7 +137,9 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          if(carton_text=='Generate Carton ID' && locationController.text.toString().isEmpty){
+          if(cartonController.text.toString().isEmpty){
+            _showToast("Carton can't be empty!");
+          }else if(carton_text=='Remove Carton ID' && locationController.text.toString().isEmpty){
               _showToast("Warehouse location can't be empty!");
           }else{
             buildShowDialog(context);
@@ -152,9 +162,13 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           if(carton_text=='Generate Carton ID'){
+            locationController.text="";
+            _focusLocation=true;
             buildShowDialog(context);
             callGetCartonIDApi();
           }else{
+            locationController.text="";
+            _focusLocation=false;
             cartonController.text="";
             carton_text="Generate Carton ID";
             _showCursor=false;
@@ -265,14 +279,15 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
                   const SizedBox(
                     height: 50,
                   ),
-                  SizedBox(
-                    height: 70,
-                    width: 300,
-                    child: locationField,
-                  ),
-                  const SizedBox(
-                    height: 00,
-                  ),
+                 Visibility(
+                   visible: _focusLocation,
+                   child:  SizedBox(
+                     height: 70,
+                     width: 300,
+                     child: locationField,
+                   ),
+                 ),
+
                   Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -343,6 +358,7 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
       print(response1.statusCode);
     }
     Navigator.of(_context!).pop();
+    print(response1.body);
   }
 
   buildShowDialog(BuildContext context) {
@@ -401,10 +417,14 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
       try {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
+          var destinationLocation=locationController.text.toString();
+          if(destinationLocation.isEmpty){
+            destinationLocation=jsonResponse['movementInfo']['destinationLocation'];
+          }
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CartonSubmitPage(jsonResponse,cartonController.text.toString(),
-            locationController.text.toString(),sourceJsonStringMap,sku)),
+                destinationLocation.toString(),sourceJsonStringMap,sku,sourceCartonList,sourceQty,sourceCount,condition)),
           );
         }else{
           _showToast(jsonResponse['returnMessage']);

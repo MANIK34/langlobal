@@ -55,14 +55,14 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {
-        textFeildList.add(customField());
-      },
-
-      onChanged: (value) {
-       /* if (value.length == 6) {
+        if(controllers[textFeildList.length-1].text!=""){
           textFeildList.add(customField());
-        }*/
+        }
       },
+      decoration: InputDecoration(
+        hintText: "",
+        counterText: "",
+      ),
     );
   }
 
@@ -201,8 +201,11 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
                                 Expanded(child: textFeildList[index]),
                                 GestureDetector(
                                     onTap: () {
-                                      textFeildList.removeAt(index);
-                                      setState(() {});
+                                      if(textFeildList.length>1){
+                                        textFeildList.removeAt(index);
+                                        controllers.removeAt(index);
+                                        setState(() {});
+                                      }
                                     },
                                     child: index < 0
                                         ? Container()
@@ -285,7 +288,7 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CartonDestinationPage(jsonResponse,sourceJsonStringMap,
-                jsonResponse['movementInfo']['cartons'][0]['sku'])),
+                jsonResponse['movementInfo']['cartons'][0]['sku'],cartonList, jsonResponse['movementInfo']['condition'])),
           );
         }else{
           _showToast(jsonResponse['returnMessage']);
