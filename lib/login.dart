@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:langlobal/bluetooth_demo.dart';
 import 'package:langlobal/select_company.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dashboard/DashboardPage.dart';
@@ -26,7 +29,13 @@ class _LoginPage extends State<LoginPage> {
   bool _isLoading = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  Int8List? _bytes;
+  @override
+  void initState() {
+    /*_getBytes(
+        'https://upwork-usw2-prod-assets-static.s3.us-west-2.amazonaws.com/org-logo/425220847461273600');*/
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +99,21 @@ class _LoginPage extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          if (emailController.text == "") {
+      /*    String thumbnail="JVBERi0xLjQKJeLjz9MKMiAwIG9iago8PC9UeXBlL1hPYmplY3QvU3VidHlwZS9JbWFnZS9XaWR0aCA3NTAvSGVpZ2h0IDEzNS9GaWx0ZXIvRENURGVjb2RlL0NvbG9yU3BhY2UvRGV2aWNlUkdCL0JpdHNQZXJDb21wb25lbnQgOC9MZW5ndGggMTI1NTM+PnN0cmVhbQr/2P/gABBKRklGAAEBAQBkAGQAAP/bAEMACAYGBwYFCAcHBwkJCAoMFA0MCwsMGRITDxQdGh8eHRocHCAkLicgIiwjHBwoNyksMDE0NDQfJzk9ODI8LjM0Mv/bAEMBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/AABEIAIcC7gMBIgACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/xAC1EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+";
+
+          String bs64 = base64.encode(thumbnail.codeUnits);
+          if (bs64.length % 4 > 0) {
+            bs64 += '=' * (4 - bs64 .length % 4) ;// as suggested by Albert221
+          }
+          var decoded = base64.decode(bs64);
+          final Uint8List bytess =base64.decode(bs64);
+          Image img =  Image.memory(decoded);*/
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BluetoothScan()),
+          );
+         /* if (emailController.text == "") {
             _showToast("Username can't be empty");
           } else if (passwordController.text == "") {
             _showToast("Password can't be empty");
@@ -99,7 +122,7 @@ class _LoginPage extends State<LoginPage> {
               _isLoading = true;
             });
             callLoginApi();
-          }
+          }*/
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -230,7 +253,6 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void _showToast(String errorMessage) {
-
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(errorMessage),
       action: SnackBarAction(
@@ -247,4 +269,20 @@ class _LoginPage extends State<LoginPage> {
     //   ),
     // ));
   }
+
+  void _getBytes(imageUrl) async {
+    final ByteData data =
+    await NetworkAssetBundle(Uri.parse(imageUrl)).load(imageUrl);
+    setState(() {
+      _bytes = data.buffer.asInt8List();
+      print(_bytes);
+    });
+  }
+
+ /* Image.memory(
+  Uint8List.fromList(_bytes!),
+  width: 250,
+  height: 250,
+  fit: BoxFit.contain,
+  ),*/
 }

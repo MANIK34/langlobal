@@ -4,10 +4,12 @@ import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentP
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolidationPage.dart';
 import 'package:langlobal/warehouseAllocation/cartonCreations/creationConfiguration.dart';
 import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupPage.dart';
+import 'package:langlobal/warehouseAllocation/skuLookup/skuLookupPage.dart';
 import '../drawer/drawerElement.dart';
 import '../locationLookup/locationLookupPage.dart';
 import '../summary/stockinHand/stockinHandPage.dart';
 import '../transientSearch/transientOrderSearch.dart';
+import '../warehouseAllocation/inventoryLookup/inventoryLookupPage.dart';
 import '../warehouseAllocation/movement/cartonMovement.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -581,15 +583,16 @@ class _DashboardPage extends State<DashboardPage> {
                   topLeft: Radius
                       .circular(
                       50.0))),
-          height: 150,
-          child: Center(
-            child: Column(
+          child: Column(
               mainAxisAlignment:
               MainAxisAlignment
                   .center,
               mainAxisSize:
               MainAxisSize.min,
               children: <Widget>[
+                const SizedBox(
+                  height: 10,
+                ),
                 const Text(
                   'Select Option',
                   style: TextStyle(
@@ -623,9 +626,50 @@ class _DashboardPage extends State<DashboardPage> {
                 const SizedBox(
                   height: 10,
                 ),
+                ElevatedButton(
+                    child: const Text(
+                        'Serialized Inventory Lookup'),
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => InventoryLookupPage('')),
+                      );
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                    child: const Text(
+                        'SKU Lookup'),
+                    style: ElevatedButton
+                        .styleFrom(
+                        primary: Colors.orange,
+                        minimumSize:
+                        const Size(
+                            250,
+                            50) // put the width and height you want
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SkuLookupPage('')),
+                      );
+                    }),
+                const SizedBox(
+                  height: 10,
+                ),
               ],
             ),
-          ),
         );
       },
     );

@@ -41,8 +41,15 @@ dependencies:
   font_awesome_flutter: ^10.4.0
   intl:
   cached_network_image: ^3.2.3
-  flutter_launcher_icons: ^0.12.0
+  flutter_launcher_icons:
   expand_tap_area: ^1.1.0
+  firebase_analytics:
+  bluetooth_print: ^4.3.0
+  bluetooth_thermal_printer: ^0.0.6
+  esc_pos_utils: ^1.1.0
+  image: any
+
+
 
 dev_dependencies:
   flutter_test:

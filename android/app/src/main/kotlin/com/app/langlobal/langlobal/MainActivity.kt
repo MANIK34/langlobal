@@ -1,4 +1,4 @@
-package com.app.langlobal.langlobal
+package com.app.langlobal
 
 import io.flutter.embedding.android.FlutterActivity
 

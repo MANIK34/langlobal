@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "577910388636",
+    "project_id": "lan-global-f1de2",
+    "storage_bucket": "lan-global-f1de2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577910388636:android:f524922d30d65cc5597a59",
+        "android_client_info": {
+          "package_name": "com.app.langlobal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577910388636-bi94rdbeqtvjhu10uandt433ubrjm7bc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDdWwnz5UILoVG3ci-Rrpkv57sIVrohFY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "577910388636-bi94rdbeqtvjhu10uandt433ubrjm7bc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
