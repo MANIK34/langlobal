@@ -31,10 +31,9 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
   TextEditingController supplierNameController = TextEditingController();
   TextEditingController memoController = TextEditingController();
   TextEditingController skuController = TextEditingController();
-
-
   TextEditingController fromDateInput = TextEditingController();
   TextEditingController toDateInput = TextEditingController();
+  BuildContext? _context;
 
   @override
   void initState() {
@@ -56,14 +55,8 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
           if(memoController.text.toString()==""){
             _showToast("IMEI can't be empty");
           }else{
-           /* setState(() {
-              _isLoading = true;
-            });
-            callGetCartonLookupApi();*/
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => InventoryLookupDetailPage()),
-            );
+            buildShowDialog(context);
+            callGetIMEISApi();
           }
         },
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
@@ -91,14 +84,8 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
           if(memoController.text.toString()==""){
             _showToast("IMEI can't be empty");
           }else{
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => InventoryLookupDetailPage()),
-            );
-           /* setState(() {
-              _isLoading = true;
-            });
-            callGetCartonLookupApi();*/
+            buildShowDialog(context);
+            callGetIMEISApi();
           }
         },
         child: Text("Search",
@@ -159,41 +146,56 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
         ));
   }
 
-  void callGetCartonLookupApi() async {
+  void callGetIMEISApi() async{
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
-    String? token = myPrefs.getString("token");
     String? companyID = myPrefs.getString("companyID");
-    var url = "https://api.langlobal.com/inventoryallocation/v1/locationlookup/"+memoController.text.toString();
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+    var url = "https://api.langlobal.com/inventory/v1/Customers/IMEIS/"+companyID!+"?esn="+memoController.text.toString();
     Map<String, String> headers = {
-      'Authorization': 'Bearer ${token!}'
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
     };
-    print(url.toString());
-    var response = await http.get(Uri.parse(url), headers: headers);
+    var response =
+    await http.get(Uri.parse(url), headers: headers);
     if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => LocationLookupDetailPage(jsonResponse['locationContent'])),
-          );
+            MaterialPageRoute(builder: (context) => InventoryLookupDetailPage(jsonResponse),
+          ));
         }else{
           _showToast(jsonResponse['returnMessage']);
         }
       } catch (e) {
+        print("error message ::"+e.toString());
         print('returnCode'+e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
+      Navigator.of(_context!).pop();
       print(response.statusCode);
     }
-    debugPrint(response.body);
-    setState(() {
-      _isLoading = false;
-    });
   }
 
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
 
   void _showToast(String errorMessage) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(

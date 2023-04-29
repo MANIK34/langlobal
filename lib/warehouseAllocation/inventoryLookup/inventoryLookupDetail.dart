@@ -1,21 +1,22 @@
-import 'dart:convert';
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:langlobal/drawer/drawerElement.dart'; 
 
 class InventoryLookupDetailPage extends StatefulWidget {
-  //var cartonContent;
 
-  InventoryLookupDetailPage({Key? key}) : super(key: key);
+  var jsonResponse;
+
+  InventoryLookupDetailPage(this.jsonResponse,{Key? key}) : super(key: key);
 
   @override
-  _InventoryLookupDetailPage createState() => _InventoryLookupDetailPage();
+  _InventoryLookupDetailPage createState() => _InventoryLookupDetailPage(this.jsonResponse);
 }
 
 class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
-  _InventoryLookupDetailPage();
+  var jsonResponse;
+  _InventoryLookupDetailPage(this.jsonResponse);
 
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
@@ -154,8 +155,8 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                           SizedBox(
                             height: 10,
                           ),
-                          const Text(
-                            'IMEI ',
+                            Text(
+                              jsonResponse['imei'],
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -181,7 +182,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                 'Initial SKU: ',
                                                 style: TextStyle(),
                                               ),
-                                              Text("AQWQE",
+                                              Text(jsonResponse['sku'],
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w700,
                                                   )),
@@ -200,7 +201,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                 'Kitted SKU: ',
                                                 style: TextStyle(),
                                               ),
-                                              Text("AQWQE",
+                                              Text(jsonResponse['kittedSKU'],
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w700,
                                                   )),
@@ -227,7 +228,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                 'Category: ',
                                                 style: TextStyle(),
                                               ),
-                                              Text("Category",
+                                              Text(jsonResponse['category'],
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w700,
                                                   )),
@@ -242,12 +243,12 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                         children: [
                                           Row(
                                             children: <Widget>[
-                                              Text(
+                                             const Text(
                                                 'Condition: ',
                                                 style: TextStyle(),
                                               ),
-                                              Text("condition",
-                                                  style: TextStyle(
+                                              Text(jsonResponse['condition'],
+                                                  style: const TextStyle(
                                                     fontWeight: FontWeight.w700,
                                                   )),
                                             ],
@@ -273,10 +274,16 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                 'Active: ',
                                                 style: TextStyle(),
                                               ),
-                                              Text("No",
+                                              if(jsonResponse['imeiInformation']['active']==true)
+                                              Text('Yes',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w700,
                                                   )),
+                                              if(jsonResponse['imeiInformation']['active']==false)
+                                                Text('No',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.w700,
+                                                    )),
                                             ],
                                           ),
                                         ],
@@ -292,10 +299,16 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                 'ReStocking: ',
                                                 style: TextStyle(),
                                               ),
-                                              Text("Yes",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w700,
-                                                  )),
+                                              if(jsonResponse['imeiInformation']['reStocking']==true)
+                                                Text('Yes',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.w700,
+                                                    )),
+                                              if(jsonResponse['imeiInformation']['reStocking']==false)
+                                                Text('No',
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.w700,
+                                                    )),
                                             ],
                                           ),
                                         ],
@@ -334,8 +347,11 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                           padding:
                                               EdgeInsets.fromLTRB(10, 0, 10, 0),
                                           child: Row(
-                                            children: const <Widget>[
-                                              Text('Product Name'),
+                                            children: <Widget>[
+                                              Text(jsonResponse['imeiInformation']['productName'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                ),),
                                             ],
                                           ),
                                         ),
@@ -355,12 +371,12 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                         'Maker: ',
                                                         style: TextStyle(),
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['cartonCount'].toString(),
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['maker'],
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w700,
                                                     ),
-                                                  ),*/
+                                                  ),
                                                     ],
                                                   ),
                                                 ],
@@ -376,19 +392,14 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                   Row(
                                                     children: <Widget>[
                                                       Text(
-                                                        'Stock In Hand: ',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                        'Stock In Hand: '
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['itemsCount'].toString(),
+                                                      Text(
+                                                        "",
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w700,
                                                     ),
-                                                  ),*/
+                                                  ),
                                                     ],
                                                   ),
                                                 ],
@@ -400,8 +411,14 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                           padding:
                                               EdgeInsets.fromLTRB(10, 5, 10, 0),
                                           child: Row(
-                                            children: const <Widget>[
+                                            children:   <Widget>[
                                               Text('Short Description:'),
+                                              Text(
+                                                jsonResponse['imeiInformation']['shortDescription'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -421,12 +438,12 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                         'Min. Stock: ',
                                                         style: TextStyle(),
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['cartonCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['minimumStock'].toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ],
@@ -444,12 +461,12 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                       Text(
                                                         'Max. Stock: ',
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['itemsCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['maximumStock'].toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ],
@@ -496,54 +513,54 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                           child: Row(
                                             children: [
                                               Expanded(
-                                                  child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
+                                                  child: Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
                                                     children: <Widget>[
                                                       const Text(
-                                                        'Fullfilment Order#: ',
+                                                        'Fulfillment. Order#: ',
                                                         style: TextStyle(),
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['cartonCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
+                                                      Expanded(
+                                                        child: Text(
+                                                          jsonResponse['assign']['fulfillmentNumber'],
+                                                          style: TextStyle(
+                                                            fontWeight: FontWeight.w700,
+                                                          ),
+                                                        ),
+                                                      )
                                                     ],
                                                   ),
-                                                ],
-                                              )),
-                                              SizedBox(
-                                                width: 2,
                                               ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10, right: 10, top: 5),
+                                          child: Row(
+                                            children: [
                                               Expanded(
-                                                  child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Text(
-                                                        'Date',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      /*Text(
-                                                    cartonContent['itemsCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    const Text(
+                                                      'Date: ',
+                                                      style: TextStyle(),
                                                     ),
-                                                  ),*/
-                                                    ],
-                                                  ),
-                                                ],
-                                              )),
+                                                    Expanded(
+                                                      child: Text(
+                                                        jsonResponse['assign']['fulfillmentDate'].toString().substring(0,10),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -596,12 +613,12 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                         'Batch: ',
                                                         style: TextStyle(),
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['cartonCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['batch'].toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ],
@@ -620,12 +637,12 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                         'Serail#: ',
                                                         style: TextStyle(),
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['itemsCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['serialNumber'].toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ],
@@ -701,39 +718,45 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                         'Medi Hex: ',
                                                         style: TextStyle(),
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['cartonCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['mediHex'].toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ],
                                               )),
-                                              SizedBox(
-                                                width: 2,
-                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10, right: 10, top: 5),
+                                          child: Row(
+                                            children: [
                                               Expanded(
                                                   child: Column(
-                                                crossAxisAlignment:
+                                                    crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Text(
-                                                        'Medi Dec: ',
+                                                    children: [
+                                                      Row(
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            'Medi Dec: ',
+                                                            style: TextStyle(),
+                                                          ),
+                                                          Text(
+                                                            jsonResponse['imeiInformation']['mediDec'].toString(),
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w700,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['itemsCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
                                                     ],
-                                                  ),
-                                                ],
-                                              )),
+                                                  )),
                                             ],
                                           ),
                                         ),
@@ -786,48 +809,45 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                         'Location: ',
                                                         style: TextStyle(),
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['cartonCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['warehouseLocation'].toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ],
                                               )),
-                                              SizedBox(
-                                                width: 2,
-                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10, right: 10, top: 5),
+                                          child: Row(
+                                            children: [
                                               Expanded(
                                                   child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        'Carton ID:',
-                                                        style: TextStyle(),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "",
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w700,
+                                                    CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            'Carton ID: ',
+                                                            style: TextStyle(),
                                                           ),
-                                                        ),
-                                                      )
+                                                          Text(
+                                                            jsonResponse['imeiInformation']['cartonID'].toString(),
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w700,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ],
-                                                  ),
-                                                ],
-                                              )),
+                                                  )),
                                             ],
                                           ),
                                         ),
@@ -886,6 +906,43 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                     ),
                                   ),
                                 ),
+
+                                Padding(padding: EdgeInsets.only(left: 10,right: 0),
+                                  child: Container(
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: jsonResponse['logList'].length,
+                                      itemBuilder: (BuildContext context, int indexx) {
+                                        return Column(
+                                          children: <Widget>[
+                                            Container(
+                                              height: 30,
+                                              child:  Row(
+                                                children: [
+                                                  SizedBox(width: 50,
+                                                    child:  Text((indexx+1).toString()),),
+                                                  SizedBox(width: 80,
+                                                    child:  Text(jsonResponse['logList'][indexx]['logDate'].toString().substring(0,10)),),
+                                                  const SizedBox(
+                                                    width: 25,
+                                                  ),
+                                                  SizedBox(width: 120,
+                                                    child:  Text(jsonResponse['logList'][indexx]['module'].toString()),),
+                                                  SizedBox(width: 80,
+                                                    child:  Text(jsonResponse['logList'][indexx]['status'].toString()),),
+                                                ],
+                                              ),
+                                            ),
+                                            const Divider(
+                                                color: Colors.black
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),)
                               ],
                             ),
                           ),
