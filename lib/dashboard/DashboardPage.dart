@@ -12,6 +12,7 @@ import '../transientSearch/transientOrderSearch.dart';
 import '../warehouseAllocation/inventoryLookup/inventoryLookupPage.dart';
 import '../warehouseAllocation/movement/cartonMovement.dart';
 
+
 class DashboardPage extends StatefulWidget {
   String token = '';
 
@@ -507,19 +508,15 @@ class _DashboardPage extends State<DashboardPage> {
                                     )),
                               ),
                               Visibility(
-                                maintainSize: true,
-                                maintainAnimation: true,
-                                maintainState: true,
-                                visible: false,
                                 child: SizedBox(
                                 height: 110,
                                 width: 160,
                                 child: GestureDetector(
                                     onTap: () {
-
+                                      showInventoryDialog();
                                     },
                                     child: Card(
-                                      color: Colors.blueGrey.shade600,
+                                      color: Colors.redAccent,
                                       semanticContainer: true,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -544,7 +541,7 @@ class _DashboardPage extends State<DashboardPage> {
                                               child: Align(
                                                 alignment:
                                                 Alignment.center,
-                                                child: Text('EMD / PDPLA',
+                                                child: Text('Inventory',
                                                     style: TextStyle(
                                                         color:
                                                         Colors.white,
@@ -568,6 +565,92 @@ class _DashboardPage extends State<DashboardPage> {
     );
   }
 
+
+  void showInventoryDialog(){
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+              BorderRadius.only(
+                  topRight: Radius
+                      .circular(
+                      50.0),
+                  topLeft: Radius
+                      .circular(
+                      50.0))),
+          child: Column(
+            mainAxisAlignment:
+            MainAxisAlignment
+                .center,
+            mainAxisSize:
+            MainAxisSize.min,
+            children: <Widget>[
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                'Select Option',
+                style: TextStyle(
+                    fontWeight:
+                    FontWeight
+                        .bold,
+                    color:
+                    Colors.black),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  child: const Text(
+                      'Serialized Inventory Lookup'),
+                  style: ElevatedButton
+                      .styleFrom(
+                      primary: Colors.orange,
+                      minimumSize:
+                      const Size(
+                          250,
+                          50) // put the width and height you want
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InventoryLookupPage('')),
+                    );
+                  }),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  child: const Text(
+                      'SKU Lookup'),
+                  style: ElevatedButton
+                      .styleFrom(
+                      primary: Colors.orange,
+                      minimumSize:
+                      const Size(
+                          250,
+                          50) // put the width and height you want
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SkuLookupPage('')),
+                    );
+                  }),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
   void showWarehouseDialog(){
     showModalBottomSheet<void>(
       context: context,
@@ -621,48 +704,6 @@ class _DashboardPage extends State<DashboardPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => LocationLookupPage('')),
-                      );
-                    }),
-                const SizedBox(
-                  height: 10,
-                ),
-                ElevatedButton(
-                    child: const Text(
-                        'Serialized Inventory Lookup'),
-                    style: ElevatedButton
-                        .styleFrom(
-                        primary: Colors.orange,
-                        minimumSize:
-                        const Size(
-                            250,
-                            50) // put the width and height you want
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => InventoryLookupPage('')),
-                      );
-                    }),
-                const SizedBox(
-                  height: 10,
-                ),
-                ElevatedButton(
-                    child: const Text(
-                        'SKU Lookup'),
-                    style: ElevatedButton
-                        .styleFrom(
-                        primary: Colors.orange,
-                        minimumSize:
-                        const Size(
-                            250,
-                            50) // put the width and height you want
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SkuLookupPage('')),
                       );
                     }),
                 const SizedBox(

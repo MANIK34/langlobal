@@ -132,7 +132,7 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
             ),
-            ExpandTapWidget(
+            /*ExpandTapWidget(
               tapPadding: EdgeInsets.all(55.0),
               onTap: () {
                 Navigator.of(context).pop();
@@ -145,7 +145,22 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
                     fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),
-            )
+            )*/
+            GestureDetector(
+                child: Container(
+                    width: 85,
+                    height: 80,
+                    child: Center(
+                      child: ElevatedButton(
+                        child: Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    )),
+                onTap: () {
+                  Navigator.of(context).pop();
+                }),
           ],
         ),
       ),

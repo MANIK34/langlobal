@@ -50,7 +50,7 @@ class _SkuLookupPage extends State<SkuLookupPage> {
   @override
   Widget build(BuildContext context) {
     final cartonIdField = TextField(
-        maxLength: 20,
+        maxLength: 40,
         controller: memoController,
         style: style,
         textInputAction: TextInputAction.done,
@@ -120,14 +120,33 @@ class _SkuLookupPage extends State<SkuLookupPage> {
                     MaterialPageRoute(builder: (context) => DashboardPage('')),
                   );
                 },
-                child: const Text(
+                child: /*const Text(
                   'Cancel',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontSize: 14,
                       fontWeight: FontWeight.bold),
-                ),
+                ),*/
+                GestureDetector(
+                    child: Container(
+                        width: 85,
+                        height: 80,
+                        child: Center(
+                          child: ElevatedButton(
+                            child: Text('Cancel'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => DashboardPage('')),
+                              );
+                            },
+                          ),
+                        )),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    }),
               )
             ],
           ),
@@ -145,8 +164,9 @@ class _SkuLookupPage extends State<SkuLookupPage> {
                       Row(
                         children: <Widget>[
                           SizedBox(
-                            width: 150,
+                            width: 120,
                             child: ListTile(
+                              horizontalTitleGap: 2,
                               title: const Text('SKU'),
                               leading: Radio<SingingCharacter>(
                                 value: SingingCharacter.SKU,
@@ -162,8 +182,9 @@ class _SkuLookupPage extends State<SkuLookupPage> {
                           ),
 
                           SizedBox(
-                            width: 160,
+                            width: 150,
                             child:  ListTile(
+                              horizontalTitleGap: 2,
                               title: const Text('Model#'),
                               leading: Radio<SingingCharacter>(
                                 value: SingingCharacter.Model,
@@ -199,7 +220,14 @@ class _SkuLookupPage extends State<SkuLookupPage> {
     String? companyID = myPrefs.getString("companyID");
     String? userID = myPrefs.getString("userId");
     String? token = myPrefs.getString("token");
-    var url = "https://api.langlobal.com/inventory/v1/Customers/"+companyID!+"?sku="+memoController.text.toString();
+    String searchBy="";
+    if(labelText=="SKU"){
+      searchBy="sku";
+    }else{
+      searchBy="modelnumber";
+    }
+    var url = "https://api.langlobal.com/inventory/v1/Customers/"+companyID!+"?"+searchBy+"="+memoController.text.toString();
+    print("url ::::: "+url);
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token!}',
       "Accept": "application/json",
@@ -208,8 +236,8 @@ class _SkuLookupPage extends State<SkuLookupPage> {
     var response =
     await http.get(Uri.parse(url), headers: headers);
     if (response.statusCode == 200) {
+      print(response.body);
       Navigator.of(_context!).pop();
-      print(token);
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];

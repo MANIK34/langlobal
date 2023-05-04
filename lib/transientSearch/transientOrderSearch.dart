@@ -50,6 +50,7 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
         maxLength: 9,
         controller: memoController,
         style: style,
+        keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
@@ -169,7 +170,7 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
               const Text('Transient Order Search',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
               ),
-              ExpandTapWidget(
+              /*ExpandTapWidget(
                 onTap: () {
                   Navigator.of(context).pop();
                 },
@@ -177,7 +178,22 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
                 child: Text('Cancel',textAlign: TextAlign.center,
                   style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
                 ),
-              ),
+              ),*/
+              GestureDetector(
+                  child: Container(
+                      width: 85,
+                      height: 80,
+                      child: Center(
+                        child: ElevatedButton(
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      )),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  }),
             ],
           ),
         ),
@@ -229,7 +245,7 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
           var orderDate=orderInfo['transientOrderDateTime'];
           orderDate=orderDate.toString().substring(0,10);
           DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
-          final DateFormat formatter = DateFormat('MM-dd-yyyy');
+          final DateFormat formatter = DateFormat('MM/dd/yyyy');
           var formatted = formatter.format(tempDate);
           print("FOrmatted>>>>>>>"+formatted);
           var orderStatus=orderInfo['orderTransientStatus'];

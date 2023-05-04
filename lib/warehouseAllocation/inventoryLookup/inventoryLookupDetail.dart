@@ -2,6 +2,7 @@ import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:langlobal/drawer/drawerElement.dart'; 
 
 class InventoryLookupDetailPage extends StatefulWidget {
@@ -32,6 +33,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
   Color inactive_text_color = Colors.grey;
   bool visible_detailPage = true;
 
+
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
     controller.text = esnValue.toString();
@@ -61,7 +63,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
       borderRadius: BorderRadius.circular(0.0),
       color: active_bg_color,
       child: MaterialButton(
-        minWidth: 196,
+        minWidth: 177,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           setState(() {
@@ -84,7 +86,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
       borderRadius: BorderRadius.circular(0.0),
       color: inactive_bg_color,
       child: MaterialButton(
-        minWidth: 196,
+        minWidth: 178,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           setState(() {
@@ -119,7 +121,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontFamily: 'Montserrat',
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold),
             ),
             ExpandTapWidget(
@@ -127,14 +129,28 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
               onTap: () {
                 Navigator.of(context).pop();
               },
-              child: const Text(
+              child: /*const Text(
                 'Cancel',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 14,
                     fontWeight: FontWeight.bold),
-              ),
+              )*/GestureDetector(
+                  child: Container(
+                      width: 85,
+                      height: 80,
+                      child: Center(
+                        child: ElevatedButton(
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      )),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  }),
             )
           ],
         ),
@@ -160,7 +176,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
-                                fontSize: 16),
+                                fontSize: 20),
                           ),
                           Visibility(
                             visible: visible_detailPage,
@@ -190,25 +206,34 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                           ),
                                         ],
                                       )),
+                                    ],
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 10, right: 10, top: 5),
+                                  child: Row(
+                                    children: [
                                       Expanded(
                                           child: Column(
-                                        crossAxisAlignment:
+                                            crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: <Widget>[
-                                              Text(
-                                                'Kitted SKU: ',
-                                                style: TextStyle(),
+                                            children: [
+                                              Row(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Kitted SKU: ',
+                                                    style: TextStyle(),
+                                                  ),
+                                                  Text(jsonResponse['kittedSKU'],
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.w700,
+                                                      )),
+                                                ],
                                               ),
-                                              Text(jsonResponse['kittedSKU'],
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w700,
-                                                  )),
                                             ],
-                                          ),
-                                        ],
-                                      )),
+                                          )),
                                     ],
                                   ),
                                 ),
@@ -395,7 +420,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                         'Stock In Hand: '
                                                       ),
                                                       Text(
-                                                        "",
+                                                        jsonResponse['imeiInformation']['stockInHand'].toString(),
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w700,
                                                     ),
@@ -408,74 +433,73 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                           ),
                                         ),
                                         Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                          child: Row(
-                                            children:   <Widget>[
-                                              Text('Short Description:'),
-                                              Text(
-                                                jsonResponse['imeiInformation']['shortDescription'],
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
                                           padding: EdgeInsets.only(
                                               left: 10, right: 10, top: 5),
                                           child: Row(
                                             children: [
                                               Expanded(
                                                   child: Column(
-                                                crossAxisAlignment:
+                                                    crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: <Widget>[
-                                                      const Text(
-                                                        'Min. Stock: ',
-                                                        style: TextStyle(),
-                                                      ),
-                                                      Text(
-                                                        jsonResponse['imeiInformation']['minimumStock'].toString(),
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w700,
-                                                        ),
+                                                    children: [
+                                                      Row(
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            'Min. Stock: ',
+                                                            style: TextStyle(),
+                                                          ),
+                                                          Text(
+                                                            jsonResponse['imeiInformation']['minimumStock'].toString(),
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w700,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
-                                                  ),
-                                                ],
-                                              )),
+                                                  )),
                                               SizedBox(
                                                 width: 2,
                                               ),
                                               Expanded(
                                                   child: Column(
-                                                crossAxisAlignment:
+                                                    crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Text(
-                                                        'Max. Stock: ',
-                                                      ),
-                                                      Text(
-                                                        jsonResponse['imeiInformation']['maximumStock'].toString(),
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w700,
-                                                        ),
+                                                    children: [
+                                                      Row(
+                                                        children: <Widget>[
+                                                          Text(
+                                                            'Max. Stock: ',
+                                                          ),
+                                                          Text(
+                                                            jsonResponse['imeiInformation']['maximumStock'].toString(),
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w700,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
-                                                  ),
-                                                ],
-                                              )),
+                                                  )),
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(
-                                          height: 10,
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children:   <Widget>[
+                                              Text('Short Description:'),
+                                              Expanded(child:  Text(
+                                                jsonResponse['imeiInformation']['shortDescription'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),)
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -552,8 +576,8 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                     ),
                                                     Expanded(
                                                       child: Text(
-                                                        jsonResponse['assign']['fulfillmentDate'].toString().substring(0,10),
-                                                        style: TextStyle(
+                                                          DateFormat("MM/dd/yyyy").format(DateTime.parse(jsonResponse['assign']['fulfillmentDate'].toString().substring(0,10)))
+                                                         , style: TextStyle(
                                                           fontWeight: FontWeight.w700,
                                                         ),
                                                       ),
@@ -626,27 +650,35 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                               SizedBox(
                                                 width: 2,
                                               ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10, right: 10, top: 5),
+                                          child: Row(
+                                            children: [
                                               Expanded(
                                                   child: Column(
-                                                crossAxisAlignment:
+                                                    crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: <Widget>[
-                                                      Text(
-                                                        'Serail#: ',
-                                                        style: TextStyle(),
-                                                      ),
-                                                      Text(
-                                                        jsonResponse['imeiInformation']['serialNumber'].toString(),
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w700,
-                                                        ),
+                                                    children: [
+                                                      Row(
+                                                        children: <Widget>[
+                                                          Text(
+                                                            'Serail#: ',
+                                                            style: TextStyle(),
+                                                          ),
+                                                          Text(
+                                                            jsonResponse['imeiInformation']['serialNumber'].toString(),
+                                                            style: TextStyle(
+                                                              fontWeight: FontWeight.w700,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
-                                                  ),
-                                                ],
-                                              )),
+                                                  )),
                                             ],
                                           ),
                                         ),
@@ -663,15 +695,15 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                   Row(
                                                     children: <Widget>[
                                                       const Text(
-                                                        'ESN: ',
+                                                        'ESN2: ',
                                                         style: TextStyle(),
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['cartonCount'].toString(),
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['imeI2'].toString(),
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w700,
                                                     ),
-                                                  ),*/
+                                                  ),
                                                     ],
                                                   ),
                                                 ],
@@ -679,7 +711,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                               SizedBox(
                                                 width: 2,
                                               ),
-                                              Expanded(
+                                             /* Expanded(
                                                   child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -689,16 +721,16 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                       Text(
                                                         'ESN2: ',
                                                       ),
-                                                      /*Text(
-                                                    cartonContent['itemsCount'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),*/
+                                                      Text(
+                                                        jsonResponse['imeiInformation']['imeI2'].toString(),
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ],
-                                              )),
+                                              )),*/
                                             ],
                                           ),
                                         ),
@@ -779,7 +811,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                       ),
                                     )),
                                 Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                  padding: EdgeInsets.fromLTRB(0, 0, 0, 95),
                                   child: Card(
                                     shape: RoundedRectangleBorder(
                                       side: const BorderSide(
@@ -892,7 +924,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                               const SizedBox(
                                                 width: 25,
                                               ),
-                                              SizedBox(width: 120,
+                                              SizedBox(width: 100,
                                                 child:  Text("Module"),),
                                               SizedBox(width: 80,
                                                 child:  Text("Status"),),
@@ -907,7 +939,7 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                   ),
                                 ),
 
-                                Padding(padding: EdgeInsets.only(left: 10,right: 0),
+                                Padding(padding: EdgeInsets.only(left: 10,bottom: 95),
                                   child: Container(
                                     child: ListView.builder(
                                       shrinkWrap: true,
@@ -924,14 +956,17 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                                   SizedBox(width: 50,
                                                     child:  Text((indexx+1).toString()),),
                                                   SizedBox(width: 80,
-                                                    child:  Text(jsonResponse['logList'][indexx]['logDate'].toString().substring(0,10)),),
+                                                    child:  Text(DateFormat("MM/dd/yyyy").format(DateTime.parse(jsonResponse['logList'][indexx]['logDate'].toString().substring(0,10))),
+                                                    style: TextStyle(fontWeight: FontWeight.bold),),),
                                                   const SizedBox(
-                                                    width: 25,
+                                                    width: 30,
                                                   ),
-                                                  SizedBox(width: 120,
-                                                    child:  Text(jsonResponse['logList'][indexx]['module'].toString()),),
+                                                  SizedBox(width: 100,
+                                                    child:  Text(jsonResponse['logList'][indexx]['module'].toString(),
+                                                      style: TextStyle(fontWeight: FontWeight.bold),),),
                                                   SizedBox(width: 80,
-                                                    child:  Text(jsonResponse['logList'][indexx]['status'].toString()),),
+                                                    child:  Text(jsonResponse['logList'][indexx]['status'].toString(),
+                                                        style: TextStyle(fontWeight: FontWeight.bold),),),
                                                 ],
                                               ),
                                             ),

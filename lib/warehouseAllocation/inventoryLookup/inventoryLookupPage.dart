@@ -50,6 +50,7 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
         maxLength: 20,
         controller: memoController,
         style: style,
+        keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
@@ -103,7 +104,7 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children:  [
               const Text('Serialized Inventory Lookup',textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
               ),
               ExpandTapWidget(
                 tapPadding: EdgeInsets.all(55.0),
@@ -114,9 +115,28 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
                     MaterialPageRoute(builder: (context) => DashboardPage('')),
                   );
                 },
-                child: const Text('Cancel',textAlign: TextAlign.center,
+                child: /*const Text('Cancel',textAlign: TextAlign.center,
                   style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
-                ),
+                )*/
+                GestureDetector(
+                    child: Container(
+                        width: 85,
+                        height: 80,
+                        child: Center(
+                          child: ElevatedButton(
+                            child: Text('Cancel'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => DashboardPage('')),
+                              );
+                            },
+                          ),
+                        )),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    }),
               )
             ],
           ),

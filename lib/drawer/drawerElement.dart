@@ -4,10 +4,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/login.dart';
+import 'package:langlobal/warehouseAllocation/skuLookup/skuLookupPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../locationLookup/locationLookupPage.dart';
 import '../select_company.dart';
 import '../transientSearch/transientOrderSearch.dart';
+import '../warehouseAllocation/inventoryLookup/inventoryLookupPage.dart';
 
 
 class DrawerElement extends StatefulWidget {
@@ -52,28 +54,30 @@ class _DrawerElement extends State<DrawerElement> {
                       children: <Widget>[
                         Container(
                           margin: const EdgeInsets.only(bottom: 0, top: 80),
-                          width: 200,
-                          height: 55,
+                          width: 160,
+                          height: 45,
                           child:  buildProfileImage(),
-                        ),
-                        Divider(
-                            color: Colors.black
                         ),
                         SizedBox(height: 10,),
                         Text(userName,style: const TextStyle(
                             color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold,
                             fontSize: 16),),
-                        const SizedBox(height: 20.0),
+                        const SizedBox(height: 5.0),
                       ],
                     ),
                   ),
                 ),
+                Divider(
+                    color: Colors.black
+                ),
                 ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(vertical: -4),
                   minLeadingWidth : 2,
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                   title: const Text(
                     'Menu',
-                    style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -87,11 +91,13 @@ class _DrawerElement extends State<DrawerElement> {
                     color: Colors.black
                 ),
                 ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(vertical: -4),
                   minLeadingWidth : 2,
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                   title: const Text(
                     'Transient Receive',
-                    style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -105,11 +111,13 @@ class _DrawerElement extends State<DrawerElement> {
                     color: Colors.black
                 ),
                 ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(vertical: -4),
                   minLeadingWidth : 2,
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                   title: const Text(
                     'Location Lookup',
-                    style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -122,16 +130,58 @@ class _DrawerElement extends State<DrawerElement> {
                 Divider(
                     color: Colors.black
                 ),
+                ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(vertical: -4),
+                  minLeadingWidth : 2,
+                  //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
+                  title: const Text(
+                    'SKU Lookup',
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SkuLookupPage('')),
+                    );
+                  },
+                ),
+                Divider(
+                    color: Colors.black
+                ),
+                ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(vertical: -4),
+                  minLeadingWidth : 2,
+                  //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
+                  title: const Text(
+                    'IMEI Lookup',
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InventoryLookupPage('')),
+                    );
+                  },
+                ),
+                Divider(
+                    color: Colors.black
+                ),
                 Visibility(
                   visible: visibleCompany,
                     child:Column(
                       children: <Widget>[
                         ListTile(
+                          dense: true,
+                          visualDensity: VisualDensity(vertical: -4),
                           minLeadingWidth : 2,
                           //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                           title: const Text(
                             'Change Company',
-                            style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
                           ),
                           onTap: () {
                             Navigator.pop(context);
@@ -244,7 +294,7 @@ class _DrawerElement extends State<DrawerElement> {
   );
 
   Widget buildProfileImage() => Container(
-    color: Colors.grey,
+    color: Colors.white,
     child: Image.network(
       companyLogo,
       fit: BoxFit.cover,

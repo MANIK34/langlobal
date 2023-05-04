@@ -100,7 +100,7 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
             const Text('Inventory Allocation',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
-            ExpandTapWidget(
+            /*ExpandTapWidget(
               tapPadding: EdgeInsets.all(55.0),
               onTap: (){
                 Navigator.of(context).pop();
@@ -108,7 +108,22 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
               child: const Text('Cancel',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
               ),
-            )
+            )*/
+            GestureDetector(
+                child: Container(
+                    width: 85,
+                    height: 80,
+                    child: Center(
+                      child: ElevatedButton(
+                        child: Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    )),
+                onTap: () {
+                  Navigator.of(context).pop();
+                }),
           ],
         ),),
       drawer: DrawerElement(),

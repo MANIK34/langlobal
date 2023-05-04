@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import '../../locationLookup/locationLookupDetailPage.dart';
 import 'cartonLookupPage.dart';
 
 class CartonLookupDetailPage extends StatefulWidget {
@@ -31,6 +33,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
   List<TextEditingController> controllers = []; //the controllers list
   var esnValue;
   bool _visibleImei=false;
+  BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -99,7 +102,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
             const Text('Carton Lookup',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
-            ExpandTapWidget(
+            /*ExpandTapWidget(
               tapPadding: EdgeInsets.all(55.0),
               onTap: (){
                 Navigator.of(context).pop();
@@ -107,7 +110,26 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
               child: const Text('Cancel',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
               ),
-            )
+            )*/
+
+            GestureDetector(
+                child: Container(
+                    width: 85,
+                    height: 80,
+                    child: Center(
+                      child: ElevatedButton(
+                        child: Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+
+                        },
+                      ),
+                    )),
+                onTap: () {
+                  Navigator.of(context).pop();
+
+                }),
+
           ],
         ),),
       drawer: DrawerElement(),
@@ -157,15 +179,24 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                 Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   child: Row(
                                     children: <Widget>[
-                                      Text('Location:'),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(cartonContent['location'].toString(),style: TextStyle(
-                                          fontWeight: FontWeight.bold
-                                      )),
-                                      const SizedBox(
-                                        width: 5,
+                                      GestureDetector(
+                                        onTap: (){
+                                          callGetCartonLookupApi(cartonContent['location'].toString());
+                                        },
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text('Location:'),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Text(cartonContent['location'].toString(),style: TextStyle(
+                                                fontWeight: FontWeight.bold,color:Colors.blue,decoration: TextDecoration.underline
+                                            )),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       Text('I'),
                                       const SizedBox(
@@ -269,7 +300,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text(cartonContent['sku'].toString(),style: TextStyle(
+                                      Text(cartonContent['condition'].toString(),style: TextStyle(
                                           fontWeight: FontWeight.bold
                                       ),),
                                       const SizedBox(
@@ -279,9 +310,9 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text(cartonContent['condition'].toString(),style: TextStyle(
+                                      Expanded(child: Text(cartonContent['sku'].toString(),style: TextStyle(
                                           fontWeight: FontWeight.bold
-                                      ),),
+                                      ),),),
                                     ],
                                   ),),
                                 const SizedBox(
@@ -370,5 +401,65 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
         ),
       ),
     );
+  }
+
+  void callGetCartonLookupApi(String location) async {
+    buildShowDialog(context);
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    String? companyID = myPrefs.getString("companyID");
+    var url = "https://api.langlobal.com/inventoryallocation/v1/locationlookup/"+location;
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}'
+    };
+    print(url.toString());
+    var response = await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LocationLookupDetailPage(jsonResponse['locationContent'])),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
+    debugPrint(response.body);
+
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+
+  void _showToast(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(errorMessage),
+      action: SnackBarAction(
+        label: "OK",
+        onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
+      ),
+    ));
   }
 }

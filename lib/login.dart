@@ -108,12 +108,14 @@ class _LoginPage extends State<LoginPage> {
           var decoded = base64.decode(bs64);
           final Uint8List bytess =base64.decode(bs64);
           Image img =  Image.memory(decoded);*/
-          Navigator.push(
+
+         /* Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => BluetoothScan()),
-          );
-         /* if (emailController.text == "") {
+          );*/
+
+          if (emailController.text == "") {
             _showToast("Username can't be empty");
           } else if (passwordController.text == "") {
             _showToast("Password can't be empty");
@@ -122,7 +124,7 @@ class _LoginPage extends State<LoginPage> {
               _isLoading = true;
             });
             callLoginApi();
-          }*/
+          }
         },
         child: Text("Login",
             textAlign: TextAlign.center,

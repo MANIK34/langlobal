@@ -8,6 +8,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/requestParams/locationList.dart';
+import '../../warehouseAllocation/skuLookup/skuLookupDetailPage.dart';
 
 class StockInHandDetailPage extends StatefulWidget {
   var stockInHands;
@@ -130,7 +131,7 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
             const Text('Stock In Hand',textAlign: TextAlign.center,
               style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
             ),
-            ExpandTapWidget(
+           /* ExpandTapWidget(
               tapPadding: EdgeInsets.all(55.0),
               onTap: (){
                 Navigator.of(context).pop();
@@ -138,7 +139,22 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
               child: const Text('Cancel',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
               ),
-            )
+            )*/
+            GestureDetector(
+                child: Container(
+                    width: 85,
+                    height: 80,
+                    child: Center(
+                      child: ElevatedButton(
+                        child: Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    )),
+                onTap: () {
+                  Navigator.of(context).pop();
+                }),
           ],
         ),),
       drawer: DrawerElement(),
@@ -242,52 +258,61 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
                           primary: false,
                           itemCount: stockInHands.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      ""+ (index+1).toString()+". ",
-                                    ),
-                                    Text(
-                                      stockInHands[index]['sku'],
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      stockInHands[index]['stockInHand'].toString(),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 12,
-                                  child:  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(1.0),
-                                    ),
+                            return GestureDetector(
+                              onTap: (){
+                                callGetSkuApi(stockInHands[index]['sku'].toString());
+                                print("${stockInHands[index]['sku']}");
+                              },
+                              child:  Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        ""+ (index+1).toString()+". ",
+                                      ),
+                                      Text(
+                                        stockInHands[index]['sku'],
+                                        style: TextStyle(
+                                          decoration: TextDecoration.underline,color: Colors.blue
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        stockInHands[index]['stockInHand'].toString(),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                    child:  Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(1.0),
+                                      ),
 
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: const [
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: const [
 
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              ' ',
-                                              style: TextStyle(
-                                                fontSize: 1,
-                                                fontWeight: FontWeight.w700,
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                ' ',
+                                                style: TextStyle(
+                                                  fontSize: 1,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
                                               ),
                                             ),
-                                          ),
 
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             );
                           },
                         )
@@ -365,5 +390,46 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
           );
         });
 
+  }
+
+  void callGetSkuApi(String Sku) async{
+    buildShowDialog(context);
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+    String searchBy="sku";
+    var url = "https://api.langlobal.com/inventory/v1/Customers/"+companyID!+"?"+searchBy+"="+Sku;
+    print("url ::::: "+url);
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var response =
+    await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      print(response.body);
+      Navigator.of(_context!).pop();
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SkuLookupDetailPage(jsonResponse),
+              ));
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
   }
 }

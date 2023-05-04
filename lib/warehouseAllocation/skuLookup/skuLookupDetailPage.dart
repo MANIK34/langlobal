@@ -1,14 +1,20 @@
 import 'dart:convert';
+
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
+import '../cartonLookup/cartonLookupDetailPage.dart';
 
 class SkuLookupDetailPage extends StatefulWidget {
   var jsonResponse;
 
-  SkuLookupDetailPage(this.jsonResponse,{Key? key}) : super(key: key);
+  SkuLookupDetailPage(this.jsonResponse, {Key? key}) : super(key: key);
 
   @override
   _SkuLookupDetailPage createState() => _SkuLookupDetailPage(this.jsonResponse);
@@ -16,6 +22,7 @@ class SkuLookupDetailPage extends StatefulWidget {
 
 class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
   var jsonResponse;
+
   _SkuLookupDetailPage(this.jsonResponse);
 
   TextStyle style = const TextStyle(
@@ -31,6 +38,7 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
   Color inactive_bg_color = Colors.grey.shade200;
   Color inactive_text_color = Colors.grey;
   bool visible_detailPage = true;
+  BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -61,11 +69,11 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
       borderRadius: BorderRadius.circular(0.0),
       color: active_bg_color,
       child: MaterialButton(
-        minWidth: 196,
+        minWidth: 177,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           setState(() {
-            visible_detailPage=true;
+            visible_detailPage = true;
             active_bg_color = Colors.orange;
             active_text_color = Colors.white;
             inactive_bg_color = Colors.grey.shade200;
@@ -84,11 +92,11 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
       borderRadius: BorderRadius.circular(0.0),
       color: inactive_bg_color,
       child: MaterialButton(
-        minWidth: 196,
+        minWidth: 178,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           setState(() {
-            visible_detailPage=false;
+            visible_detailPage = false;
             active_bg_color = Colors.grey.shade200;
             active_text_color = Colors.grey;
             inactive_bg_color = Colors.orange;
@@ -101,8 +109,6 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                 color: inactive_text_color, fontWeight: FontWeight.bold)),
       ),
     );
-
-
 
     return Scaffold(
       bottomSheet: Container(
@@ -124,8 +130,8 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
             ),
-            /*ExpandTapWidget(
-              tapPadding: EdgeInsets.fromWindowPadding(),
+           /* ExpandTapWidget(
+              tapPadding: EdgeInsets.all(55.0),
               onTap: () {
                 Navigator.of(context).pop();
               },
@@ -137,7 +143,7 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                     fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),
-            )*/
+            ),*/
             GestureDetector(
                 child: Container(
                     width: 85,
@@ -145,16 +151,14 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                     child: Center(
                       child: ElevatedButton(
                         child: Text('Cancel'),
-                        onPressed: (){
+                        onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
-                    )
-                ),
-                onTap: (){
+                    )),
+                onTap: () {
                   Navigator.of(context).pop();
-                }
-            ),
+                }),
           ],
         ),
       ),
@@ -178,35 +182,15 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+
                               Text(
-                                "["+ jsonResponse['category']+"] - ",
+                                jsonResponse['sku'],
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
-                                    fontSize: 14),
+                                    fontSize: 20),
                               ),
-                              Text(
-                                "["+ jsonResponse['sku']+"] - ",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontSize: 14),
-                              ),
-                              Text(
-                                "["+ jsonResponse['condition']+"] ",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontSize: 14),
-                              ),
-                              Text(
-                                jsonResponse['skuWithCategory'],
-                                style: TextStyle(
-                                     decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontSize: 12),
-                              ),
+
                             ],
                           ),
                           Visibility(
@@ -217,7 +201,7 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                     alignment: Alignment.centerLeft,
                                     child: Padding(
                                       padding:
-                                      EdgeInsets.only(top: 15, left: 8),
+                                          EdgeInsets.only(top: 15, left: 8),
                                       child: Text(
                                         'Product Info: ',
                                         style: TextStyle(
@@ -242,13 +226,21 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                         ),
                                         Padding(
                                           padding:
-                                          EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                              EdgeInsets.fromLTRB(10, 0, 10, 0),
                                           child: Row(
-                                            children:   <Widget>[
-                                          Text(jsonResponse['productInfo']['productName'],
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                            ),),
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                jsonResponse['category']+" - ",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                    fontSize: 14),
+                                              ),
+                                              Expanded(child: Text(jsonResponse['productInfo']['productName'],
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w700,),),)
                                             ],
                                           ),
                                         ),
@@ -259,53 +251,46 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                             children: [
                                               Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
+                                                crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: <Widget>[
-                                                          const Text(
-                                                            'Maker: ',
-                                                            style: TextStyle(),
-                                                          ),
-                                                          Text(jsonResponse['productInfo']['maker'],
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.w700,
-                                                            ),),
-                                                        ],
+                                                children: [
+                                                  Row(
+                                                    children: <Widget>[
+                                                      const Text(
+                                                        'Maker: ',
+                                                        style: TextStyle(),
+                                                      ),
+                                                      Text(
+                                                        jsonResponse[
+                                                                'productInfo']
+                                                            ['maker'],
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
                                                       ),
                                                     ],
-                                                  )),
-                                              SizedBox(
-                                                width: 2,
-                                              ),
-                                              Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Text(
-                                                            'Stock In Hand: ',
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  )),
+                                                  ),
+                                                ],
+                                              )),
                                             ],
                                           ),
                                         ),
                                         Padding(
                                           padding:
-                                          EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                              EdgeInsets.fromLTRB(10, 5, 10, 0),
                                           child: Row(
-                                            children:   <Widget>[
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
                                               Text('Short Description:'),
-                                              Text(jsonResponse['productInfo']['shortDescription'],
+                                              Expanded(child: Text(
+                                                jsonResponse['productInfo']
+                                                ['shortDescription'],
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w700,
-                                                ),),
+                                                ),
+                                              ),)
                                             ],
                                           ),
                                         ),
@@ -316,49 +301,59 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                             children: [
                                               Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
+                                                crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: <Widget>[
-                                                          const Text(
-                                                            'Min. Stock: ',
-                                                            style: TextStyle(),
-                                                          ),
-                                                          Text(jsonResponse['productInfo']['minimumStock'].toString(),
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.w700,
-                                                            ),),
-                                                        ],
+                                                children: [
+                                                  Row(
+                                                    children: <Widget>[
+                                                      const Text(
+                                                        'Min. Stock: ',
+                                                        style: TextStyle(),
+                                                      ),
+                                                      Text(
+                                                        jsonResponse[
+                                                                    'productInfo']
+                                                                ['minimumStock']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
                                                       ),
                                                     ],
-                                                  )),
+                                                  ),
+                                                ],
+                                              )),
                                               SizedBox(
                                                 width: 2,
                                               ),
                                               Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
+                                                crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Text(
-                                                            'Max. Stock: ',
-                                                          ),
-                                                          Text(jsonResponse['productInfo']['maximumStock'].toString(),
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.w700,
-                                                            ),),
-                                                        ],
+                                                children: [
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        'Max. Stock: ',
+                                                      ),
+                                                      Text(
+                                                        jsonResponse[
+                                                                    'productInfo']
+                                                                ['maximumStock']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
                                                       ),
                                                     ],
-                                                  )),
+                                                  ),
+                                                ],
+                                              )),
                                             ],
                                           ),
                                         ),
-
-
                                         Padding(
                                           padding: EdgeInsets.only(
                                               left: 10, right: 10, top: 5),
@@ -366,48 +361,57 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                             children: [
                                               Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
+                                                crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: <Widget>[
-                                                          const Text(
-                                                            'Proudcut Type: ',
-                                                            style: TextStyle(),
-                                                          ),
-                                                          Text(jsonResponse['productInfo']['productType'],
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.w700,
-                                                            ),),
-                                                        ],
+                                                children: [
+                                                  Row(
+                                                    children: <Widget>[
+                                                      const Text(
+                                                        'Proudcut Type: ',
+                                                        style: TextStyle(),
+                                                      ),
+                                                      Text(
+                                                        jsonResponse[
+                                                                'productInfo']
+                                                            ['productType'],
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
                                                       ),
                                                     ],
-                                                  )),
+                                                  ),
+                                                ],
+                                              )),
                                               SizedBox(
                                                 width: 2,
                                               ),
                                               Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
+                                                crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Text(
-                                                            'UPC: ',
-                                                          ),
-                                                          Text(jsonResponse['productInfo']['upc'],
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.w700,
-                                                            ),),
-                                                        ],
+                                                children: [
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        'UPC: ',
+                                                      ),
+                                                      Text(
+                                                        jsonResponse[
+                                                                'productInfo']
+                                                            ['upc'],
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
                                                       ),
                                                     ],
-                                                  )),
+                                                  ),
+                                                ],
+                                              )),
                                             ],
                                           ),
                                         ),
-
                                         Padding(
                                           padding: EdgeInsets.only(
                                               left: 10, right: 10, top: 5),
@@ -415,56 +419,76 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                             children: [
                                               Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
+                                                crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: <Widget>[
-                                                          const Text(
-                                                            'Active: ',
-                                                            style: TextStyle(),
-                                                          ),
-                                                          if(jsonResponse['productInfo']['active']==true)
-                                                            Text('Yes',
-                                                                style: TextStyle(
-                                                                  fontWeight: FontWeight.w700,
-                                                                )),
-                                                          if(jsonResponse['productInfo']['active']==false)
-                                                            Text('No',
-                                                                style: TextStyle(
-                                                                  fontWeight: FontWeight.w700,
-                                                                )),
-                                                        ],
+                                                children: [
+                                                  Row(
+                                                    children: <Widget>[
+                                                      const Text(
+                                                        'Active: ',
+                                                        style: TextStyle(),
                                                       ),
+                                                      if (jsonResponse[
+                                                                  'productInfo']
+                                                              ['active'] ==
+                                                          true)
+                                                        Text('Yes',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                            )),
+                                                      if (jsonResponse[
+                                                                  'productInfo']
+                                                              ['active'] ==
+                                                          false)
+                                                        Text('No',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                            )),
                                                     ],
-                                                  )),
+                                                  ),
+                                                ],
+                                              )),
                                               SizedBox(
                                                 width: 2,
                                               ),
                                               Expanded(
                                                   child: Column(
-                                                    crossAxisAlignment:
+                                                crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Text(
-                                                            'ReStocking: ',
-                                                          ),
-                                                          if(jsonResponse['productInfo']['reStocking']==true)
-                                                            Text('Yes',
-                                                                style: TextStyle(
-                                                                  fontWeight: FontWeight.w700,
-                                                                )),
-                                                          if(jsonResponse['productInfo']['reStocking']==false)
-                                                            Text('No',
-                                                                style: TextStyle(
-                                                                  fontWeight: FontWeight.w700,
-                                                                )),
-                                                        ],
+                                                children: [
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        'ReStocking: ',
                                                       ),
+                                                      if (jsonResponse[
+                                                                  'productInfo']
+                                                              ['reStocking'] ==
+                                                          true)
+                                                        Text('Yes',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                            )),
+                                                      if (jsonResponse[
+                                                                  'productInfo']
+                                                              ['reStocking'] ==
+                                                          false)
+                                                        Text('No',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                            )),
                                                     ],
-                                                  )),
+                                                  ),
+                                                ],
+                                              )),
                                             ],
                                           ),
                                         ),
@@ -478,7 +502,8 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                 Align(
                                     alignment: Alignment.centerLeft,
                                     child: Padding(
-                                      padding: EdgeInsets.only(top: 25, left: 8),
+                                      padding:
+                                          EdgeInsets.only(top: 25, left: 8),
                                       child: Text(
                                         'Stock Level: ',
                                         style: TextStyle(
@@ -506,12 +531,12 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                               left: 10, right: 10, top: 5),
                                           child: Row(
                                             children: [
-                                               SizedBox(
-                                                 width: 50,
-                                                 child: Text('S.NO.'),
-                                               ),
                                               SizedBox(
-                                                width: 210,
+                                                width: 50,
+                                                child: Text('S.NO.'),
+                                              ),
+                                              SizedBox(
+                                                width: 190,
                                                 child: Text('Condition'),
                                               ),
                                               SizedBox(
@@ -528,6 +553,54 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                     ),
                                   ),
                                 ),
+
+                                Padding(padding: EdgeInsets.only(left: 15,right: 0),
+                                  child: Container(
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: jsonResponse['stocks'].length,
+                                      itemBuilder: (BuildContext context, int indexx) {
+                                        return Column(
+                                          children: <Widget>[
+                                            Container(
+                                              height: 30,
+                                              child:  Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 55,
+                                                    child: Text((indexx + 1)
+                                                        .toString()),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 190,
+                                                    child: Text( jsonResponse['stocks'][indexx]['condition'],
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .bold)
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 80,
+                                                    child: Text( jsonResponse['stocks'][indexx]['stock'].toString(),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .bold)),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            const Divider(
+                                                color: Colors.black
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),),
                               ],
                             ),
                           ),
@@ -555,17 +628,26 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                               left: 5, right: 0, top: 5),
                                           child: Row(
                                             children: [
-                                              SizedBox(width: 20,
-                                                child:  Text("#"),),
-                                              SizedBox(width: 110,
-                                                child:  Text("Cartons"),),
-                                              SizedBox(width: 10,),
-                                              SizedBox(width: 70,
-                                                child:  Text("Location"),),
-                                              SizedBox(width: 50,
-                                                child:  Text("Count"),),
-                                              SizedBox(width: 80,
-                                                child:  Text("Assign Date"),),
+                                              SizedBox(
+                                                width: 20,
+                                                child: Text("#"),
+                                              ),
+                                              SizedBox(
+                                                width: 105,
+                                                child: Text("Cartons"),
+                                              ),
+                                              SizedBox(
+                                                width: 70,
+                                                child: Text("Location"),
+                                              ),
+                                              SizedBox(
+                                                width: 60,
+                                                child: Text("Count"),
+                                              ),
+                                              SizedBox(
+                                                width: 80,
+                                                child: Text("Assign Date"),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -576,45 +658,95 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                     ),
                                   ),
                                 ),
-
-                                Padding(padding: EdgeInsets.only(left: 10,right: 0),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 0),
                                   child: Container(
                                     child: ListView.builder(
                                       shrinkWrap: true,
                                       primary: false,
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: jsonResponse['cartons'].length,
-                                      itemBuilder: (BuildContext context, int indexx) {
-                                        return Column(
-                                          children: <Widget>[
-                                            Container(
-                                              height: 30,
-                                              child:  Row(
-                                                children: [
-                                                  SizedBox(width: 20,
-                                                    child:  Text((indexx+1).toString()),),
-                                                  SizedBox(width: 115,
-                                                    child:  Expanded(
-                                                      child: Text(jsonResponse['cartons'][indexx]['cartonID'].toString()),
-                                                    ),),
-                                                  SizedBox(width: 10,),
-                                                  SizedBox(width: 80,
-                                                    child:  Text(jsonResponse['cartons'][indexx]['location'].toString()),),
-                                                  SizedBox(width: 35,
-                                                    child:  Text(jsonResponse['cartons'][indexx]['quantity'].toString()),),
-                                                  SizedBox(width: 80,
-                                                    child:  Text(jsonResponse['cartons'][indexx]['assignedDateTime'].toString().substring(0,10)),),
-                                                ],
+                                      itemBuilder:
+                                          (BuildContext context, int indexx) {
+                                        return GestureDetector(
+                                          onTap: (){
+                                            callGetCartonLookupApi(jsonResponse['cartons'][indexx]['cartonID'].toString());
+                                            print(jsonResponse['cartons'][indexx]['cartonID'].toString());
+                                          },
+                                          child: Column(
+                                            children: <Widget>[
+                                              Container(
+                                                height: 30,
+                                                child: Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 20,
+                                                      child: Text((indexx + 1)
+                                                          .toString()),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 95,
+                                                      child:Text(
+                                                        jsonResponse['cartons']
+                                                        [indexx]
+                                                        ['cartonID']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .bold,decoration: TextDecoration.underline,color: Colors.blue),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    SizedBox(
+                                                        width: 80,
+                                                        child: Text(
+                                                          jsonResponse['cartons']
+                                                          [indexx]
+                                                          ['location']
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .bold),
+                                                        )),
+                                                    SizedBox(
+                                                      width: 45,
+                                                      child: Text(
+                                                        jsonResponse['cartons']
+                                                        [indexx]
+                                                        ['quantity']
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                            FontWeight.bold),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 90,
+                                                      child: Text(DateFormat("MM/dd/yyyy").format(DateTime.parse(jsonResponse['cartons']
+                                                        [indexx][
+                                                        'assignedDateTime']
+                                                            .toString()
+                                                            .substring(0, 10))),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                            FontWeight.bold),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            const Divider(
-                                                color: Colors.black
-                                            ),
-                                          ],
+                                              const Divider(color: Colors.black),
+                                            ],
+                                          ),
                                         );
                                       },
                                     ),
-                                  ),)
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -625,5 +757,66 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
             )),
       ),
     );
+  }
+
+  void callGetCartonLookupApi(String cartonId) async {
+    buildShowDialog(context);
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    String? companyID = myPrefs.getString("companyID");
+    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonlookup/"+
+       cartonId;
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}'
+    };
+    print(url.toString());
+    var response = await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonLookupDetailPage(jsonResponse['cartonContent'])),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
+    debugPrint(response.body);
+
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+
+  void _showToast(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(errorMessage),
+      action: SnackBarAction(
+        label: "OK",
+        onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
+      ),
+    ));
   }
 }
