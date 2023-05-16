@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -562,41 +560,36 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: jsonResponse['stocks'].length,
                                       itemBuilder: (BuildContext context, int indexx) {
-                                        return Column(
-                                          children: <Widget>[
-                                            Container(
-                                              height: 30,
-                                              child:  Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 55,
-                                                    child: Text((indexx + 1)
-                                                        .toString()),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 190,
-                                                    child: Text( jsonResponse['stocks'][indexx]['condition'],
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold)
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 80,
-                                                    child: Text( jsonResponse['stocks'][indexx]['stock'].toString(),
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold)),
-                                                  )
-                                                ],
+                                        return Container(
+                                          color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                          height: 30,
+                                          child:  Row(
+                                            children: [
+                                              SizedBox(width: 5,),
+                                              SizedBox(
+                                                width: 50,
+                                                child: Text((indexx + 1)
+                                                    .toString()),
                                               ),
-                                            ),
-                                            const Divider(
-                                                color: Colors.black
-                                            ),
-                                          ],
+                                              SizedBox(
+                                                width: 190,
+                                                child: Text( jsonResponse['stocks'][indexx]['condition'],
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 80,
+                                                child: Text( jsonResponse['stocks'][indexx]['stock'].toString(),
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)),
+                                              )
+                                            ],
+                                          ),
                                         );
                                       },
                                     ),

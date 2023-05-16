@@ -172,6 +172,7 @@ class _SelectCompany extends State<SelectCompany> {
         onPressed: () async {
           SharedPreferences myPrefs = await SharedPreferences.getInstance();
           myPrefs.setString('companyID', companyID.toString());
+          print(companyID.toString());
           setState(() {
             _isLoading = true;
           });

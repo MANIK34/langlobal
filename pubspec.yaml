@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.18.1 <3.0.0'
+  sdk: '>=2.19.0 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -44,11 +44,8 @@ dependencies:
   flutter_launcher_icons:
   expand_tap_area: ^1.1.0
   firebase_analytics:
-  bluetooth_print: ^4.3.0
-  bluetooth_thermal_printer: ^0.0.6
-  esc_pos_utils: ^1.1.0
-  image: any
-
+  printing: ^5.10.4
+  path_provider: ^2.0.15
 
 
 dev_dependencies:
@@ -81,51 +78,51 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lan_global_icon.jpeg
-    - pb_logo.jpg
-    - user.png
-    - home.png
-    - app_logo.png
-    - app_logo1.jpeg
-    - app_logo2.png
-    - error_log.png
-    - bill_detail.png
-    - payee.png
-    - status.png
-    - ecs.png
-    - payee_user.png
-    - monitor_db.png
-    - nsdl.png
-    - profile.png
-    - graph.png
-    - ifms_logo.jpeg
-    - niclogo.png
-    - pb_logo1.png
-    - make_in_india.jpg
-    - make_in_india1.jpg
-    - icon_processed.png
-    - work_process.png
-    - no_data.png
-    - sms.png
-    - gst.png
-    - rupee.png
-    - numbers.png
-    - amount.png
-    - file.png
-    - records.png
-    - error_code.png
-    - response_code.png
-    - file2.png
-    - records2.png
-    - hold.png
-    - total_record.png
-    - challan.png
-    - icon_error.gif
-    - icon_error1.gif
-    - generate_report.png
-    - read.png
-    - right_arrow.png
-    - app_icon.png
+     - assets/lan_global_icon.jpeg
+     - assets/pb_logo.jpg
+     - assets/user.png
+     - assets/home.png
+     - assets/app_logo.png
+     - assets/app_logo1.jpeg
+     - assets/app_logo2.png
+     - assets/error_log.png
+     - assets/bill_detail.png
+     - assets/payee.png
+     - assets/status.png
+     - assets/ecs.png
+     - assets/payee_user.png
+     - assets/monitor_db.png
+     - assets/nsdl.png
+     - assets/profile.png
+     - assets/graph.png
+     - assets/ifms_logo.jpeg
+     - assets/niclogo.png
+     - assets/pb_logo1.png
+     - assets/make_in_india.jpg
+     - assets/make_in_india1.jpg
+     - assets/icon_processed.png
+     - assets/work_process.png
+     - assets/no_data.png
+     - assets/sms.png
+     - assets/gst.png
+     - assets/rupee.png
+     - assets/numbers.png
+     - assets/amount.png
+     - assets/file.png
+     - assets/records.png
+     - assets/error_code.png
+     - assets/response_code.png
+     - assets/file2.png
+     - assets/records2.png
+     - assets/hold.png
+     - assets/total_record.png
+     - assets/challan.png
+     - assets/icon_error.gif
+     - assets/icon_error1.gif
+     - assets/generate_report.png
+     - assets/read.png
+     - assets/right_arrow.png
+     - assets/app_icon.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

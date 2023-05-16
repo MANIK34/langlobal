@@ -430,59 +430,31 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                           primary: false,
                           itemCount: movementInfo['cartons'].length,
                           itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      ""+ (index+1).toString()+". ",
-                                    ),
-                                    Text(
-                                      movementInfo['cartons'][index]['cartonID'],
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      movementInfo['cartons'][index]['sku'],
-
-                                    ),
-                                    SizedBox(
-                                      width: 50,
-                                    ),
-                                    Text(
-                                      movementInfo['cartons'][index]['assignedQty'].toString(),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 12,
-                                  child:  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(1.0),
-                                    ),
-
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: const [
-
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              ' ',
-                                              style: TextStyle(
-                                                fontSize: 1,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                          ),
-
-                                        ],
+                            return Container(
+                              color: index % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                              height: 40,
+                              child: Row(
+                                    children: <Widget>[
+                                      SizedBox(width: 5,),
+                                      Text(
+                                        ""+ (index+1).toString()+". ",
                                       ),
-                                    ),
+                                      Text(
+                                        movementInfo['cartons'][index]['cartonID'],
+                                      ),
+                                      SizedBox(
+                                        width: 110,
+                                        child:Text(
+                                          movementInfo['cartons'][index]['sku'],
+                                          textAlign: TextAlign.end,
+                                        ) ,
+                                      ),
+                                      SizedBox(width: 45,),
+                                      Text(
+                                        movementInfo['cartons'][index]['assignedQty'].toString(),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
                             );
                           },
                         )

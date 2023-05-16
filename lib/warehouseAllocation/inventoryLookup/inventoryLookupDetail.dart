@@ -947,33 +947,28 @@ class _InventoryLookupDetailPage extends State<InventoryLookupDetailPage> {
                                       physics: NeverScrollableScrollPhysics(),
                                       itemCount: jsonResponse['logList'].length,
                                       itemBuilder: (BuildContext context, int indexx) {
-                                        return Column(
-                                          children: <Widget>[
-                                            Container(
-                                              height: 30,
-                                              child:  Row(
-                                                children: [
-                                                  SizedBox(width: 50,
-                                                    child:  Text((indexx+1).toString()),),
-                                                  SizedBox(width: 80,
-                                                    child:  Text(DateFormat("MM/dd/yyyy").format(DateTime.parse(jsonResponse['logList'][indexx]['logDate'].toString().substring(0,10))),
-                                                    style: TextStyle(fontWeight: FontWeight.bold),),),
-                                                  const SizedBox(
-                                                    width: 30,
-                                                  ),
-                                                  SizedBox(width: 100,
-                                                    child:  Text(jsonResponse['logList'][indexx]['module'].toString(),
-                                                      style: TextStyle(fontWeight: FontWeight.bold),),),
-                                                  SizedBox(width: 80,
-                                                    child:  Text(jsonResponse['logList'][indexx]['status'].toString(),
-                                                        style: TextStyle(fontWeight: FontWeight.bold),),),
-                                                ],
+                                        return Container(
+                                          color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                          height: 30,
+                                          child:  Row(
+                                            children: [
+                                              SizedBox(width: 5,),
+                                              SizedBox(width:45,
+                                                child:  Text((indexx+1).toString()),),
+                                              SizedBox(width: 80,
+                                                child:  Text(DateFormat("MM/dd/yyyy").format(DateTime.parse(jsonResponse['logList'][indexx]['logDate'].toString().substring(0,10))),
+                                                  style: TextStyle(fontWeight: FontWeight.bold),),),
+                                              const SizedBox(
+                                                width: 30,
                                               ),
-                                            ),
-                                            const Divider(
-                                                color: Colors.black
-                                            ),
-                                          ],
+                                              SizedBox(width: 100,
+                                                child:  Text(jsonResponse['logList'][indexx]['module'].toString(),
+                                                  style: TextStyle(fontWeight: FontWeight.bold),),),
+                                              SizedBox(width: 80,
+                                                child:  Text(jsonResponse['logList'][indexx]['status'].toString(),
+                                                  style: TextStyle(fontWeight: FontWeight.bold),),),
+                                            ],
+                                          ),
                                         );
                                       },
                                     ),

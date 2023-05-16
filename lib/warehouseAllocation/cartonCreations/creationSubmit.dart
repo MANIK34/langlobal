@@ -302,20 +302,18 @@ class _CreationSubmitPage extends State<CreationSubmitPage> {
                                         primary: false,
                                         itemCount: textFeildList.length,
                                         itemBuilder: (BuildContext context, int index) {
-                                          return Column(
-                                            children: <Widget>[
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    ""+ (index+1).toString()+". ",
-                                                  ),
-                                                  Expanded(child: textFeildList[index]),
-                                                ],
-                                              ),
-                                              const Divider(
-                                                  color: Colors.black
-                                              ),
-                                            ],
+                                          return Container(
+                                            height: 35,
+                                            color: index % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                            child: Row(
+                                                  children: [
+                                                    SizedBox(width: 5,),
+                                                    Text(
+                                                      ""+ (index+1).toString()+". ",
+                                                    ),
+                                                    Expanded(child: textFeildList[index]),
+                                                  ],
+                                                ),
                                           );
                                         },
                                       ),

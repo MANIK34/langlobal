@@ -372,20 +372,23 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                   primary: false,
                                   itemCount: textFeildList.length,
                                   itemBuilder: (BuildContext context, int index) {
-                                    return Column(
-                                      children: <Widget>[
-                                        Row(
-                                          children: [
-                                            Text(
-                                              ""+ (index+1).toString()+". ",
-                                            ),
-                                            Expanded(child: textFeildList[index]),
-                                          ],
-                                        ),
-                                        const Divider(
-                                            color: Colors.black
-                                        ),
-                                      ],
+                                    return Container(
+                                      color: index % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Row(
+                                            children: [
+                                              Text(
+                                                ""+ (index+1).toString()+". ",
+                                              ),
+                                              Expanded(child: textFeildList[index]),
+                                            ],
+                                          ),
+                                          const Divider(
+                                              color: Colors.black
+                                          ),
+                                        ],
+                                      ),
                                     );
                                   },
                                 )

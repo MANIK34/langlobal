@@ -7,8 +7,6 @@ import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupDetailPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:bluetooth_print/bluetooth_print.dart';
-import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -39,10 +37,10 @@ class _CartonLookupPage extends State<CartonLookupPage> {
   TextEditingController fromDateInput = TextEditingController();
   TextEditingController toDateInput = TextEditingController();
 
-  BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
+ // BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
 
   bool _connected = false;
-  BluetoothDevice? _device;
+ // BluetoothDevice? _device;
   String tips = 'no device connect';
   String? base64Image;
 
@@ -52,11 +50,11 @@ class _CartonLookupPage extends State<CartonLookupPage> {
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";
-    WidgetsBinding.instance.addPostFrameCallback((_) => initBluetooth());
+   // WidgetsBinding.instance.addPostFrameCallback((_) => initBluetooth());
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initBluetooth() async {
+  /*Future<void> initBluetooth() async {
     bluetoothPrint.startScan(timeout: Duration(seconds: 4));
 
     bool isConnected=await bluetoothPrint.isConnected??false;
@@ -89,7 +87,7 @@ class _CartonLookupPage extends State<CartonLookupPage> {
         _connected=true;
       });
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +128,7 @@ class _CartonLookupPage extends State<CartonLookupPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          StreamBuilder<bool>(
+          /*StreamBuilder<bool>(
             stream: bluetoothPrint.isScanning,
             initialData: false,
             builder: (c, snapshot) {
@@ -146,7 +144,7 @@ class _CartonLookupPage extends State<CartonLookupPage> {
                     onPressed: () => bluetoothPrint.startScan(timeout: Duration(seconds: 4)));
               }
             },
-          );
+          );*/
           if(memoController.text.toString()==""){
             _showToast("Carton ID can't be empty");
           }else{
@@ -292,11 +290,11 @@ class _CartonLookupPage extends State<CartonLookupPage> {
           if(isPrint){
             base64Image=jsonResponse['base64String'];
            // print(":::: :::: "+base64Image!);
-            if(_device==null){
+            /*if(_device==null){
               showBluetoothPrinterDialog();
             }else{
               connectDevice();
-            }
+            }*/
 
           }else{
             Navigator.push(
@@ -332,7 +330,7 @@ class _CartonLookupPage extends State<CartonLookupPage> {
   }
 
   void showBluetoothPrinterDialog() async{
-    showModalBottomSheet<void>(
+    /*showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
         return Scaffold(
@@ -410,10 +408,10 @@ class _CartonLookupPage extends State<CartonLookupPage> {
           ),
         );
       },
-    );
+    );*/
   }
 
-  void connectDevice() async{
+ /* void connectDevice() async{
     await bluetoothPrint.connect(_device!);
     if(_connected){
       Map<String, dynamic> config = Map();
@@ -426,5 +424,5 @@ class _CartonLookupPage extends State<CartonLookupPage> {
     }else{
       _showToast("Device is not connected!");
     }
-  }
+  }*/
 }

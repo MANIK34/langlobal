@@ -387,56 +387,18 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
                       primary: false,
                       itemCount: textFeildList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Text(
-                                  "" + (index + 1).toString() + ". ",
-                                ),
-                                Expanded(child: textFeildList[index]),
-                                const SizedBox(
-                                  width: 0,
-                                ),
-                                /*  Spacer(),
-                                    GestureDetector(
-                                        onTap: () {
-                                          textFeildList.removeAt(index);
-                                          setState(() {});
-                                        },
-                                        child: index < 0
-                                            ? Container()
-                                            : const Icon(Icons.delete,color: Colors.red,)),*/
-                              ],
-                            ),
-                            SizedBox(
-                              height: 12,
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(1.0),
-                                ),
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: const [
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          ' ',
-                                          style: TextStyle(
-                                            fontSize: 1,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                        return Container(
+                          height: 35,
+                          color: index % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                          child: Row(
+                                children: <Widget>[
+                                  SizedBox(width: 5,),
+                                  Text(
+                                    "" + (index + 1).toString() + ". ",
                                   ),
-                                ),
+                                  Expanded(child: textFeildList[index]),
+                                ],
                               ),
-                            ),
-                          ],
                         );
                       },
                     )

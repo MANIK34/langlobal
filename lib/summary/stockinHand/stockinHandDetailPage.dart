@@ -263,55 +263,30 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
                                 callGetSkuApi(stockInHands[index]['sku'].toString());
                                 print("${stockInHands[index]['sku']}");
                               },
-                              child:  Column(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Text(
-                                        ""+ (index+1).toString()+". ",
-                                      ),
-                                      Text(
-                                        stockInHands[index]['sku'],
-                                        style: TextStyle(
-                                          decoration: TextDecoration.underline,color: Colors.blue
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Text(
-                                        stockInHands[index]['stockInHand'].toString(),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 12,
-                                    child:  Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(1.0),
-                                      ),
+                              child: Container(
+                                height: 35,
+                                color: index % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                   child:
+                                       Row(
+                                         children: <Widget>[
+                                           SizedBox(width: 5,),
+                                           Text(
+                                             ""+ (index+1).toString()+". ",
+                                           ),
+                                           Text(
+                                             stockInHands[index]['sku'],
+                                             style: TextStyle(
+                                                 decoration: TextDecoration.underline,color: Colors.blue
+                                             ),
+                                           ),
+                                           Spacer(),
+                                           Text(
+                                             stockInHands[index]['stockInHand'].toString(),
+                                           ),
+                                           SizedBox(width: 5,),
+                                         ],
+                                       ),
 
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: const [
-
-                                            Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                ' ',
-                                                style: TextStyle(
-                                                  fontSize: 1,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                              ),
-                                            ),
-
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
                               ),
                             );
                           },

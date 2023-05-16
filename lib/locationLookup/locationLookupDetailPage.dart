@@ -300,88 +300,89 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                             return Column(
                               children: <Widget>[
                                 Container(
-                                  color: Colors.grey,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 5,right: 5),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        const SizedBox(height: 2,),
-                                        Wrap(
+                                    color: Colors.grey,
+                                    child: Padding(
+                                        padding: EdgeInsets.only(left: 5,right: 5),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
-                                            Row(
-                                              children: [
-                                                Text(cartonContent['skuList'][index]['categoryName'],style: TextStyle(
-                                                    fontWeight: FontWeight.normal
-                                                ),),
-                                                Padding(padding: EdgeInsets.only(left: 5,right: 5),
-                                                  child:Text("I"),),
-                                                Text(cartonContent['skuList'][index]['condition'],style: TextStyle(
-                                                    fontWeight: FontWeight.bold
-                                                ),),
+                                            const SizedBox(height: 2,),
+                                            Wrap(
+                                              children: <Widget>[
+                                                Row(
+                                                  children: [
+                                                    Text(cartonContent['skuList'][index]['categoryName'],style: TextStyle(
+                                                        fontWeight: FontWeight.normal
+                                                    ),),
+                                                    Padding(padding: EdgeInsets.only(left: 5,right: 5),
+                                                      child:Text("I"),),
+                                                    Text(cartonContent['skuList'][index]['condition'],style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),),
+                                                  ],
+                                                ),
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 2,),
-                                        Align(
-                                          child: Text(cartonContent['skuList'][index]['sku'],style: TextStyle(
-                                              fontWeight: FontWeight.normal
-                                          ),),
-                                          alignment: Alignment.centerLeft,
-                                        ),
+                                            const SizedBox(height: 2,),
+                                            Align(
+                                              child: Text(cartonContent['skuList'][index]['sku'],style: TextStyle(
+                                                  fontWeight: FontWeight.normal
+                                              ),),
+                                              alignment: Alignment.centerLeft,
+                                            ),
 
-                                        Align(
-                                          child: Text(cartonContent['skuList'][index]['productName'],style: TextStyle(
-                                              fontWeight: FontWeight.normal
-                                          ),),
-                                          alignment:Alignment.centerLeft ,
-                                        ),
-                                        const SizedBox(height: 2,),
-                                      ],
+                                            Align(
+                                              child: Text(cartonContent['skuList'][index]['productName'],style: TextStyle(
+                                                  fontWeight: FontWeight.normal
+                                              ),),
+                                              alignment:Alignment.centerLeft ,
+                                            ),
+                                            const SizedBox(height: 2,),
+                                          ],
+                                        )
                                     )
-                                  )
                                 ),
                                 Padding(padding: EdgeInsets.only(left: 0,right: 0),
-                                child: Container(
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: cartonContent['skuList'][index]['cartons'].length,
-                                    itemBuilder: (BuildContext context, int indexx) {
-                                      return Column(
-                                        children: <Widget>[
-                                         Container(
-                                           height: 30,
-                                           child:  Row(
-                                             children: [
-                                               Text(
-                                                 ""+ (indexx+1).toString()+". ",
-                                               ),
-                                               Text(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString(),style: TextStyle(
-                                                   fontWeight: FontWeight.bold
-                                               ),),
-                                               Padding(padding: EdgeInsets.only(left: 5,right: 5),
-                                                 child:Text("I"),),
-                                               Text(cartonContent['skuList'][index]['cartons'][indexx]['qtyPerCarton'].toString(),style: TextStyle(
-                                                   fontWeight: FontWeight.bold
-                                               ),),
-                                               Spacer(),
-                                               Text(cartonContent['skuList'][index]['cartons'][indexx]['assignedDate'].toString(),style: TextStyle(
-                                                   fontWeight: FontWeight.bold
-                                               ),),
-                                             ],
-                                           ),
-                                         ),
-                                          const Divider(
-                                              color: Colors.black
+                                  child: Container(
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: cartonContent['skuList'][index]['cartons'].length,
+                                      itemBuilder: (BuildContext context, int indexx) {
+                                        return Container(
+                                          child: Column(
+                                            children: <Widget>[
+                                              Container(
+                                                color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                                height: 30,
+                                                child:  Row(
+                                                  children: [
+                                                    SizedBox(width: 5,),
+                                                    Text(
+                                                      ""+ (indexx+1).toString()+". ",
+                                                    ),
+                                                    Text(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString(),style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),),
+                                                    Padding(padding: EdgeInsets.only(left: 5,right: 5),
+                                                      child:Text("I"),),
+                                                    Text(cartonContent['skuList'][index]['cartons'][indexx]['qtyPerCarton'].toString(),style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),),
+                                                    Spacer(),
+                                                    Text(cartonContent['skuList'][index]['cartons'][indexx]['assignedDate'].toString(),style: TextStyle(
+                                                        fontWeight: FontWeight.bold
+                                                    ),),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),)
+                                        );
+                                      },
+                                    ),
+                                  ),)
 
                               ],
                             );

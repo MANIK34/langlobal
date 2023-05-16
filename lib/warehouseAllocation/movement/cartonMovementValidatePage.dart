@@ -69,6 +69,7 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
 
     final destinationField = TextField(
         maxLength: 11,
+        textAlign: TextAlign.left,
         controller: locationController,
         style: style,
         textInputAction: TextInputAction.done,
@@ -76,7 +77,6 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-
           alignLabelWithHint: true,
           hintText: "Destination Location",
           border: OutlineInputBorder(
@@ -263,7 +263,7 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
                             height: 10,
                           ),
                           SizedBox(
-                            height: 50,
+                            height: 60,
                             child:  destinationField,
                           ),
                           SizedBox(
