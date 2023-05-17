@@ -98,7 +98,7 @@ class _LoginPage extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          if (emailController.text == "") {
+         /* if (emailController.text == "") {
             _showToast("Username can't be empty");
           } else if (passwordController.text == "") {
             _showToast("Password can't be empty");
@@ -107,7 +107,8 @@ class _LoginPage extends State<LoginPage> {
               _isLoading = true;
             });
             callLoginApi();
-          }
+          }*/
+          callGetCartonLookupApi(false);
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -275,4 +276,38 @@ void openPdf() async {
   Uri myUri = Uri.parse(url);
   var data = await http.get(myUri);
   await Printing.layoutPdf(onLayout: (_) => data.bodyBytes);
+}
+
+
+void callGetCartonLookupApi(bool isPrint) async {
+  SharedPreferences myPrefs = await SharedPreferences.getInstance();
+  String? token = myPrefs.getString("token");
+  String? companyID = myPrefs.getString("companyID");
+  var url;
+  url = "https://api.langlobal.com/inventoryallocation/v1/cartonlookup/"+
+     "LGI20230322221005023"+"?action=print";
+  Map<String, String> headers = {
+    'Authorization': 'Bearer ${token!}'
+  };
+  print(url.toString());
+  var response = await http.get(Uri.parse(url), headers: headers);
+  if (response.statusCode == 200) {
+    var jsonResponse = json.decode(response.body);
+    try {
+      var returnCode=jsonResponse['returnCode'];
+      if(returnCode=="1"){
+        var base64Image=jsonResponse['base64String'];
+        print("base_64"+ base64Image);
+        Uint8List bytx=Base64Decoder().convert(base64Image);
+        await Printing.layoutPdf(onLayout: (_) => bytx);
+      }
+    } catch (e) {
+      print('returnCode'+e.toString());
+      // TODO: handle exception, for example by showing an alert to the user
+    }
+  } else {
+    print(response.statusCode);
+  }
+  debugPrint(response.body);
+
 }
