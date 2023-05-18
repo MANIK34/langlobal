@@ -237,16 +237,16 @@ class _FulfillmentOrderPage extends State<FulfillmentOrderPage> {
                         ),
                         SizedBox(width: 15,),
                         Text(
-                          'Fulfillment Order#',
+                          'Fulfillment'+"\n"+"Order#",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
                           ),
                         ),
-                        SizedBox(width: 15,),
+                        SizedBox(width: 30,),
                         Text(
-                          'Order Date',
+                          'Order'+"\n"+"Date",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 14,
@@ -254,7 +254,7 @@ class _FulfillmentOrderPage extends State<FulfillmentOrderPage> {
                           ),
                         ),
                         SizedBox(
-                          width: 20,
+                          width: 35,
                         ),
                         Text(
                           'Requested'+"\n"+"Shipment Date",
@@ -294,7 +294,7 @@ class _FulfillmentOrderPage extends State<FulfillmentOrderPage> {
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
-                                      SizedBox(width: 35,),
+                                      SizedBox(width: 25,),
                                       Text(
                                         stockInDemandList[index]['fulfillmentNumber'].toString(),
                                         textAlign: TextAlign.center,
@@ -303,7 +303,7 @@ class _FulfillmentOrderPage extends State<FulfillmentOrderPage> {
                                           fontWeight: FontWeight.normal,
                                         ),
                                       ),
-                                      SizedBox(width: 55,),
+                                      SizedBox(width: 35,),
                                       Text(
                                         DateFormat("MM/dd/yyyy").format(DateTime.parse(stockInDemandList[index]['orderDate'].toString().substring(0,10))),
                                         textAlign: TextAlign.center,
@@ -313,7 +313,7 @@ class _FulfillmentOrderPage extends State<FulfillmentOrderPage> {
                                         ),
                                       ),
                                       SizedBox(
-                                        width: 20,
+                                        width: 10,
                                       ),
                                       Text(
                                         DateFormat("MM/dd/yyyy").format(DateTime.parse(stockInDemandList[index]['requestedShipdate'].toString().substring(0,10))),

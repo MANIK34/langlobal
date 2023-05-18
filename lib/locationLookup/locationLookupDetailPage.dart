@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/locationLookup/locationLookupPage.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../warehouseAllocation/cartonLookup/cartonLookupDetailPage.dart';
  
 
 class LocationLookupDetailPage extends StatefulWidget {
@@ -31,6 +34,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
   List<TextEditingController> controllers = []; //the controllers list
   var esnValue;
   bool _visibleImei=false;
+  BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -362,9 +366,14 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                                                     Text(
                                                       ""+ (indexx+1).toString()+". ",
                                                     ),
-                                                    Text(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString(),style: TextStyle(
-                                                        fontWeight: FontWeight.bold
-                                                    ),),
+                                                    GestureDetector(
+                                                      onTap: (){
+                                                        callGetCartonLookupApi(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString());
+                                                      },
+                                                      child:  Text(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString(),style: TextStyle(
+                                                          fontWeight: FontWeight.normal,color: Colors.blue,decoration: TextDecoration.underline
+                                                      ),),
+                                                    ),
                                                     Padding(padding: EdgeInsets.only(left: 5,right: 5),
                                                       child:Text("I"),),
                                                     Text(cartonContent['skuList'][index]['cartons'][indexx]['qtyPerCarton'].toString(),style: TextStyle(
@@ -372,7 +381,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                                                     ),),
                                                     Spacer(),
                                                     Text(cartonContent['skuList'][index]['cartons'][indexx]['assignedDate'].toString(),style: TextStyle(
-                                                        fontWeight: FontWeight.bold
+                                                        fontWeight: FontWeight.normal
                                                     ),),
                                                   ],
                                                 ),
@@ -397,5 +406,67 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
         ),
       ),
     );
+  }
+
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+  void callGetCartonLookupApi(String cartonID) async {
+    buildShowDialog(context);
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    String? companyID = myPrefs.getString("companyID");
+    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonlookup/"+
+        cartonID.toString();
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}'
+    };
+    print(url.toString());
+    var response = await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CartonLookupDetailPage(jsonResponse['cartonContent'])),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
+    debugPrint(response.body);
+
+  }
+
+
+  void _showToast(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(errorMessage),
+      action: SnackBarAction(
+        label: "OK",
+        onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
+      ),
+    ));
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:langlobal/bluetooth_demo.dart';
 import 'package:langlobal/select_company.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,7 +97,7 @@ class _LoginPage extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-         /* if (emailController.text == "") {
+          if (emailController.text == "") {
             _showToast("Username can't be empty");
           } else if (passwordController.text == "") {
             _showToast("Password can't be empty");
@@ -107,8 +106,8 @@ class _LoginPage extends State<LoginPage> {
               _isLoading = true;
             });
             callLoginApi();
-          }*/
-          callGetCartonLookupApi(false);
+          }
+         // callGetCartonLookupApi(false);
         },
         child: Text("Login",
             textAlign: TextAlign.center,

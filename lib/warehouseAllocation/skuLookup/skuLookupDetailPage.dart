@@ -661,79 +661,82 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                       itemCount: jsonResponse['cartons'].length,
                                       itemBuilder:
                                           (BuildContext context, int indexx) {
-                                        return GestureDetector(
-                                          onTap: (){
-                                            callGetCartonLookupApi(jsonResponse['cartons'][indexx]['cartonID'].toString());
-                                            print(jsonResponse['cartons'][indexx]['cartonID'].toString());
-                                          },
-                                          child: Column(
-                                            children: <Widget>[
-                                              Container(
-                                                height: 30,
-                                                child: Row(
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 20,
-                                                      child: Text((indexx + 1)
-                                                          .toString()),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 95,
-                                                      child:Text(
-                                                        jsonResponse['cartons']
-                                                        [indexx]
-                                                        ['cartonID']
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold,decoration: TextDecoration.underline,color: Colors.blue),
+                                        return Container(
+                                          color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                          child: GestureDetector(
+                                            onTap: (){
+                                              callGetCartonLookupApi(jsonResponse['cartons'][indexx]['cartonID'].toString());
+                                              print(jsonResponse['cartons'][indexx]['cartonID'].toString());
+                                            },
+                                            child: Column(
+                                              children: <Widget>[
+                                                Container(
+                                                  height: 30,
+                                                  child: Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 20,
+                                                        child: Text((indexx + 1)
+                                                            .toString()),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    SizedBox(
-                                                        width: 80,
-                                                        child: Text(
+                                                      SizedBox(
+                                                        width: 95,
+                                                        child:Text(
                                                           jsonResponse['cartons']
                                                           [indexx]
-                                                          ['location']
+                                                          ['cartonID']
                                                               .toString(),
                                                           style: TextStyle(
                                                               fontWeight:
                                                               FontWeight
-                                                                  .bold),
-                                                        )),
-                                                    SizedBox(
-                                                      width: 45,
-                                                      child: Text(
-                                                        jsonResponse['cartons']
-                                                        [indexx]
-                                                        ['quantity']
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                            FontWeight.bold),
+                                                                  .bold,decoration: TextDecoration.underline,color: Colors.blue),
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 90,
-                                                      child: Text(DateFormat("MM/dd/yyyy").format(DateTime.parse(jsonResponse['cartons']
+                                                      SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      SizedBox(
+                                                          width: 80,
+                                                          child: Text(
+                                                            jsonResponse['cartons']
+                                                            [indexx]
+                                                            ['location']
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                          )),
+                                                      SizedBox(
+                                                        width: 45,
+                                                        child: Text(
+                                                          jsonResponse['cartons']
+                                                          [indexx]
+                                                          ['quantity']
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                              FontWeight.bold),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 90,
+                                                        child: Text(DateFormat("MM/dd/yyyy").format(DateTime.parse(jsonResponse['cartons']
                                                         [indexx][
                                                         'assignedDateTime']
                                                             .toString()
                                                             .substring(0, 10))),
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                            FontWeight.bold),
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                              FontWeight.bold),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              const Divider(color: Colors.black),
-                                            ],
+                                                const Divider(color: Colors.black),
+                                              ],
+                                            ),
                                           ),
                                         );
                                       },

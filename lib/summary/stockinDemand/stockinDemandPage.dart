@@ -155,7 +155,7 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
         child: SingleChildScrollView(
             child: Padding(
           padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-          child:  Padding(
+          child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,128 +166,154 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: stockInDemand.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return  Container(
+                    return Container(
                       color: index % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                      child: Column(children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(left: 5, right: 5),
                             child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                      padding: EdgeInsets.only(left: 5,right: 5),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          const SizedBox(height: 5,),
-                                          Wrap(
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  Text(
-                                                    ""+ (index+1).toString()+". ",
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 5,),
-                                                  SizedBox(
-                                                    width: 150,
-                                                    child:  Text(
-                                                      stockInDemand[index]['categoryName'],
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.w700,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Spacer(),
-                                                  GestureDetector(
-                                                      onTap: (){
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => FulfillmentOrderPage(stockInDemand[index])),
-                                                        );
-                                                      },
-                                                      child: Text(
-                                                        'Order Count: ' + stockInDemand[index]['orderCount'].toString(),
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            decoration: TextDecoration.underline,
-                                                            color: Colors.blue
-                                                        ),
-                                                      )
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Wrap(
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        Text(
+                                          "" + (index + 1).toString() + ". ",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
                                           ),
-                                          SizedBox(height: 3,),
-                                          Row(
-                                            children: <Widget>[
-                                              GestureDetector(
-                                                child: SizedBox(
-                                                  child: Text(
-                                                    stockInDemand[index]['sku'].toString(),
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w700,
-                                                        decoration: TextDecoration.underline,
-                                                        color: Colors.blue
-                                                    ),
-                                                  ),
-                                                ),
-                                                onTap: (){
-                                                  callGetSkuApi(stockInDemand[index]['sku'].toString());
-                                                },
-                                              )
-
-                                            ],
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        SizedBox(
+                                          width: 150,
+                                          child: Text(
+                                            stockInDemand[index]['sku'].toString(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700,
+                                                decoration: TextDecoration.underline,
+                                                color: Colors.blue
+                                            ),
                                           ),
-                                          SizedBox(height: 5,),
-                                          Row(
-                                            children: <Widget>[
-                                              GestureDetector(
-                                                  onTap: (){
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => FulfillmentOrderPage(stockInDemand[index])),
-                                                    );
-                                                  },
-                                                  child: Text(
-                                                    'Ordered Qty: ' + stockInDemand[index]['requiredQunatity'].toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        decoration: TextDecoration.underline,
-                                                        color: Colors.blue
-                                                    ),
-                                                  )
-                                              ),
-                                              SizedBox(width: 5,),
-                                              Text("I"),
-                                              SizedBox(width: 5,),
-                                              GestureDetector(
-                                                  onTap: (){
-                                                    callGetSkuApi(stockInDemand[index]['sku'].toString());
-                                                  },
-                                                  child: Text(
-                                                    'Stock in hand: ' + stockInDemand[index]['currentStock'].toString(),
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        decoration: TextDecoration.underline,
-                                                        color: Colors.blue
-                                                    ),
-                                                  )
-                                              ),
-
-                                            ],
-                                          ),
-                                          SizedBox(height: 5,),
-                                        ],
-                                      )
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                ]),
+                                        ),
+                                        Spacer(),
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        FulfillmentOrderPage(
+                                                            stockInDemand[
+                                                                index])),
+                                              );
+                                            },
+                                            child: Text(
+                                              'Order Count: ' +
+                                                  stockInDemand[index]
+                                                          ['orderCount']
+                                                      .toString(),
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  color: Colors.blue),
+                                            )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 3,
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      child: SizedBox(
+                                          child: Text(
+                                        stockInDemand[index]['categoryName'],
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      )),
+                                      onTap: () {
+                                        callGetSkuApi(stockInDemand[index]
+                                                ['sku']
+                                            .toString());
+                                      },
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FulfillmentOrderPage(
+                                                        stockInDemand[index])),
+                                          );
+                                        },
+                                        child: Text(
+                                          'Ordered Qty: ' +
+                                              stockInDemand[index]
+                                                      ['requiredQunatity']
+                                                  .toString(),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              color: Colors.blue),
+                                        )),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text("I"),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          callGetSkuApi(stockInDemand[index]
+                                                  ['sku']
+                                              .toString());
+                                        },
+                                        child: Text(
+                                          'Stock in hand: ' +
+                                              stockInDemand[index]
+                                                      ['currentStock']
+                                                  .toString(),
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              color: Colors.blue),
+                                        )),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                              ],
+                            )),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                      ]),
                     );
                   },
                 )
@@ -314,16 +340,16 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
     String? _token = myPrefs.getString("token");
     String? _companyID = myPrefs.getString("companyID");
     String? _userID = myPrefs.getString("userId");
-    var url = "https://api.langlobal.com/inventory/v1/Customers/${_companyID!}/Stock";
-    print(":::: "+url);
+    var url =
+        "https://api.langlobal.com/inventory/v1/Customers/${_companyID!}/Stock";
+    print(":::: " + url);
     Map<String, String> headers = {
       'Authorization': 'Bearer ' + _token!,
       "Accept": "application/json",
       "content-type": "application/json"
     };
 
-    final response1 =
-        await http.get(Uri.parse(url), headers: headers);
+    final response1 = await http.get(Uri.parse(url), headers: headers);
     if (response1.statusCode == 200) {
       Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response1.body);

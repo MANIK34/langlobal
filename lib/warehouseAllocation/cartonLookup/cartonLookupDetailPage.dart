@@ -7,6 +7,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../locationLookup/locationLookupDetailPage.dart';
+import '../inventoryLookup/inventoryLookupDetail.dart';
 import 'cartonLookupPage.dart';
 
 class CartonLookupDetailPage extends StatefulWidget {
@@ -144,10 +145,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Column(
                       children: <Widget>[
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                        Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
                           child: Card(
                             shape: RoundedRectangleBorder(
                               side: const BorderSide(
@@ -273,7 +271,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                           color: Colors.black,
                         ),
 
-                        Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
+                        Padding(padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
                           child: Card(
                             shape: RoundedRectangleBorder(
                               side: const BorderSide(
@@ -360,12 +358,22 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                             padding: const EdgeInsets.fromLTRB(10, 0, 10, 30),
                             child: Column(
                               children: <Widget>[
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'IMEI',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
                                 Divider(
                                   thickness: 2.0,
                                   color: Colors.black,
                                 ),
                                 SizedBox(
-                                  height: 20,
+                                  height: 10,
                                 ),
                                 ListView.builder(
                                   shrinkWrap: true,
@@ -373,19 +381,27 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                   itemCount: textFeildList.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     return Container(
+                                      height: 30,
                                       color: index % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Row(
-                                            children: [
-                                              Text(
-                                                ""+ (index+1).toString()+". ",
-                                              ),
-                                              Expanded(child: textFeildList[index]),
-                                            ],
+                                      child:Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(width: 5,),
+                                          Text(
+                                            ""+ (index+1).toString()+". ",
                                           ),
-                                          const Divider(
-                                              color: Colors.black
+                                          GestureDetector(
+                                            onTap: (){
+                                              callGetIMEISApi(cartonContent['imeiList'][index]['imei']);
+                                            },
+                                              child: Text(
+                                                cartonContent['imeiList'][index]['imei'],
+                                                style: TextStyle(
+                                                    decoration: TextDecoration.underline,
+                                                    color: Colors.blue
+                                                ),
+                                              )
                                           ),
                                         ],
                                       ),
@@ -404,6 +420,45 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
         ),
       ),
     );
+  }
+
+  void callGetIMEISApi(String imei) async{
+    buildShowDialog(context);
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? companyID = myPrefs.getString("companyID");
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+    var url = "https://api.langlobal.com/inventory/v1/Customers/IMEIS/"+companyID!+"?esn="+imei;
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var response =
+    await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => InventoryLookupDetailPage(jsonResponse),
+              ));
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
   }
 
   void callGetCartonLookupApi(String location) async {
