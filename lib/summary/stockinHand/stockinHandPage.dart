@@ -202,6 +202,9 @@ class _StockInHandPage extends State<StockInHandPage> {
     );
 
     final skuField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 50,
         autofocus: false,
         showCursor: true,

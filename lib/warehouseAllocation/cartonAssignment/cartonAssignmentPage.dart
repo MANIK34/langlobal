@@ -53,6 +53,9 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
           controllers[i].text); //printing the values to show that it's working
     }
     return TextField(
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+      ],
       autofocus: true,
       showCursor: true,
       maxLength: 20,
@@ -122,6 +125,9 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     );
 
     final skuField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 50,
         autofocus: true,
         showCursor: true,
@@ -141,6 +147,9 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         ));
 
     final locationField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 11,
         controller: locationController,
         style: style,

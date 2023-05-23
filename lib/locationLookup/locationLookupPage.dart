@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
@@ -48,6 +49,9 @@ class _LocationLookupPage extends State<LocationLookupPage> {
   Widget build(BuildContext context) {
 
     final cartonIdField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 20,
         controller: memoController,
         style: style,

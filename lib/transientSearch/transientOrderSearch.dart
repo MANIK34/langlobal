@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 import 'package:langlobal/transientSearch/transientOrderValidate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,6 +48,9 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
   Widget build(BuildContext context) {
 
     final memoField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 9,
         controller: memoController,
         style: style,

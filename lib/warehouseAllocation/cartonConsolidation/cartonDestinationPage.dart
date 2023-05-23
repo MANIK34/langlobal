@@ -58,6 +58,9 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
           controllers[i].text); //printing the values to show that it's working
     }
     return TextField(
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+      ],
       autofocus: true,
       showCursor: true,
       maxLength: 20,
@@ -93,6 +96,9 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
   Widget build(BuildContext context) {
 
     final cartonField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 20,
         readOnly: _showCursor,
         controller: cartonController,
@@ -111,6 +117,9 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
         ));
 
     final locationField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 11,
         controller: locationController,
         style: style,

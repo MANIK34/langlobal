@@ -68,6 +68,9 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
   Widget build(BuildContext context) {
 
     final destinationField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 11,
         textAlign: TextAlign.left,
         controller: locationController,

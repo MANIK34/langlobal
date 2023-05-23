@@ -1,29 +1,42 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TabPage extends StatefulWidget {
-  String flag;
+  var fulfillmentInfo;
 
-  TabPage(this.flag, {Key? key}) : super(key: key);
+  TabPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
 
   @override
-  _TabPage createState() => _TabPage(flag);
+  _TabPage createState() => _TabPage(fulfillmentInfo);
 }
 
 class _TabPage extends State<TabPage> {
-  String flag;
+  var fulfillmentInfo;
 
-  _TabPage(this.flag);
-
-
-  bool _isLoading = false;
+  _TabPage(this.fulfillmentInfo);
+   var customerInfo;
+   String orderDate = "";
+   String shipmentDate="";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    orderDate=fulfillmentInfo['fulfillmentDate'];
+    orderDate=orderDate.toString().substring(0,10);
+    DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
+    DateFormat formatter = DateFormat('MM/dd/yyyy');
+    orderDate = formatter.format(tempDate);
 
+    shipmentDate=fulfillmentInfo['requestedShipDate'];
+    shipmentDate=shipmentDate.toString().substring(0,10);
+    tempDate = new DateFormat("yyyy-MM-dd").parse(shipmentDate);
+    formatter = DateFormat('MM/dd/yyyy');
+    shipmentDate = formatter.format(tempDate);
+
+    customerInfo=fulfillmentInfo['customer'];
   }
 
   void _showToast(String errorMessage) {
@@ -92,7 +105,7 @@ class _TabPage extends State<TabPage> {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text("",style: TextStyle(
+                                      Text(fulfillmentInfo['customer']['fullName'],style: TextStyle(
                                           fontWeight: FontWeight.bold
                                       )),
                                     ],
@@ -108,7 +121,8 @@ class _TabPage extends State<TabPage> {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text(""),
+                                      Text(fulfillmentInfo['customer']['address'],style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
@@ -130,7 +144,7 @@ class _TabPage extends State<TabPage> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    "xyz",
+                                                    fulfillmentInfo['customer']['city'],
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w700,
                                                     ),
@@ -146,7 +160,7 @@ class _TabPage extends State<TabPage> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    "xyz",
+                                                    fulfillmentInfo['customer']['state'],
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w700,
                                                     ),
@@ -165,7 +179,8 @@ class _TabPage extends State<TabPage> {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text(""),
+                                      Text(fulfillmentInfo['customer']['zip'],style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
@@ -179,10 +194,10 @@ class _TabPage extends State<TabPage> {
                         Padding(padding: EdgeInsets.only(left: 10,right: 10),
                             child: Column(
                               children: <Widget>[
-                                const Align(
+                                  Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Comments:',
+                                    "Comments: "+fulfillmentInfo['comments'],
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
@@ -213,17 +228,17 @@ class _TabPage extends State<TabPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Order Type',
+                    fulfillmentInfo['orderType'],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'Order#',
+                    fulfillmentInfo['fulfillemntNumber'],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'Status',
+                    fulfillmentInfo['orderStatus'],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
@@ -260,7 +275,7 @@ class _TabPage extends State<TabPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text("",
+                          Text( fulfillmentInfo['customerOrderNumber'],
                               style:
                               TextStyle(fontWeight: FontWeight.bold)),
                         ],
@@ -277,7 +292,8 @@ class _TabPage extends State<TabPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text(""),
+                          Text(orderDate, style:
+                          TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
@@ -302,7 +318,7 @@ class _TabPage extends State<TabPage> {
                                         style: TextStyle(),
                                       ),
                                       Text(
-                                        "",
+                                        shipmentDate,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                         ),

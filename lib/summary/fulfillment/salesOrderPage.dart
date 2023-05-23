@@ -4,14 +4,20 @@ import 'package:langlobal/summary/fulfillment/lineItemsPage.dart';
 import 'package:langlobal/summary/fulfillment/tabPage.dart';
 
 class SalesOrderPage extends StatefulWidget {
-  const SalesOrderPage({Key? key}) : super(key: key);
+
+  var fulfillmentInfo;
+  SalesOrderPage(this.fulfillmentInfo,{Key? key}) : super(key: key);
 
   @override
-  _SalesOrderPage createState() => _SalesOrderPage();
+  _SalesOrderPage createState() => _SalesOrderPage(this.fulfillmentInfo);
 }
 
 class _SalesOrderPage extends State<SalesOrderPage>
     with SingleTickerProviderStateMixin {
+
+  _SalesOrderPage(this.fulfillmentInfo);
+  var fulfillmentInfo;
+
   bool IsVerifyTokenCalled = false;
   String device_id = '';
   String user_mobile_number = '';
@@ -66,7 +72,7 @@ class _SalesOrderPage extends State<SalesOrderPage>
                         height: 80,
                         child: Center(
                           child: ElevatedButton(
-                            child: Text('Cancel'),
+                            child: const Text('Search'),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -96,11 +102,11 @@ class _SalesOrderPage extends State<SalesOrderPage>
           bottomNavigationBar: menu(),
           body: TabBarView(
             children: [
-              TabPage(''),
-              LineItemsPage(''),
-              LogsPage(''),
-              Container(child: Icon(Icons.directions_bike)),
-              Container(child: Icon(Icons.directions_transit)),
+              TabPage(fulfillmentInfo),
+              LineItemsPage(fulfillmentInfo),
+              LogsPage(fulfillmentInfo),
+              Container(child: Icon(Icons.logout)),
+              Container(child: Icon(Icons.logout)),
             ],
           ),
         ),

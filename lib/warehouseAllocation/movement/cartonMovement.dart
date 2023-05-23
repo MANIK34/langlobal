@@ -42,6 +42,9 @@ class _CartonMovementPage extends State<CartonMovementPage> {
           controllers[i].text); //printing the values to show that it's working
     }
     return TextField(
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+      ],
       autofocus: true,
       showCursor: true,
       maxLength: 20,
@@ -73,6 +76,9 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   @override
   Widget build(BuildContext context) {
     final sourceField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 11,
         autofocus: true,
         controller: locationController,

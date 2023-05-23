@@ -49,6 +49,9 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
           controllers[i].text); //printing the values to show that it's working
     }
     return TextField(
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+      ],
       maxLength: 20,
       autofocus: true,
       showCursor: true,

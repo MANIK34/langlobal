@@ -1,29 +1,41 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class LineItemsPage extends StatefulWidget {
-  String flag;
+  var fulfillmentInfo;
 
-  LineItemsPage(this.flag, {Key? key}) : super(key: key);
+  LineItemsPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
 
   @override
-  _LineItemsPage createState() => _LineItemsPage(flag);
+  _LineItemsPage createState() => _LineItemsPage(fulfillmentInfo);
 }
 
 class _LineItemsPage extends State<LineItemsPage> {
-  String flag;
+  var fulfillmentInfo;
 
-  _LineItemsPage(this.flag);
+  _LineItemsPage(this.fulfillmentInfo);
 
-
+  String orderDate = "";
+  String shipmentDate="";
   bool _isLoading = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    orderDate=fulfillmentInfo['fulfillmentDate'];
+    orderDate=orderDate.toString().substring(0,10);
+    DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
+    DateFormat formatter = DateFormat('MM/dd/yyyy');
+    orderDate = formatter.format(tempDate);
 
+    shipmentDate=fulfillmentInfo['requestedShipDate'];
+    shipmentDate=shipmentDate.toString().substring(0,10);
+    tempDate = new DateFormat("yyyy-MM-dd").parse(shipmentDate);
+    formatter = DateFormat('MM/dd/yyyy');
+    shipmentDate = formatter.format(tempDate);
   }
 
   void _showToast(String errorMessage) {
@@ -144,17 +156,17 @@ class _LineItemsPage extends State<LineItemsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Order Type',
+                    fulfillmentInfo['orderType'],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'Order#',
+                    fulfillmentInfo['fulfillemntNumber'],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'Status',
+                    fulfillmentInfo['orderStatus'],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
@@ -191,7 +203,7 @@ class _LineItemsPage extends State<LineItemsPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text("",
+                          Text( fulfillmentInfo['customerOrderNumber'],
                               style:
                               TextStyle(fontWeight: FontWeight.bold)),
                         ],
@@ -208,7 +220,8 @@ class _LineItemsPage extends State<LineItemsPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text(""),
+                          Text(orderDate,style:
+                          TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
@@ -233,7 +246,7 @@ class _LineItemsPage extends State<LineItemsPage> {
                                         style: TextStyle(),
                                       ),
                                       Text(
-                                        "",
+                                        shipmentDate,
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                         ),

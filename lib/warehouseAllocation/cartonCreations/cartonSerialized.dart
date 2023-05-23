@@ -63,6 +63,9 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
           controllers[i].text); //printing the values to show that it's working
     }
     return TextField(
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+      ],
       autofocus: autoFocus,
       showCursor: true,
       maxLength: 20,

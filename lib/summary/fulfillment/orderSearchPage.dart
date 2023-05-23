@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:langlobal/summary/fulfillment/salesOrderPage.dart';
 import 'package:langlobal/transientSearch/transientOrderValidate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 
 class OrderSearchPage extends StatefulWidget {
   String heading = '';
@@ -47,6 +48,9 @@ class _OrderSearchPage extends State<OrderSearchPage> {
   Widget build(BuildContext context) {
 
     final memoField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 30,
         controller: memoController,
         style: style,
@@ -85,14 +89,10 @@ class _OrderSearchPage extends State<OrderSearchPage> {
           if(memoController.text.toString()==""){
             _showToast("Fulfillment Number can't be empty");
           }else{
-           /* setState(() {
+            setState(() {
               _isLoading = true;
             });
-            callGetTransientOrderApi();*/
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SalesOrderPage()),
-            );
+            callGetTransientOrderApi();
           }
         },
         child: Text("Search",
@@ -168,10 +168,11 @@ class _OrderSearchPage extends State<OrderSearchPage> {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? token = myPrefs.getString("token");
     String? companyID = myPrefs.getString("companyID");
-    var url = "https://api.langlobal.com/transientreceive/v1/transientorder/"+memoController.text.toString()+"/"+companyID!;
+    var url = "https://api.langlobal.com/Customers/"+companyID!+"/Fulfillment/"+memoController.text.toString();
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token!}'
     };
+
     print("URL>>>>>>>>>"+url);
     print("Token>>>>>>>>>"+token!);
     var response = await http.get(Uri.parse(url), headers: headers);
@@ -179,41 +180,12 @@ class _OrderSearchPage extends State<OrderSearchPage> {
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
-        var orderInfo= jsonResponse['transientOrderInfo'];
-        var cartonList= orderInfo['cartonList'];
+        var fulfillmentInfo= jsonResponse['fulfillmentInfo'];
         print('returnCode'+ returnCode.toString());
         if(returnCode=="1"){
-          var memoNumber=orderInfo['memoNumber'];
-          var orderDate=orderInfo['transientOrderDateTime'];
-          orderDate=orderDate.toString().substring(0,10);
-          DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
-          final DateFormat formatter = DateFormat('MM/dd/yyyy');
-          var formatted = formatter.format(tempDate);
-          print("FOrmatted>>>>>>>"+formatted);
-          var orderStatus=orderInfo['orderTransientStatus'];
-          print("orderDate::"+orderDate.toString());
-
-          var sku=orderInfo['sku'];
-          var category=orderInfo['categoryName'];
-          var productName=orderInfo['productName'];
-          var supplier=orderInfo['supplierName'];
-          var cartonCount=orderInfo['quantityPerContainers'];
-          var orderQty=orderInfo['orderedQty'];
-          var transientOrderID=orderInfo['transientOrderID'];
-          var isESNRequired=orderInfo['isESNRequired'];
-          var palletID=cartonList[0]['palletID'];
-
-          var customerOrderNumber=orderInfo['customerOrderNumber'];
-          var condition=orderInfo['condition'];
-          var companyID=orderInfo['companyID'];
-          var itemCompanyGUID=orderInfo['itemCompanyGUID'];
-          var userID=orderInfo['userID'];
-
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TransientOrderValidatePage(memoNumber,formatted,
-                orderStatus,sku,category,productName,supplier,cartonCount,orderQty,transientOrderID,isESNRequired,palletID,
-                customerOrderNumber,condition,orderInfo['transientOrderDateTime'],companyID,itemCompanyGUID,userID)),
+            MaterialPageRoute(builder: (context) => SalesOrderPage(fulfillmentInfo)),
           );
         }else{
           _showToast(jsonResponse['returnMessage']);

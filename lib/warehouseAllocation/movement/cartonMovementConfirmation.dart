@@ -60,6 +60,9 @@ class _CartonMovementConfirmation extends State<CartonMovementConfirmation> {
   Widget build(BuildContext context) {
 
     final skuField = TextField(
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        ],
         maxLength: 50,
         controller: skuController,
         style: style,
