@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupDetailPage.dart';
+import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -288,14 +289,9 @@ class _CartonLookupPage extends State<CartonLookupPage> {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
           if(isPrint){
-            base64Image=jsonResponse['base64String'];
-           // print(":::: :::: "+base64Image!);
-            /*if(_device==null){
-              showBluetoothPrinterDialog();
-            }else{
-              connectDevice();
-            }*/
-
+            var base64Image=jsonResponse['base64String'];
+            Uint8List bytx=Base64Decoder().convert(base64Image);
+            await Printing.layoutPdf(onLayout: (_) => bytx);
           }else{
             Navigator.push(
               context,

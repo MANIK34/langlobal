@@ -7,6 +7,7 @@ import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupPage.dart
 import 'package:langlobal/warehouseAllocation/skuLookup/skuLookupPage.dart';
 import '../drawer/drawerElement.dart';
 import '../locationLookup/locationLookupPage.dart';
+import '../summary/fulfillment/orderSearchPage.dart';
 import '../summary/stockinDemand/stockinDemandPage.dart';
 import '../summary/stockinHand/stockinHandPage.dart';
 import '../transientSearch/transientOrderSearch.dart';
@@ -823,6 +824,11 @@ class _DashboardPage extends State<DashboardPage> {
                             50) // put the width and height you want
                     ),
                     onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OrderSearchPage("")),
+                      );
                     }),
                 const SizedBox(
                   height: 10,
