@@ -49,7 +49,7 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
 
     final memoField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 9,
         controller: memoController,

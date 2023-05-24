@@ -52,7 +52,7 @@ class _SkuLookupPage extends State<SkuLookupPage> {
   Widget build(BuildContext context) {
     final cartonIdField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 40,
         controller: memoController,

@@ -64,7 +64,7 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
     }
     return TextField(
       inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
       ],
       autofocus: autoFocus,
       showCursor: true,

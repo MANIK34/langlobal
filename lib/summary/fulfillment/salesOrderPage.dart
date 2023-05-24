@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:langlobal/summary/fulfillment/DocsPage.dart';
 import 'package:langlobal/summary/fulfillment/LogsPage.dart';
 import 'package:langlobal/summary/fulfillment/lineItemsPage.dart';
+import 'package:langlobal/summary/fulfillment/shipmentPage.dart';
 import 'package:langlobal/summary/fulfillment/tabPage.dart';
 
 class SalesOrderPage extends StatefulWidget {
@@ -58,11 +60,11 @@ class _SalesOrderPage extends State<SalesOrderPage>
             title: Row(
               children: [
                 const Text(
-                  'Sales Order',
+                  'Sales Order Search',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'Montserrat',
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
@@ -104,9 +106,9 @@ class _SalesOrderPage extends State<SalesOrderPage>
             children: [
               TabPage(fulfillmentInfo),
               LineItemsPage(fulfillmentInfo),
+              ShipmentPage(fulfillmentInfo),
               LogsPage(fulfillmentInfo),
-              Container(child: Icon(Icons.logout)),
-              Container(child: Icon(Icons.logout)),
+              DocsPage(fulfillmentInfo),
             ],
           ),
         ),
@@ -124,19 +126,19 @@ class _SalesOrderPage extends State<SalesOrderPage>
         indicatorColor: Colors.blue,
         tabs: [
           Tab(
-            text: "Details",
+            text: "Info",
             icon: Icon(Icons.details),
           ),
           Tab(
-            text: "Line Items",
+            text: "Items",
             icon: Icon(Icons.assignment),
           ),
           Tab(
-            text: "Logs",
+            text: "Ship",
             icon: Icon(Icons.account_balance_wallet),
           ),
           Tab(
-            text: "Ship",
+            text: "Logs",
             icon: Icon(Icons.settings),
           ),
           Tab(

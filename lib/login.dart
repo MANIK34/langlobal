@@ -40,7 +40,7 @@ class _LoginPage extends State<LoginPage> {
   Widget build(BuildContext context) {
     final emailField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 20,
         controller: emailController,

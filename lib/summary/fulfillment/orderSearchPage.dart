@@ -49,12 +49,11 @@ class _OrderSearchPage extends State<OrderSearchPage> {
 
     final memoField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 30,
         controller: memoController,
         style: style,
-        keyboardType: TextInputType.number,
         textInputAction: TextInputAction.done,
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
@@ -168,7 +167,7 @@ class _OrderSearchPage extends State<OrderSearchPage> {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? token = myPrefs.getString("token");
     String? companyID = myPrefs.getString("companyID");
-    var url = "https://api.langlobal.com/Customers/"+companyID!+"/Fulfillment/"+memoController.text.toString();
+    var url = "https://api.langlobal.com/Customers/"+companyID!+"/Fulfillments/"+memoController.text.toString();
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token!}'
     };

@@ -3,22 +3,26 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class TabPage extends StatefulWidget {
+class ShipmentPage extends StatefulWidget {
+
   var fulfillmentInfo;
 
-  TabPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
+  ShipmentPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
 
   @override
-  _TabPage createState() => _TabPage(fulfillmentInfo);
+  _ShipmentPage createState() => _ShipmentPage(fulfillmentInfo);
 }
 
-class _TabPage extends State<TabPage> {
+class _ShipmentPage extends State<ShipmentPage> {
   var fulfillmentInfo;
 
-  _TabPage(this.fulfillmentInfo);
-   var customerInfo;
-   String orderDate = "";
-   String shipmentDate="";
+  _ShipmentPage(this.fulfillmentInfo);
+
+  String orderDate = "";
+  String shipmentDate="";
+  bool _isLoading = false;
+  TextStyle style = const TextStyle(
+      fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
 
   @override
   void initState() {
@@ -35,8 +39,6 @@ class _TabPage extends State<TabPage> {
     tempDate = new DateFormat("yyyy-MM-dd").parse(shipmentDate);
     formatter = DateFormat('MM/dd/yyyy');
     shipmentDate = formatter.format(tempDate);
-
-    customerInfo=fulfillmentInfo['customer'];
   }
 
   void _showToast(String errorMessage) {
@@ -51,26 +53,66 @@ class _TabPage extends State<TabPage> {
 
   @override
   Widget build(BuildContext context) {
+    final submitButton = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(10.0),
+      color: Colors.orange,
+      child: MaterialButton(
+        minWidth: 100,
+        padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        onPressed: () {},
+        child: Text("Print Label",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+
+    final generateLabels = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(10.0),
+      color: Colors.blueGrey,
+      child: MaterialButton(
+        minWidth: 100,
+        padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        onPressed: () {},
+        child: Text("Generate Labels",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
     return Scaffold(
+      /*  bottomSheet: Container(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            generateLabels
+          ],
+        ) ,
+      ),*/
       body: SafeArea(
         child: SingleChildScrollView(
             reverse: false,
             child: Padding(
-              padding:EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child:  Column(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Column(
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Column(
                       children: <Widget>[
                         orderInfo(),
-                        Padding(padding: EdgeInsets.only(left: 10,right: 10),
+                        Padding(
+                            padding: EdgeInsets.only(left: 10, right: 10),
                             child: Column(
                               children: <Widget>[
                                 const Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Customer Information:',
+                                    'Shipment:',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
@@ -83,8 +125,8 @@ class _TabPage extends State<TabPage> {
                                 ),
                               ],
                             )),
-
-                        Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                           child: Card(
                             shape: RoundedRectangleBorder(
                               side: const BorderSide(
@@ -96,71 +138,107 @@ class _TabPage extends State<TabPage> {
                             child: Column(
                               children: <Widget>[
                                 const SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
-                                Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   child: Row(
                                     children: <Widget>[
-                                      Text('Name:'),
+                                      Text('Shipment Status:'),
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text(fulfillmentInfo['customer']['fullName'],style: TextStyle(
-                                          fontWeight: FontWeight.bold
-                                      )),
+                                      Text('',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
-                                Padding(padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                   child: Row(
                                     children: <Widget>[
-                                      Text('Address:'),
+                                      Text('Ship Via:'),
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      Text(fulfillmentInfo['customer']['address'],style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                                      Text(fulfillmentInfo['shipments'][0]['shipVia'].toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 5,
+                                  height: 10,
                                 ),
-                                Padding(padding: EdgeInsets.only(left: 10,right: 10,),
-                                  child:  Row(
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text('Package:'),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(fulfillmentInfo['shipments'][0]['package'].toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text('Weight (Oz):'),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(fulfillmentInfo['shipments'][0]['weight'].toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('I'),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text('Tracking#:'),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(fulfillmentInfo['shipments'][0]['trackingNumber'].toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 10,
+                                    right: 10,
+                                  ),
+                                  child: Row(
                                     children: [
                                       Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Row(
                                                 children: <Widget>[
                                                   const Text(
-                                                    'City: ',
-                                                    style: TextStyle(
-                                                    ),
+                                                    'No. of Packages: ',
+                                                    style: TextStyle(),
                                                   ),
                                                   Text(
-                                                    fulfillmentInfo['customer']['city'],
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),
-                                                  const Text(
-                                                    ' I ',
-                                                    style: TextStyle(
-                                                    ),
-                                                  ),
-                                                  const Text(
-                                                    'State: ',
-                                                    style: TextStyle(
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    fulfillmentInfo['customer']['state'],
+                                                    "",
                                                     style: TextStyle(
                                                       fontWeight: FontWeight.w700,
                                                     ),
@@ -169,51 +247,57 @@ class _TabPage extends State<TabPage> {
                                               ),
                                             ],
                                           )),
-
-                                    ],
-                                  ),),
-                                Padding(padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Zip:'),
-                                      const SizedBox(
-                                        width: 5,
+                                      SizedBox(
+                                        width: 2,
                                       ),
-                                      Text(fulfillmentInfo['customer']['zip'],style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                                      Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: <Widget>[
+                                                  Text(
+                                                    'Price: ',
+                                                    style: TextStyle(),
+                                                  ),
+                                                  Text(
+                                                    fulfillmentInfo['shipments'][0]['price'].toString(),
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                              ],
-                            ),
-                          ),),
-
-                        Padding(padding: EdgeInsets.only(left: 10,right: 10),
-                            child: Column(
-                              children: <Widget>[
-                                  Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "Comments: "+fulfillmentInfo['comments'],
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
+                                SizedBox(
+                                  height: 40,
+                                  child: submitButton,
+                                ),
+                                const SizedBox(
+                                  height: 10,
                                 ),
                               ],
-                            )),
-
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 150,
+                  ),
+                  generateLabels
                 ],
               ),
-            )
-        ),
+            )),
       ),
     );
   }
@@ -292,7 +376,7 @@ class _TabPage extends State<TabPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text(orderDate, style:
+                          Text(orderDate,style:
                           TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),

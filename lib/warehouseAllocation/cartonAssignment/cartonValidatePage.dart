@@ -87,7 +87,7 @@ class _CartonValidatePage extends State<CartonValidatePage> {
 
     final locationField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 11,
         controller: locationController,

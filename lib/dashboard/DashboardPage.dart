@@ -83,7 +83,11 @@ class _DashboardPage extends State<DashboardPage> {
                                 width: 160,
                                 child: GestureDetector(
                                   onTap: () {
-
+                                    Navigator.of(context).pop();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => OrderSearchPage("")),
+                                    );
                                   },
                                   child: Card(
                                       color: Colors.blue,
@@ -809,7 +813,7 @@ class _DashboardPage extends State<DashboardPage> {
                     ),
                     onPressed: () {
                     }),
-                const SizedBox(
+                /*const SizedBox(
                   height: 10,
                 ),
                 ElevatedButton(
@@ -829,7 +833,7 @@ class _DashboardPage extends State<DashboardPage> {
                         context,
                         MaterialPageRoute(builder: (context) => OrderSearchPage("")),
                       );
-                    }),
+                    }),*/
                 const SizedBox(
                   height: 10,
                 ),

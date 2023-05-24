@@ -69,7 +69,7 @@ class _LineItemsPage extends State<LineItemsPage> {
                                 const Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Line Items',
+                                    'Line Items:',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
@@ -107,7 +107,7 @@ class _LineItemsPage extends State<LineItemsPage> {
                                         )),
                                       ),
                                       const SizedBox(
-                                        width: 120,
+                                        width: 130,
                                         child:   Text("Category",style: TextStyle(
                                             color: Colors.black
                                         )),
@@ -125,13 +125,63 @@ class _LineItemsPage extends State<LineItemsPage> {
                                             color: Colors.black
                                         )),
                                       ),
-
                                     ],
                                   ),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
+                                Padding(padding: EdgeInsets.only(left: 0,right: 0),
+                                  child: Container(
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: fulfillmentInfo['lineItems'].length,
+                                      itemBuilder: (BuildContext context, int indexx) {
+                                        return Container(
+                                          color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                          height: 30,
+                                          child:  Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 35,
+                                                child: Text((indexx + 1)
+                                                    .toString(),textAlign: TextAlign.center,),
+                                              ),
+                                              SizedBox(width: 15,),
+                                              SizedBox(
+                                                width: 130,
+                                                child: Text(fulfillmentInfo['lineItems'][indexx]['category'],
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)
+                                                ),
+                                              ),
+                                              SizedBox(width: 5,),
+                                              SizedBox(
+                                                width: 120,
+                                                child: Text(fulfillmentInfo['lineItems'][indexx]['sku'].toString(),
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)),
+                                              ),
+                                          Spacer(),
+                                          SizedBox(
+                                            width: 40,
+                                            child: Text(fulfillmentInfo['lineItems'][indexx]['qty'].toString(),
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .bold))),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),),
                               ],
                             ),
                           ),),
@@ -161,7 +211,7 @@ class _LineItemsPage extends State<LineItemsPage> {
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    fulfillmentInfo['fulfillemntNumber'],
+                    fulfillmentInfo['fulfillmentNumber'],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),

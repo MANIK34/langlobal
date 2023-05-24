@@ -43,7 +43,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
     }
     return TextField(
       inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
       ],
       autofocus: true,
       showCursor: true,
@@ -77,7 +77,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   Widget build(BuildContext context) {
     final sourceField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 11,
         autofocus: true,

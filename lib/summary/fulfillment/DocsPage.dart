@@ -3,19 +3,19 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class LogsPage extends StatefulWidget {
+class DocsPage extends StatefulWidget {
   var fulfillmentInfo;
 
-  LogsPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
+  DocsPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
 
   @override
-  _LogsPage createState() => _LogsPage(fulfillmentInfo);
+  _DocsPage createState() => _DocsPage(fulfillmentInfo);
 }
 
-class _LogsPage extends State<LogsPage> {
+class _DocsPage extends State<DocsPage> {
   var fulfillmentInfo;
 
-  _LogsPage(this.fulfillmentInfo);
+  _DocsPage(this.fulfillmentInfo);
 
   String orderDate = "";
   String shipmentDate="";
@@ -69,7 +69,7 @@ class _LogsPage extends State<LogsPage> {
                                 const Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Logs:',
+                                    'Documents:',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
@@ -108,86 +108,16 @@ class _LogsPage extends State<LogsPage> {
                                       ),
                                       const SizedBox(
                                         width: 120,
-                                        child:   Text("Date",style: TextStyle(
+                                        child:   Text("Name",style: TextStyle(
                                             color: Colors.black
                                         )),
                                       ),
-                                      const SizedBox(
-                                        width: 80,
-                                        child:   Text("Action",style: TextStyle(
-                                            color: Colors.black
-                                        )),
-                                      ),
-                                      Spacer(),
-                                      const SizedBox(
-                                        width: 50,
-                                        child:   Text("Status",style: TextStyle(
-                                            color: Colors.black
-                                        )),
-                                      ),
-
                                     ],
                                   ),
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Padding(padding: EdgeInsets.only(left: 0,right: 0),
-                                  child: Container(
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      primary: false,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemCount: fulfillmentInfo['logs'].length,
-                                      itemBuilder: (BuildContext context, int indexx) {
-                                        orderDate=fulfillmentInfo['logs'][indexx]['createDate'];
-                                        orderDate=orderDate.toString().substring(0,10);
-                                        DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
-                                        DateFormat formatter = DateFormat('MM/dd/yyyy');
-                                        orderDate = formatter.format(tempDate);
-                                        return Container(
-                                          color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
-                                          height: 35,
-                                          child:  Row(
-                                            children: [
-                                              SizedBox(
-                                                width: 35,
-                                                child: Text((indexx + 1)
-                                                    .toString(),textAlign: TextAlign.center,),
-                                              ),
-                                              SizedBox(width: 15,),
-                                              SizedBox(
-                                                width: 100,
-                                                child: Text(orderDate,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)
-                                                ),
-                                              ),
-                                              SizedBox(width: 5,),
-                                              SizedBox(
-                                                width: 120,
-                                                child: Text(fulfillmentInfo['logs'][indexx]['actionName'].toString(),
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)),
-                                              ),
-                                              Spacer(),
-                                              SizedBox(
-                                                  child: Text(fulfillmentInfo['logs'][indexx]['status'].toString(),
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .bold))),
-                                              SizedBox(width: 5,),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),)
                               ],
                             ),
                           ),),

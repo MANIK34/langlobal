@@ -69,7 +69,7 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
 
     final destinationField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 11,
         textAlign: TextAlign.left,

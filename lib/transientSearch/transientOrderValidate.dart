@@ -89,7 +89,7 @@ class _TransientOrderValidatePage extends State<TransientOrderValidatePage> {
     }
     return TextField(
       inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
       ],
       autofocus: true,
       showCursor: true,

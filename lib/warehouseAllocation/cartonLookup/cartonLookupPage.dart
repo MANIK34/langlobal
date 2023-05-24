@@ -95,7 +95,7 @@ class _CartonLookupPage extends State<CartonLookupPage> {
 
     final cartonIdField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 20,
         controller: memoController,

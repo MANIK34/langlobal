@@ -105,7 +105,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
 
     final skuField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 50,
         autofocus: true,
@@ -127,7 +127,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
 
     final qtyCarton = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 5,
         controller: QtyCartonController,
@@ -147,7 +147,7 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
 
     final locationField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 11,
         controller: locationController,

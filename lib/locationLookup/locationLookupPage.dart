@@ -44,13 +44,13 @@ class _LocationLookupPage extends State<LocationLookupPage> {
     fromDateInput.text = "";
     toDateInput.text = "";
   }
-
+//0-9a-zA-Z _ - //0-9a-zA-Z _ - _ -
   @override
   Widget build(BuildContext context) {
 
     final cartonIdField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
         ],
         maxLength: 20,
         controller: memoController,
