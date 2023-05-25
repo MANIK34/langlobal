@@ -258,11 +258,6 @@ class _CartonLookupPage extends State<CartonLookupPage> {
                 const SizedBox(
                   height: 15.0,
                 ),
-                Text('OR'),
-                const SizedBox(
-                  height: 15.0,
-                ),
-                printButton
               ],
             ),
           ),
@@ -292,6 +287,7 @@ class _CartonLookupPage extends State<CartonLookupPage> {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
           if(isPrint){
+            print("jsonResponse :::: "+jsonResponse.toString());
             var base64Image=jsonResponse['base64String'];
             Uint8List bytx=Base64Decoder().convert(base64Image);
             await Printing.layoutPdf(onLayout: (_) => bytx);
