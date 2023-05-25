@@ -118,6 +118,44 @@ class _DocsPage extends State<DocsPage> {
                                 const SizedBox(
                                   height: 10,
                                 ),
+                                Padding(padding: EdgeInsets.only(left: 0,right: 0),
+                                  child: Container(
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      primary: false,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: fulfillmentInfo['documents'].length,
+                                      itemBuilder: (BuildContext context, int indexx) {
+                                        orderDate=fulfillmentInfo['documents'][indexx]['documentDate'];
+                                        orderDate=orderDate.toString().substring(0,10);
+                                        DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
+                                        DateFormat formatter = DateFormat('MM/dd/yyyy');
+                                        orderDate = formatter.format(tempDate);
+                                        return Container(
+                                          color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
+                                          height: 35,
+                                          child:  Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 35,
+                                                child: Text((indexx + 1)
+                                                    .toString(),textAlign: TextAlign.center,),
+                                              ),
+                                              SizedBox(width: 15,),
+                                              SizedBox(
+                                                width: 120,
+                                                child: Text(fulfillmentInfo['documents'][indexx]['fileName'].toString(),
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),)
                               ],
                             ),
                           ),),

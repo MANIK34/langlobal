@@ -116,7 +116,8 @@ class _SalesOrderPage extends State<SalesOrderPage>
     );
   }
   Widget menu() {
-    return Container(
+    return Padding(padding: EdgeInsets.only(top: 10),
+    child: Container(
       color: Colors.blue,
       child: TabBar(
         labelColor: Colors.white,
@@ -147,6 +148,6 @@ class _SalesOrderPage extends State<SalesOrderPage>
           ),
         ],
       ),
-    );
+    ),);
   }
 }

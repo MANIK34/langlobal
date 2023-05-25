@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ShipmentPage extends StatefulWidget {
-
   var fulfillmentInfo;
 
   ShipmentPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
@@ -18,9 +17,10 @@ class _ShipmentPage extends State<ShipmentPage> {
 
   _ShipmentPage(this.fulfillmentInfo);
 
+  int listIndex = 0;
   String orderDate = "";
-  String shipmentDate="";
-  bool _isLoading = false;
+  String shipmentDate = "";
+  bool _isDetailView = false;
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
 
@@ -28,14 +28,14 @@ class _ShipmentPage extends State<ShipmentPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    orderDate=fulfillmentInfo['fulfillmentDate'];
-    orderDate=orderDate.toString().substring(0,10);
+    orderDate = fulfillmentInfo['fulfillmentDate'];
+    orderDate = orderDate.toString().substring(0, 10);
     DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
     DateFormat formatter = DateFormat('MM/dd/yyyy');
     orderDate = formatter.format(tempDate);
 
-    shipmentDate=fulfillmentInfo['requestedShipDate'];
-    shipmentDate=shipmentDate.toString().substring(0,10);
+    shipmentDate = fulfillmentInfo['requestedShipDate'];
+    shipmentDate = shipmentDate.toString().substring(0, 10);
     tempDate = new DateFormat("yyyy-MM-dd").parse(shipmentDate);
     formatter = DateFormat('MM/dd/yyyy');
     shipmentDate = formatter.format(tempDate);
@@ -58,10 +58,29 @@ class _ShipmentPage extends State<ShipmentPage> {
       borderRadius: BorderRadius.circular(10.0),
       color: Colors.orange,
       child: MaterialButton(
-        minWidth: 100,
+        minWidth: 80,
         padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         onPressed: () {},
         child: Text("Print Label",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+
+    final backToListing = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(10.0),
+      color: Colors.blue,
+      child: MaterialButton(
+        minWidth: 80,
+        padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+        onPressed: () {
+          setState(() {
+            _isDetailView=false;
+          });
+        },
+        child: Text("Back to Listing",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -82,16 +101,29 @@ class _ShipmentPage extends State<ShipmentPage> {
                 color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
+
     return Scaffold(
-      /*  bottomSheet: Container(
+        bottomSheet: Container(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            generateLabels
+            Visibility(
+                visible: !_isDetailView,
+                child: generateLabels),
+            Visibility(
+                visible: _isDetailView,
+                child:  Row(
+                    children: <Widget>[
+                      submitButton,
+                      SizedBox(width: 10,),
+                      backToListing,
+                    ],
+                  ),
+                )
           ],
         ) ,
-      ),*/
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
             reverse: false,
@@ -123,178 +155,166 @@ class _ShipmentPage extends State<ShipmentPage> {
                                   thickness: 2.0,
                                   color: Colors.black,
                                 ),
+                                Visibility(
+                                  visible: !_isDetailView,
+                                  child: Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: const BorderSide(
+                                        color: Colors.grey,
+                                        width: 1, //<-- SEE HERE
+                                      ),
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                    child: Column(
+                                      children: <Widget>[
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Padding(
+                                          padding:
+                                          EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              const SizedBox(
+                                                width: 45,
+                                                child: Text("S.No",
+                                                    style: TextStyle(
+                                                        color: Colors.black)),
+                                              ),
+                                              const SizedBox(
+                                                width: 100,
+                                                child: Text("Ship Via:",
+                                                    style: TextStyle(
+                                                        color: Colors.black)),
+                                              ),
+                                              const SizedBox(
+                                                width: 100,
+                                                child: Text("Tracking#",
+                                                    style: TextStyle(
+                                                        color: Colors.black)),
+                                              ),
+                                              Spacer(),
+                                              const SizedBox(
+                                                child: Text("Ship Date",
+                                                    style: TextStyle(
+                                                        color: Colors.black)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 0, right: 0),
+                                          child: Container(
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              primary: false,
+                                              physics:
+                                              NeverScrollableScrollPhysics(),
+                                              itemCount: fulfillmentInfo['shipments']
+                                                  .length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                  int indexx) {
+                                                orderDate =
+                                                fulfillmentInfo['shipments']
+                                                [indexx]['shipDate'];
+                                                orderDate = orderDate
+                                                    .toString()
+                                                    .substring(0, 10);
+                                                DateTime tempDate =
+                                                new DateFormat("yyyy-MM-dd")
+                                                    .parse(orderDate);
+                                                DateFormat formatter =
+                                                DateFormat('MM/dd/yyyy');
+                                                orderDate =
+                                                    formatter.format(tempDate);
+                                                return Container(
+                                                  color: indexx % 2 == 0
+                                                      ? Color(0xffd3d3d3)
+                                                      : Colors.white,
+                                                  height: 35,
+                                                  child: Row(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 35,
+                                                        child: Text(
+                                                          (indexx + 1)
+                                                              .toString(),
+                                                          textAlign:
+                                                          TextAlign.center,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 20,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 100,
+                                                        child: Text(
+                                                            fulfillmentInfo['shipments']
+                                                            [indexx]
+                                                            [
+                                                            'shipVia']
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: (){
+                                                             setState(() {
+                                                               _isDetailView=true;
+                                                             });
+                                                        },
+                                                        child: SizedBox(
+                                                          width: 80,
+                                                          child: Text(
+                                                              fulfillmentInfo['shipments']
+                                                              [indexx]
+                                                              [
+                                                              'trackingNumber']
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  color: Colors.blue,
+                                                                  decoration: TextDecoration.underline,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                        ),
+                                                      ),
+                                                      Spacer(),
+                                                      SizedBox(
+                                                          child: Text(orderDate,
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .bold))),
+                                                      SizedBox(width: 5,),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),)
                               ],
                             )),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                color: Colors.grey,
-                                width: 1, //<-- SEE HERE
-                              ),
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Shipment Status:'),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Ship Via:'),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(fulfillmentInfo['shipments'][0]['shipVia'].toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Package:'),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(fulfillmentInfo['shipments'][0]['package'].toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text('Weight (Oz):'),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(fulfillmentInfo['shipments'][0]['weight'].toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('I'),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text('Tracking#:'),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(fulfillmentInfo['shipments'][0]['trackingNumber'].toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 10,
-                                    right: 10,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: <Widget>[
-                                                  const Text(
-                                                    'No. of Packages: ',
-                                                    style: TextStyle(),
-                                                  ),
-                                                  Text(
-                                                    "",
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )),
-                                      SizedBox(
-                                        width: 2,
-                                      ),
-                                      Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: <Widget>[
-                                                  Text(
-                                                    'Price: ',
-                                                    style: TextStyle(),
-                                                  ),
-                                                  Text(
-                                                    fulfillmentInfo['shipments'][0]['price'].toString(),
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                  child: submitButton,
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
+                        Visibility(
+                            visible: _isDetailView,
+                            child: shipDetailInfo(listIndex)),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 150,
-                  ),
-                  generateLabels
                 ],
               ),
             )),
@@ -302,127 +322,270 @@ class _ShipmentPage extends State<ShipmentPage> {
     );
   }
 
-  Widget orderInfo(){
-    return(
-        Column(
-          children: [
+  Widget orderInfo() {
+    return (Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                fulfillmentInfo['orderType'],
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                fulfillmentInfo['fulfillmentNumber'],
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                fulfillmentInfo['orderStatus'],
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          child: Divider(
+            thickness: 4,
+            color: Colors.black,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(
+                color: Colors.grey,
+                width: 1, //<-- SEE HERE
+              ),
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Column(
+              children: <Widget>[
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Customer Order:'),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(fulfillmentInfo['customerOrderNumber'],
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Order Date:'),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(orderDate,
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: <Widget>[
+                              const Text(
+                                'Req. Shipment Date: ',
+                                style: TextStyle(),
+                              ),
+                              Text(
+                                shipmentDate,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget shipDetailInfo(int index) {
+    return (Padding(
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(
+            color: Colors.grey,
+            width: 1, //<-- SEE HERE
+          ),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: Column(
+          children: <Widget>[
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+                fulfillmentInfo['shipments'][index]['trackingNumber'].toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 20),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    fulfillmentInfo['orderType'],
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                children: <Widget>[
+                  Text('Ship Via:'),
+                  const SizedBox(
+                    width: 5,
                   ),
                   Text(
-                    fulfillmentInfo['fulfillmentNumber'],
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                      fulfillmentInfo['shipments'][index]['shipVia'].toString(),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: Row(
+                children: <Widget>[
+                  Text('Package:'),
+                  const SizedBox(
+                    width: 5,
                   ),
                   Text(
-                    fulfillmentInfo['orderStatus'],
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                      fulfillmentInfo['shipments'][index]['package'].toString(),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                 Spacer(),
+                  Text('Weight (Oz):'),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                      fulfillmentInfo['shipments'][index]['weight']
+                          .toString(),
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(
+                    width: 15,
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(10,0,10,0),
-              child: Divider(
-                thickness: 4,
-                color: Colors.black,
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'Price: ',
+                    style: TextStyle(),
+                  ),
+                  Text(
+                    "\$"+fulfillmentInfo['shipments'][index]['price']
+                        .toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Spacer(),
+                  Text('Ship Date:'),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                      orderDate,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                ],
               ),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(
-                    color: Colors.grey,
-                    width: 1, //<-- SEE HERE
-                  ),
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
+              padding: EdgeInsets.only(
+                left: 10,
+                right: 10,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: <Widget>[
-                          Text('Customer Order:'),
-                          const SizedBox(
-                            width: 5,
+                          const Text(
+                            'Carrier: ',
+                            style: TextStyle(),
                           ),
-                          Text( fulfillmentInfo['customerOrderNumber'],
-                              style:
-                              TextStyle(fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        children: <Widget>[
-                          Text('Order Date:'),
-                          const SizedBox(
-                            width: 5,
+                          Text(
+                            fulfillmentInfo['shipments'][index]['carrier']
+                                .toString(),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                          Text(orderDate,style:
-                          TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: <Widget>[
-                                      const Text(
-                                        'Req. Shipment Date: ',
-                                        style: TextStyle(),
-                                      ),
-                                      Text(
-                                        shipmentDate,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
+                    ],
+                  )),
+
+                ],
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
           ],
-        )
-    );
+        ),
+      ),
+    ));
   }
 }
