@@ -108,7 +108,7 @@ class _OrderSearchPage extends State<OrderSearchPage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children:  [
-              const Text('Fulfillment Sales Order Search',textAlign: TextAlign.center,
+              const Text('Fulfillment Lookup',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
               ),
               /*ExpandTapWidget(

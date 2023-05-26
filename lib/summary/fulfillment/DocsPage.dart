@@ -103,13 +103,19 @@ class _DocsPage extends State<DocsPage> {
                                       const SizedBox(
                                         width: 45,
                                         child:   Text("S.No",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
                                       const SizedBox(
                                         width: 120,
                                         child:   Text("Name",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
                                     ],
@@ -146,9 +152,8 @@ class _DocsPage extends State<DocsPage> {
                                                 width: 120,
                                                 child: Text(fulfillmentInfo['documents'][indexx]['fileName'].toString(),
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)),
+                                                      color: Colors.blue,
+                                                      decoration: TextDecoration.underline)),
                                               ),
                                             ],
                                           ),
@@ -182,17 +187,17 @@ class _DocsPage extends State<DocsPage> {
                   Text(
                     fulfillmentInfo['orderType'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                   Text(
                     fulfillmentInfo['fulfillmentNumber'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                   Text(
                     fulfillmentInfo['orderStatus'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                 ],
               ),

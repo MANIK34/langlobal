@@ -36,7 +36,7 @@ class _DashboardPage extends State<DashboardPage> {
 
 
   Widget appBarTitle = const Text(
-    "Menu",
+    "Home",
     style: TextStyle(
         fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black),
   );
@@ -58,8 +58,11 @@ class _DashboardPage extends State<DashboardPage> {
             appBar: AppBar(
               iconTheme: const IconThemeData(color: Colors.black),
               backgroundColor: Colors.white,
-              centerTitle: true,
-              title: appBarTitle,
+              actions: [
+                IconButton(
+                  icon: Image.asset('assets/lan_global_icon.jpeg'),iconSize: 300, onPressed: () {  },
+                ),
+              ],
             ),
             drawer: DrawerElement(),
             body: ListView(

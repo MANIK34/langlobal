@@ -101,30 +101,43 @@ class _LogsPage extends State<LogsPage> {
                                   child: Row(
                                     children: <Widget>[
                                       const SizedBox(
-                                        width: 45,
+                                        width: 40,
                                         child:   Text("S.No",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
                                       const SizedBox(
-                                        width: 120,
+                                        width: 105,
                                         child:   Text("Date",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
                                       const SizedBox(
                                         width: 80,
                                         child:   Text("Action",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
                                       Spacer(),
                                       const SizedBox(
                                         width: 50,
                                         child:   Text("Status",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
+
 
                                     ],
                                   ),
@@ -160,9 +173,8 @@ class _LogsPage extends State<LogsPage> {
                                                 width: 100,
                                                 child: Text(orderDate,
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)
+                                                        fontSize: 13,
+                                                        color: Colors.black)
                                                 ),
                                               ),
                                               SizedBox(width: 5,),
@@ -170,18 +182,16 @@ class _LogsPage extends State<LogsPage> {
                                                 width: 120,
                                                 child: Text(fulfillmentInfo['logs'][indexx]['actionName'].toString(),
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)),
+                                                        fontSize: 13,
+                                                        color: Colors.black)),
                                               ),
                                               Spacer(),
                                               SizedBox(
                                                   child: Text(fulfillmentInfo['logs'][indexx]['status'].toString(),
                                                       style: TextStyle(
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .bold))),
-                                              SizedBox(width: 5,),
+                                                          fontSize: 13,
+                                                          color: Colors.black))),
+                                              SizedBox(width: 12,),
                                             ],
                                           ),
                                         );
@@ -214,17 +224,17 @@ class _LogsPage extends State<LogsPage> {
                   Text(
                     fulfillmentInfo['orderType'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                   Text(
                     fulfillmentInfo['fulfillmentNumber'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                   Text(
                     fulfillmentInfo['orderStatus'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                 ],
               ),

@@ -79,7 +79,6 @@ flutter:
 
   assets:
      - assets/lan_global_icon.jpeg
-     - assets/pb_logo.jpg
      - assets/user.png
      - assets/home.png
      - assets/app_logo.png

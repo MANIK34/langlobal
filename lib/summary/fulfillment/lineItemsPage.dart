@@ -103,26 +103,38 @@ class _LineItemsPage extends State<LineItemsPage> {
                                       const SizedBox(
                                         width: 45,
                                         child:   Text("S.No",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
                                       const SizedBox(
                                         width: 130,
                                         child:   Text("Category",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
                                       const SizedBox(
                                         width: 100,
                                         child:   Text("Sku#",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
                                         )),
                                       ),
                                       Spacer(),
                                       const SizedBox(
                                         width: 30,
                                         child:   Text("Qty",style: TextStyle(
-                                            color: Colors.black
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                            .bold
                                         )),
                                       ),
                                     ],
@@ -149,14 +161,13 @@ class _LineItemsPage extends State<LineItemsPage> {
                                                 child: Text((indexx + 1)
                                                     .toString(),textAlign: TextAlign.center,),
                                               ),
-                                              SizedBox(width: 15,),
+                                              SizedBox(width: 22,),
                                               SizedBox(
-                                                width: 130,
+                                                width: 120,
                                                 child: Text(fulfillmentInfo['lineItems'][indexx]['category'],
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)
+                                                      color: Colors.black,
+                                                        fontSize: 13)
                                                 ),
                                               ),
                                               SizedBox(width: 5,),
@@ -164,18 +175,16 @@ class _LineItemsPage extends State<LineItemsPage> {
                                                 width: 120,
                                                 child: Text(fulfillmentInfo['lineItems'][indexx]['sku'].toString(),
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .bold)),
+                                                        color: Colors.black,
+                                                        fontSize: 13)),
                                               ),
                                           Spacer(),
                                           SizedBox(
                                             width: 40,
                                             child: Text(fulfillmentInfo['lineItems'][indexx]['qty'].toString(),
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .bold))),
+                                                     color: Colors.black,
+                                                    fontSize: 13))),
                                             ],
                                           ),
                                         );
@@ -208,17 +217,17 @@ class _LineItemsPage extends State<LineItemsPage> {
                   Text(
                     fulfillmentInfo['orderType'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                   Text(
                     fulfillmentInfo['fulfillmentNumber'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                   Text(
                     fulfillmentInfo['orderStatus'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                 ],
               ),

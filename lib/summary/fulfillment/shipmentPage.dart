@@ -181,25 +181,40 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                 width: 45,
                                                 child: Text("S.No",
                                                     style: TextStyle(
-                                                        color: Colors.black)),
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)),
                                               ),
                                               const SizedBox(
                                                 width: 100,
                                                 child: Text("Ship Via:",
                                                     style: TextStyle(
-                                                        color: Colors.black)),
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)),
                                               ),
                                               const SizedBox(
                                                 width: 100,
                                                 child: Text("Tracking#",
                                                     style: TextStyle(
-                                                        color: Colors.black)),
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)),
                                               ),
                                               Spacer(),
                                               const SizedBox(
                                                 child: Text("Ship Date",
                                                     style: TextStyle(
-                                                        color: Colors.black)),
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold)),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
                                               ),
                                             ],
                                           ),
@@ -262,9 +277,11 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                             'shipVia']
                                                                 .toString(),
                                                             style: TextStyle(
-                                                                fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
+                                                                color: Colors.black,
+                                                                fontSize: 13)),
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 5,
                                                       ),
                                                       GestureDetector(
                                                         onTap: (){
@@ -283,18 +300,15 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                               style: TextStyle(
                                                                   color: Colors.blue,
                                                                   decoration: TextDecoration.underline,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
+                                                                  fontSize: 13)),
                                                         ),
                                                       ),
                                                       Spacer(),
                                                       SizedBox(
                                                           child: Text(orderDate,
                                                               style: TextStyle(
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .bold))),
+                                                                  color: Colors.black,
+                                                                  fontSize: 13))),
                                                       SizedBox(width: 5,),
                                                     ],
                                                   ),
@@ -333,17 +347,17 @@ class _ShipmentPage extends State<ShipmentPage> {
               Text(
                 fulfillmentInfo['orderType'],
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
               ),
               Text(
                 fulfillmentInfo['fulfillmentNumber'],
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
               ),
               Text(
                 fulfillmentInfo['orderStatus'],
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
               ),
             ],
           ),

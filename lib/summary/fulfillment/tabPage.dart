@@ -230,17 +230,17 @@ class _TabPage extends State<TabPage> {
                   Text(
                     fulfillmentInfo['orderType'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                   Text(
                     fulfillmentInfo['fulfillmentNumber'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                   Text(
                     fulfillmentInfo['orderStatus'],
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
                 ],
               ),

@@ -60,7 +60,7 @@ class _DrawerElement extends State<DrawerElement> {
                         ),
                         SizedBox(height: 10,),
                         Text(userName,style: const TextStyle(
-                            color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold,
+                            color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal,
                             fontSize: 16),),
                         const SizedBox(height: 5.0),
                       ],
@@ -76,8 +76,8 @@ class _DrawerElement extends State<DrawerElement> {
                   minLeadingWidth : 2,
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                   title: const Text(
-                    'Menu',
-                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                    'Home',
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -97,7 +97,7 @@ class _DrawerElement extends State<DrawerElement> {
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                   title: const Text(
                     'Transient Receive',
-                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -117,7 +117,7 @@ class _DrawerElement extends State<DrawerElement> {
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                   title: const Text(
                     'Location Lookup',
-                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -137,7 +137,7 @@ class _DrawerElement extends State<DrawerElement> {
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                   title: const Text(
                     'SKU Lookup',
-                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -157,7 +157,47 @@ class _DrawerElement extends State<DrawerElement> {
                   //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                   title: const Text(
                     'IMEI Lookup',
-                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InventoryLookupPage('')),
+                    );
+                  },
+                ),
+                Divider(
+                    color: Colors.black
+                ),
+                ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(vertical: -4),
+                  minLeadingWidth : 2,
+                  //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
+                  title: const Text(
+                    'Fulfillment Lookup',
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InventoryLookupPage('')),
+                    );
+                  },
+                ),
+                Divider(
+                    color: Colors.black
+                ),
+                ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(vertical: -4),
+                  minLeadingWidth : 2,
+                  //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
+                  title: const Text(
+                    'Carton Lookup',
+                    style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -181,7 +221,7 @@ class _DrawerElement extends State<DrawerElement> {
                           //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
                           title: const Text(
                             'Change Company',
-                            style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                           ),
                           onTap: () {
                             Navigator.pop(context);
@@ -215,7 +255,7 @@ class _DrawerElement extends State<DrawerElement> {
                       leading: const FaIcon(FontAwesomeIcons.lock,color: Colors.black,size: 16,),
                       title: const Text(
                         'Logout',
-                        style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 16,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                       ),
                       onTap: () {
                         _showMyDialog();
