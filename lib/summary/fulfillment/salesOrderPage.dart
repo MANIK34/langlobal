@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:langlobal/summary/fulfillment/DocsPage.dart';
 import 'package:langlobal/summary/fulfillment/LogsPage.dart';
 import 'package:langlobal/summary/fulfillment/lineItemsPage.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/lineItem.dart';
 import 'package:langlobal/summary/fulfillment/shipmentPage.dart';
 import 'package:langlobal/summary/fulfillment/tabPage.dart';
 
@@ -32,13 +33,20 @@ class _SalesOrderPage extends State<SalesOrderPage>
   TextStyle style = const TextStyle(fontFamily: 'Montserrat', fontSize: 16.0);
   TextEditingController payeeCodeController = new TextEditingController();
   bool visibilityObs = false;
+  bool _visibleProvisioning=true;
   late TabController tabController;
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     tabController = TabController(length: 7, vsync: this);
+    if(fulfillmentInfo['orderType']=="B2C"){
+      setState(() {
+        _visibleProvisioning=true;
+      });
+    }
   }
 
   @override
@@ -83,21 +91,26 @@ class _SalesOrderPage extends State<SalesOrderPage>
                     onTap: () {
                       Navigator.of(context).pop();
                     }),
-                GestureDetector(
-                    child: Container(
-                        width: 120,
-                        height: 80,
-                        child: Center(
-                          child: ElevatedButton(
-                            child: const Text('Provisioning'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        )),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    }),
+               Visibility(
+                 visible: _visibleProvisioning,
+                 child:  GestureDetector(
+                   child: Container(
+                       width: 120,
+                       height: 80,
+                       child: Center(
+                         child: ElevatedButton(
+                           child: const Text('Provisioning'),
+                           onPressed: () {
+                             Navigator.push(
+                               context,
+                               MaterialPageRoute(builder: (context) => LineItemPage(fulfillmentInfo)),
+                             );
+                           },
+                         ),
+                       )),
+                   onTap: () {
+                     Navigator.of(context).pop();
+                   }),)
               ],
             ),
           ),

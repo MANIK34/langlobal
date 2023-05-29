@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:langlobal/changeCompany/ChangeCompany.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/login.dart';
 import 'package:langlobal/warehouseAllocation/skuLookup/skuLookupPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../locationLookup/locationLookupPage.dart';
-import '../select_company.dart';
+import '../summary/fulfillment/orderSearchPage.dart';
 import '../transientSearch/transientOrderSearch.dart';
+import '../warehouseAllocation/cartonLookup/cartonLookupPage.dart';
 import '../warehouseAllocation/inventoryLookup/inventoryLookupPage.dart';
 
 
@@ -53,7 +54,7 @@ class _DrawerElement extends State<DrawerElement> {
                     child: Column(
                       children: <Widget>[
                         Container(
-                          margin: const EdgeInsets.only(bottom: 0, top: 80),
+                          margin: const EdgeInsets.only(bottom: 0, top: 50),
                           width: 160,
                           height: 45,
                           child:  buildProfileImage(),
@@ -180,10 +181,10 @@ class _DrawerElement extends State<DrawerElement> {
                     style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InventoryLookupPage('')),
+                      MaterialPageRoute(builder: (context) => OrderSearchPage("")),
                     );
                   },
                 ),
@@ -200,10 +201,10 @@ class _DrawerElement extends State<DrawerElement> {
                     style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InventoryLookupPage('')),
+                      MaterialPageRoute(builder: (context) => CartonLookupPage('')),
                     );
                   },
                 ),
@@ -224,11 +225,10 @@ class _DrawerElement extends State<DrawerElement> {
                             style: TextStyle(fontSize: 14,color: Colors.black,fontFamily: 'Montserrat',fontWeight:FontWeight.normal),
                           ),
                           onTap: () {
-                            Navigator.pop(context);
+                            Navigator.of(context).pop();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => SelectCompany('')),
+                              MaterialPageRoute(builder: (context) => ChangeCompanyPage('')),
                             );
                           },
                         ),
