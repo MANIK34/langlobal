@@ -3,23 +3,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/dashboard/DashboardPage.dart';
+import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupDetailPage.dart';
+import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 
-import 'model/responseParams/companies.dart';
+import '../model/responseParams/companies.dart';
 
-class SelectCompany extends StatefulWidget {
-  String token = '';
+class ChangeCompanyPage extends StatefulWidget {
+  String heading = '';
 
-  SelectCompany(this.token, {Key? key}) : super(key: key);
+  ChangeCompanyPage(this.heading, {Key? key}) : super(key: key);
 
   @override
-  _SelectCompany createState() => _SelectCompany(this.token);
+  _ChangeCompanyPage createState() => _ChangeCompanyPage(this.heading);
 }
 
-class _SelectCompany extends State<SelectCompany> {
-  String token = '';
+class _ChangeCompanyPage extends State<ChangeCompanyPage> {
+  String heading = '';
 
-  _SelectCompany(this.token);
+  _ChangeCompanyPage(this.heading);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle style = const TextStyle(
@@ -27,12 +31,19 @@ class _SelectCompany extends State<SelectCompany> {
   bool _isLoading = false;
 
   var companyID;
-  var companyName;
   List<CompanyList> companyList = <CompanyList>[];
   List<CompanyList> companyList2 = <CompanyList>[];
   late CompanyList? _companyList = null;
   var selectedCompanyID;
   var header = 'Select Company';
+
+
+
+  bool _connected = false;
+
+  // BluetoothDevice? _device;
+  String tips = 'no device connect';
+  String? base64Image;
 
   @override
   void initState() {
@@ -42,6 +53,7 @@ class _SelectCompany extends State<SelectCompany> {
       _isLoading = true;
     });
     callGetCompanyApi();
+
   }
 
   void callGetCompanyApi() async {
@@ -61,6 +73,7 @@ class _SelectCompany extends State<SelectCompany> {
     if (response1.statusCode == 200) {
       var jsonResponse = json.decode(response1.body);
       var jsonArray = jsonResponse['companies'];
+      print(response1.body);
       for (int m = 0; m < jsonArray.length; m++) {
         var companyID = jsonArray[m]['companyID'];
         var companyName = jsonArray[m]['companyName'];
@@ -72,10 +85,11 @@ class _SelectCompany extends State<SelectCompany> {
             companyShortName: companyShortName,
             companyLogo: companyLogo);
         companyList.add(finList);
+        print(companyList[m].companyName);
       }
       companyList2 = companyList;
     } else {
-     // print(response1.statusCode);
+      print(response1.statusCode);
     }
     setState(() {
       _isLoading = false;
@@ -83,9 +97,6 @@ class _SelectCompany extends State<SelectCompany> {
       if (companyList.isNotEmpty) {
         _companyList = companyList[1];
         companyID = companyList[1].companyID;
-        companyName = companyList[1].companyName;
-        print("companyID"+companyID.toString());
-        print("companyName"+companyName);
         print(selectedCompanyID.toString());
         if (selectedCompanyID != "") {
           header = "Change Company";
@@ -94,7 +105,6 @@ class _SelectCompany extends State<SelectCompany> {
                 selectedCompanyID.toString()) {
               _companyList = companyList[m];
               companyID = companyList[m].companyID;
-              companyName=companyList[m].companyName;
               break;
             }
           }
@@ -102,7 +112,6 @@ class _SelectCompany extends State<SelectCompany> {
       }
     });
   }
-
   void callGetCompanyLogoApi() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? _token = myPrefs.getString("token");
@@ -117,15 +126,12 @@ class _SelectCompany extends State<SelectCompany> {
       if (jsonResponse["returnCode"] == "1") {
         SharedPreferences myPrefs = await SharedPreferences.getInstance();
         myPrefs.setString('companyLogo', jsonResponse["logoPath"]);
-        print("REsponse ::::: "+response1.body);
-        if (header == "Change Company") {
-          Navigator.of(context).pop();
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => DashboardPage(token)),
-          );
-        }
+        print(jsonResponse["logoPath"]);
+        Navigator.of(context).pop();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardPage('')),
+        );
       }
     }
     print(response1.body);
@@ -134,7 +140,6 @@ class _SelectCompany extends State<SelectCompany> {
       _isLoading = false;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     final companyField = Container(
@@ -175,15 +180,13 @@ class _SelectCompany extends State<SelectCompany> {
         onPressed: () async {
           SharedPreferences myPrefs = await SharedPreferences.getInstance();
           myPrefs.setString('companyID', companyID.toString());
-          myPrefs.setString('companyName', companyName.toString());
-
-          print("companyName :::: "+companyName.toString());
+          print(companyID.toString());
           setState(() {
             _isLoading = true;
           });
           callGetCompanyLogoApi();
         },
-        child: Text("Go",
+        child: Text("Change",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -194,11 +197,45 @@ class _SelectCompany extends State<SelectCompany> {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          header,
-          style: TextStyle(fontFamily: 'Montserrat', color: Colors.white),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Change Company',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+            GestureDetector(
+                child: Container(
+                    width: 85,
+                    height: 80,
+                    child: Center(
+                      child: ElevatedButton(
+                        child: Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DashboardPage('')),
+                          );
+                        },
+                      ),
+                    )),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardPage('')),
+                  );
+                }),
+          ],
         ),
       ),
+      drawer: DrawerElement(),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(36.0),

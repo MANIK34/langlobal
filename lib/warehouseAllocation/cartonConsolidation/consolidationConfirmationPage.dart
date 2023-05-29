@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolidationPage.dart';
-
+import 'package:printing/printing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import '../../model/requestParams/cartonList2.dart';
 
 class ConsolidationConfirmationPage extends StatefulWidget {
@@ -36,6 +40,7 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
   var sourceQty;
   var sourceCount;
   var condition;
+  BuildContext? _context;
 
   _ConsolidationConfirmationPage(this.jsonResponse ,this.destinationCarton,this.location,this.sku,
       this.cartonList,this.sourceQty,this.sourceCount,this.condition);
@@ -75,6 +80,22 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
   @override
   Widget build(BuildContext context) {
 
+    final printButton = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(0.0),
+      color: Colors.blue,
+      child: MaterialButton(
+        minWidth: 250,
+        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+          callGetCartonLookupPrintApi();
+        },
+        child: Text("Print",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
     final validateButton = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
@@ -99,7 +120,12 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
     return Scaffold(
       bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
-        child: validateButton,
+        child: Row(
+          children: <Widget>[
+            Expanded(child: printButton),
+            Expanded(child: validateButton),
+          ],
+        ),
       ),
       appBar: AppBar(
         backgroundColor: Colors.blue.shade700,
@@ -337,5 +363,55 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+  void callGetCartonLookupPrintApi() async {
+    buildShowDialog(context);
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    String? companyID = myPrefs.getString("companyID");
+    var url;
+    url = "https://api.langlobal.com/inventoryallocation/v1/cartonlookup/"+
+        destinationCarton.toString()+"?action=print";
+
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}'
+    };
+    print(url.toString());
+    var response = await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          print("jsonResponse :::: "+jsonResponse.toString());
+          var base64Image=jsonResponse['base64String'];
+          Uint8List bytx=Base64Decoder().convert(base64Image);
+          await Printing.layoutPdf(onLayout: (_) => bytx);
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      print(response.statusCode);
+    }
+    Navigator.of(_context!).pop();
+    debugPrint(response.body);
+
   }
 }

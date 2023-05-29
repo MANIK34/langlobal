@@ -1,29 +1,28 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:printing/printing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/sourceCartons.dart';
 
-class DocsPage extends StatefulWidget {
+class LineItemPage extends StatefulWidget {
   var fulfillmentInfo;
 
-  DocsPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
+  LineItemPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
 
   @override
-  _DocsPage createState() => _DocsPage(fulfillmentInfo);
+  _LineItemPage createState() => _LineItemPage(fulfillmentInfo);
 }
 
-class _DocsPage extends State<DocsPage> {
+class _LineItemPage extends State<LineItemPage> {
   var fulfillmentInfo;
 
-  _DocsPage(this.fulfillmentInfo);
+  _LineItemPage(this.fulfillmentInfo);
 
   String orderDate = "";
   String shipmentDate="";
   bool _isLoading = false;
-  BuildContext? _context;
+  TextStyle style = const TextStyle(
+      fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
 
   @override
   void initState() {
@@ -54,7 +53,78 @@ class _DocsPage extends State<DocsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final backToLookup = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(0.0),
+      color: Colors.blue,
+      child: MaterialButton(
+        minWidth: 250,
+        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+
+        },
+        child: Text("Back To Lookup",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+    final sourceCartons = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(0.0),
+      color: Colors.orange,
+      child: MaterialButton(
+        minWidth:250,
+        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SourceCartonsPage(fulfillmentInfo)),
+          );
+        },
+        child: Text("Source Cartons",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
     return Scaffold(
+      bottomSheet: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Row(
+          children: <Widget>[
+            Expanded(child: backToLookup),
+            Expanded(child: sourceCartons),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children:  [
+            const Text('Fulfillment Provisioning',textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
+            ),
+            GestureDetector(
+                child: Container(
+                    width: 85,
+                    height: 80,
+                    child: Center(
+                      child: ElevatedButton(
+                        child: Text('Cancel'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    )),
+                onTap: () {
+                  Navigator.of(context).pop();
+                }),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
             reverse: false,
@@ -73,7 +143,7 @@ class _DocsPage extends State<DocsPage> {
                                 const Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Documents:',
+                                    'Line Items:',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
@@ -114,8 +184,18 @@ class _DocsPage extends State<DocsPage> {
                                         )),
                                       ),
                                       const SizedBox(
-                                        width: 120,
-                                        child:   Text("Name",style: TextStyle(
+                                        width: 100,
+                                        child:   Text("Sku#",style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
+                                        )),
+                                      ),
+                                      Spacer(),
+                                      const SizedBox(
+                                        width: 30,
+                                        child:   Text("Qty",style: TextStyle(
                                             color: Colors.black,
                                             fontWeight:
                                             FontWeight
@@ -134,16 +214,11 @@ class _DocsPage extends State<DocsPage> {
                                       shrinkWrap: true,
                                       primary: false,
                                       physics: NeverScrollableScrollPhysics(),
-                                      itemCount: fulfillmentInfo['documents'].length,
+                                      itemCount: fulfillmentInfo['lineItems'].length,
                                       itemBuilder: (BuildContext context, int indexx) {
-                                        orderDate=fulfillmentInfo['documents'][indexx]['documentDate'];
-                                        orderDate=orderDate.toString().substring(0,10);
-                                        DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
-                                        DateFormat formatter = DateFormat('MM/dd/yyyy');
-                                        orderDate = formatter.format(tempDate);
                                         return Container(
                                           color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
-                                          height: 35,
+                                          height: 30,
                                           child:  Row(
                                             children: [
                                               SizedBox(
@@ -151,29 +226,27 @@ class _DocsPage extends State<DocsPage> {
                                                 child: Text((indexx + 1)
                                                     .toString(),textAlign: TextAlign.center,),
                                               ),
-                                              SizedBox(width: 15,),
-                                              GestureDetector(
-                                                child: SizedBox(
-                                                  width: 120,
-                                                  child: Text(fulfillmentInfo['documents'][indexx]['fileName'].toString(),
+                                              SizedBox(width: 22,),
+                                              SizedBox(
+                                                width: 120,
+                                                child: Text(fulfillmentInfo['lineItems'][indexx]['sku'].toString(),
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 13)),
+                                              ),
+                                              Spacer(),
+                                              SizedBox(
+                                                  width: 35,
+                                                  child: Text(fulfillmentInfo['lineItems'][indexx]['qty'].toString(),
                                                       style: TextStyle(
-                                                          color: Colors.blue,
-                                                          decoration: TextDecoration.underline)),
-                                                ),
-                                                onTap: (){
-                                                 if(fulfillmentInfo['documents'][indexx]['fileName'].toString()=='PACKING SLIP'){
-                                                   callPackingSlipPrintApi(fulfillmentInfo['documents'][indexx]['filePath'].toString());
-                                                 }else{
-                                                   callDocumentPrintApi(fulfillmentInfo['documents'][indexx]['filePath'].toString());
-                                                 }
-                                                },
-                                              )
+                                                          color: Colors.black,
+                                                          fontSize: 13))),
                                             ],
                                           ),
                                         );
                                       },
                                     ),
-                                  ),)
+                                  ),),
                               ],
                             ),
                           ),),
@@ -310,101 +383,5 @@ class _DocsPage extends State<DocsPage> {
           ],
         )
     );
-  }
-
-
-  void callDocumentPrintApi(String fileName) async {
-    buildShowDialog(context);
-    SharedPreferences myPrefs = await SharedPreferences.getInstance();
-    String? token = myPrefs.getString("token");
-    String? companyID = myPrefs.getString("companyID");
-    String? companyName = myPrefs.getString("companyName");
-   // String? fileName = myPrefs.getString("companyLogo");
-    var url="https://api.langlobal.com/fulfillment/v1/document";
-    var body = json.encode({
-      "fileName": fileName,
-      "companyName": companyName,
-    });
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${token!}'
-    };
-    print("requestParams$body");
-    var response = await http.post(Uri.parse(url),body: body, headers: headers);
-    if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-      try {
-        var returnCode=jsonResponse['returnCode'];
-        if(returnCode=="1"){
-          print("jsonResponse :::: "+jsonResponse.toString());
-          var base64Image=jsonResponse['base64String'];
-          Uint8List bytx=Base64Decoder().convert(base64Image);
-          await Printing.layoutPdf(onLayout: (_) => bytx);
-        }else{
-          _showToast(jsonResponse['returnMessage']);
-        }
-      } catch (e) {
-        print('returnCode'+e.toString());
-        // TODO: handle exception, for example by showing an alert to the user
-      }
-    } else {
-      print(response.statusCode);
-    }
-    Navigator.of(_context!).pop();
-    debugPrint(response.body);
-  }
-
-  void callPackingSlipPrintApi(String fileName) async {
-  //  fulfillmentInfo = fulfillmentInfo.toString().substring( 1, fulfillmentInfo.toString().length - 1 );
-    print("fulfillmentInfo :::: "+fulfillmentInfo.toString());
-    buildShowDialog(context);
-    SharedPreferences myPrefs = await SharedPreferences.getInstance();
-    String? token = myPrefs.getString("token");
-    String? companyID = myPrefs.getString("companyID");
-    String? companyName = myPrefs.getString("companyName");
-    // String? fileName = myPrefs.getString("companyLogo");
-    var url="https://api.langlobal.com/fulfillment/v1/packingslip";
-    /*var body = json.encode({
-             fulfillmentInfo});*/
-    Map<String, String> headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${token!}'
-    };
-   // print("requestParams$body");
-    var response = await http.post(Uri.parse(url),body: fulfillmentInfo.toString(), headers: headers);
-    if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-      try {
-        var returnCode=jsonResponse['returnCode'];
-        if(returnCode=="1"){
-          print("jsonResponse :::: "+jsonResponse.toString());
-          var base64Image=jsonResponse['base64String'];
-          Uint8List bytx=Base64Decoder().convert(base64Image);
-          await Printing.layoutPdf(onLayout: (_) => bytx);
-        }else{
-          _showToast(jsonResponse['returnMessage']);
-        }
-      } catch (e) {
-        print('returnCode'+e.toString());
-        // TODO: handle exception, for example by showing an alert to the user
-      }
-    } else {
-      print(response.statusCode);
-    }
-    Navigator.of(_context!).pop();
-    debugPrint(response.body);
-  }
-
-  buildShowDialog(BuildContext context) {
-
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          _context=context;
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
   }
 }
