@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:langlobal/summary/fulfillment/provisioning/serializedInventory.dart';
 
 import '../../../model/requestParams/cartonList2.dart';
 
@@ -54,7 +53,7 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
         }
       },
       decoration: InputDecoration(
-        hintText: "Carton ID",
+        hintText: "",
         counterText: "",
       ),
     );
@@ -113,10 +112,7 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SerializedInventoryPage(fulfillmentInfo)),
-          );
+
         },
         child: Text("Assignment - Serialized",
             textAlign: TextAlign.center,

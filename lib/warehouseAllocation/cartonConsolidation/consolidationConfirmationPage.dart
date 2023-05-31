@@ -376,6 +376,7 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
             child: CircularProgressIndicator(),
           );
         });
+
   }
   void callGetCartonLookupPrintApi() async {
     buildShowDialog(context);
