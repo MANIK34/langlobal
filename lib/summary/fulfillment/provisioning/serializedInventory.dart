@@ -30,6 +30,9 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = [];
   List<CartonList2> cartonList = <CartonList2>[];
+  List<String> trackingList=[];
+  late String? _trackingList = null;
+  String? trackingNumber;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -75,6 +78,9 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
     tempDate = new DateFormat("yyyy-MM-dd").parse(shipmentDate);
     formatter = DateFormat('MM/dd/yyyy');
     shipmentDate = formatter.format(tempDate);
+
+    trackingList.add("Value1");
+    trackingList.add("Value2");
   }
 
   void _showToast(String errorMessage) {
@@ -89,6 +95,35 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final trackingDropdown = Container(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(2.0)),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          hint: const Text("Select Tracking Number",style: TextStyle(
+            fontSize: 12
+          ),),
+          icon: const Icon(Icons.arrow_drop_down),
+          iconSize: 26.0,
+          isExpanded: true,
+          value: _trackingList,
+          onChanged: (value) {
+            setState(() {
+              _trackingList = value!;
+              trackingNumber = value!;
+            });
+          },
+          items: trackingList.map((String map) {
+            return DropdownMenuItem<String>(
+              value: map,
+              child: Text(map,style: const TextStyle(fontSize: 12),),
+            );
+          }).toList(),
+        ),
+      ),
+    );
     final backToLookup = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
@@ -97,7 +132,10 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo)),
+          );
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -109,7 +147,7 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
     final sourceCartons = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
-      color: Colors.green,
+      color: Colors.grey.shade800,
       child: MaterialButton(
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -123,7 +161,7 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
             textAlign: TextAlign.center,
             style: style.copyWith(
                 fontSize: 12,
-                color: Colors.white, fontWeight: FontWeight.bold)),
+                color: Colors.grey.shade400, fontWeight: FontWeight.bold)),
       ),
     );
     return Scaffold(
@@ -176,6 +214,44 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
                       children: <Widget>[
                         orderInfo(),
                         Padding(padding: EdgeInsets.only(left: 10,right: 10),
+                            child: Column(
+                              children: <Widget>[
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Assignments - Shipment Label:',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                                Divider(
+                                  thickness: 2.0,
+                                  color: Colors.black,
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Text('Tracking#:',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
+                                    SizedBox(width: 200,
+                                    height: 35,
+                                    child: trackingDropdown,),
+
+                                  ],
+                                ),
+                                SizedBox(height: 10,),
+                                Row(
+                                  children: <Widget>[
+                                    const Text('Carrier: ',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
+                                    const Text('FedEX/UPS'),
+                                    Spacer(),
+                                    const Text('6/2/2023'),
+                                  ],
+                                ),
+
+                              ],
+                            )),
+                        Padding(padding: EdgeInsets.only(left: 10,right: 10,top: 10),
                             child: Column(
                               children: <Widget>[
                                 const Align(

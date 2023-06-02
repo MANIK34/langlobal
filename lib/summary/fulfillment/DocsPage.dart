@@ -355,7 +355,6 @@ class _DocsPage extends State<DocsPage> {
   }
 
   void callPackingSlipPrintApi(String fileName) async {
-  //  fulfillmentInfo = fulfillmentInfo.toString().substring( 1, fulfillmentInfo.toString().length - 1 );
     print("fulfillmentInfo :::: "+fulfillmentInfo.toString());
     buildShowDialog(context);
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
@@ -363,15 +362,13 @@ class _DocsPage extends State<DocsPage> {
     String? companyID = myPrefs.getString("companyID");
     String? companyName = myPrefs.getString("companyName");
     // String? fileName = myPrefs.getString("companyLogo");
-    var url="https://api.langlobal.com/fulfillment/v1/packingslip";
-    /*var body = json.encode({
-             fulfillmentInfo});*/
+    var url="https://api.langlobal.com/fulfillment/v1/Customers/"+companyID!+"/packingslip/"+fulfillmentInfo['customerOrderNumber'];
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${token!}'
     };
-   // print("requestParams$body");
-    var response = await http.post(Uri.parse(url),body: fulfillmentInfo.toString(), headers: headers);
+    print("requestParams$url");
+    var response = await http.get(Uri.parse(url), headers: headers);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       try {
@@ -385,6 +382,7 @@ class _DocsPage extends State<DocsPage> {
           _showToast(jsonResponse['returnMessage']);
         }
       } catch (e) {
+        _showToast("Something went wrong. Please contact administrator.");
         print('returnCode'+e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }

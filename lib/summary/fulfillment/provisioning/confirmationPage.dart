@@ -6,19 +6,19 @@ import 'package:intl/intl.dart';
 
 import '../../../model/requestParams/cartonList2.dart';
 
-class SourceCartonsPage extends StatefulWidget {
+class ConfirmationPage extends StatefulWidget {
   var fulfillmentInfo;
 
-  SourceCartonsPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
+  ConfirmationPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
 
   @override
-  _SourceCartonsPage createState() => _SourceCartonsPage(fulfillmentInfo);
+  _ConfirmationPage createState() => _ConfirmationPage(fulfillmentInfo);
 }
 
-class _SourceCartonsPage extends State<SourceCartonsPage> {
+class _ConfirmationPage extends State<ConfirmationPage> {
   var fulfillmentInfo;
 
-  _SourceCartonsPage(this.fulfillmentInfo);
+  _ConfirmationPage(this.fulfillmentInfo);
 
   String orderDate = "";
   String shipmentDate="";
@@ -29,6 +29,13 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
   List<Widget> textFeildList = [];
   List<TextEditingController> controllers = [];
   List<CartonList2> cartonList = <CartonList2>[];
+
+  List<Widget> textFeildListQty = [];
+  List<TextEditingController> controllersQty = [];
+
+  List<String> trackingList=[];
+  late String? _trackingList = null;
+  String? trackingNumber;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -53,7 +60,36 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
         }
       },
       decoration: InputDecoration(
-        hintText: "",
+        hintText: "Carton ID",
+        counterText: "",
+      ),
+    );
+  }
+
+  Widget customFieldQty({GestureTapCallback? removeWidget}) {
+
+    TextEditingController controller = TextEditingController();
+    controllersQty.add(controller);
+    for (int i = 0; i < controllersQty.length; i++) {
+      print(
+          controllersQty[i].text); //printing the values to show that it's working
+    }
+    return TextField(
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
+      ],
+      maxLength: 20,
+      autofocus: true,
+      showCursor: true,
+      controller: controller,
+      textInputAction: TextInputAction.done,
+      onSubmitted: (value) {
+        if(controllersQty[textFeildListQty.length-1].text!=""){
+          textFeildListQty.add(customField());
+        }
+      },
+      decoration: InputDecoration(
+        hintText: "Qty",
         counterText: "",
       ),
     );
@@ -63,6 +99,7 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
     // TODO: implement initState
     super.initState();
     textFeildList.add(customField());
+    textFeildListQty.add(customFieldQty());
     orderDate=fulfillmentInfo['fulfillmentDate'];
     orderDate=orderDate.toString().substring(0,10);
     DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
@@ -88,6 +125,36 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final trackingDropdown = Container(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(2.0)),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          hint: const Text("Select Tracking Number",style: TextStyle(
+              fontSize: 12
+          ),),
+          icon: const Icon(Icons.arrow_drop_down),
+          iconSize: 26.0,
+          isExpanded: true,
+          value: _trackingList,
+          onChanged: (value) {
+            setState(() {
+              _trackingList = value!;
+              trackingNumber = value!;
+            });
+          },
+          items: trackingList.map((String map) {
+            return DropdownMenuItem<String>(
+              value: map,
+              child: Text(map,style: const TextStyle(fontSize: 12),),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+
     final backToLookup = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
@@ -101,24 +168,25 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
         child: Text("Validate",
             textAlign: TextAlign.center,
             style: style.copyWith(
+                fontSize: 12,
                 color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
     final sourceCartons = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
-      color: Colors.green,
+      color: Colors.grey.shade800,
       child: MaterialButton(
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
 
         },
-        child: Text("Assignment - Serialized",
+        child: Text("Confirmation",
             textAlign: TextAlign.center,
             style: style.copyWith(
-                fontSize: 14,
-                color: Colors.white, fontWeight: FontWeight.bold)),
+                fontSize: 12,
+                color: Colors.grey.shade400, fontWeight: FontWeight.bold)),
       ),
     );
     return Scaffold(
@@ -176,7 +244,45 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
                                 const Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Source Cartons:',
+                                    'Assignments - Shipment Label:',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                                Divider(
+                                  thickness: 2.0,
+                                  color: Colors.black,
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Text('Tracking#:',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
+                                    SizedBox(width: 200,
+                                      height: 35,
+                                      child: trackingDropdown,),
+
+                                  ],
+                                ),
+                                SizedBox(height: 10,),
+                                Row(
+                                  children: <Widget>[
+                                    const Text('Carrier: ',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
+                                    const Text('FedEX/UPS'),
+                                    Spacer(),
+                                    const Text('6/2/2023'),
+                                  ],
+                                ),
+
+                              ],
+                            )),
+                        Padding(padding: EdgeInsets.only(left: 10,right: 10,top: 20),
+                            child: Column(
+                              children: <Widget>[
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Assignments - Non Serialized Inventory:',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
@@ -189,7 +295,23 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
                                 ),
                               ],
                             )),
-
+                        Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+                            child: Row(
+                              children: <Widget>[
+                                Text('S.NO.'),
+                                SizedBox(width: 10,),
+                                Text('Carton#'),
+                                Spacer(),
+                                Text('QTY'),
+                                SizedBox(width: 35,),
+                              ],
+                            )
+                        ),
+                        Divider(
+                          color: Colors.black,
+                          thickness: 2,
+                        ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(5, 0, 5, 30),
                           child: Column(
@@ -205,18 +327,11 @@ class _SourceCartonsPage extends State<SourceCartonsPage> {
                                       Text(
                                         ""+ (index+1).toString()+". ",
                                       ),
-                                      Expanded(child: textFeildList[index]),
-                                      GestureDetector(
-                                          onTap: () {
-                                            if(textFeildList.length>1){
-                                              textFeildList.removeAt(index);
-                                              controllers.removeAt(index);
-                                              setState(() {});
-                                            }
-                                          },
-                                          child: index < 0
-                                              ? Container()
-                                              : const Icon(Icons.delete,color: Colors.red,)),
+                                      SizedBox(width: 25,),
+                                      SizedBox(width: 220,child: Expanded(child: textFeildList[index]),),
+                                      Spacer(),
+                                      SizedBox(width: 50,child: Expanded(child: textFeildListQty[index]),),
+                                      SizedBox(width: 10,),
                                     ],
                                   );
                                 },

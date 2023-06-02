@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:langlobal/summary/fulfillment/provisioning/sourceCartons.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/nonSerializedInventoryPage.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/serializedInventory.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
 
 class LineItemPage extends StatefulWidget {
   var fulfillmentInfo;
@@ -21,6 +23,7 @@ class _LineItemPage extends State<LineItemPage> {
   String orderDate = "";
   String shipmentDate="";
   bool _isLoading = false;
+  String  dummy="";
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
 
@@ -69,32 +72,12 @@ class _LineItemPage extends State<LineItemPage> {
                 color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
-    final sourceCartons = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(0.0),
-      color: Colors.orange,
-      child: MaterialButton(
-        minWidth:250,
-        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SourceCartonsPage(fulfillmentInfo)),
-          );
-        },
-        child: Text("Source Cartons",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-    );
     return Scaffold(
       bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
         child: Row(
           children: <Widget>[
             Expanded(child: backToLookup),
-            Expanded(child: sourceCartons),
           ],
         ),
       ),
@@ -184,6 +167,15 @@ class _LineItemPage extends State<LineItemPage> {
                                         )),
                                       ),
                                       const SizedBox(
+                                        width: 130,
+                                        child:   Text("Category",style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight:
+                                            FontWeight
+                                                .bold
+                                        )),
+                                      ),
+                                      const SizedBox(
                                         width: 100,
                                         child:   Text("Sku#",style: TextStyle(
                                             color: Colors.black,
@@ -214,8 +206,14 @@ class _LineItemPage extends State<LineItemPage> {
                                       shrinkWrap: true,
                                       primary: false,
                                       physics: NeverScrollableScrollPhysics(),
-                                      itemCount: fulfillmentInfo['lineItems'].length,
+                                      itemCount: 2,
                                       itemBuilder: (BuildContext context, int indexx) {
+                                        if(indexx==0){
+                                          dummy="iPhone";
+                                        }else{
+                                          dummy="Charger";
+                                        }
+
                                         return Container(
                                           color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
                                           height: 30,
@@ -229,15 +227,37 @@ class _LineItemPage extends State<LineItemPage> {
                                               SizedBox(width: 22,),
                                               SizedBox(
                                                 width: 120,
-                                                child: Text(fulfillmentInfo['lineItems'][indexx]['sku'].toString(),
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 13)),
+                                                child: Text(dummy!),
+                                              ),
+                                              SizedBox(width: 5,),
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(indexx==0){
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => SerializedInventoryPage(fulfillmentInfo)),
+                                                    );
+                                                  }else{
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo)),
+                                                    );
+                                                  }
+
+                                                },
+                                                child: SizedBox(
+                                                  width: 120,
+                                                  child: Text("XYZ",
+                                                      style: TextStyle(
+                                                          decoration: TextDecoration.underline,
+                                                          color: Colors.blue,
+                                                          fontSize: 13)),
+                                                ),
                                               ),
                                               Spacer(),
                                               SizedBox(
-                                                  width: 35,
-                                                  child: Text(fulfillmentInfo['lineItems'][indexx]['qty'].toString(),
+                                                  width: 40,
+                                                  child: Text('2',
                                                       style: TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 13))),

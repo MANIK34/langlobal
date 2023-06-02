@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
 
 import '../../../model/requestParams/cartonList2.dart';
 
@@ -30,6 +31,9 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
   List<TextEditingController> controllers = [];
   List<CartonList2> cartonList = <CartonList2>[];
 
+  List<Widget> textFeildListQty = [];
+  List<TextEditingController> controllersQty = [];
+
   Widget customField({GestureTapCallback? removeWidget}) {
 
     TextEditingController controller = TextEditingController();
@@ -53,7 +57,36 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
         }
       },
       decoration: InputDecoration(
-        hintText: "QTY",
+        hintText: "Carton ID",
+        counterText: "",
+      ),
+    );
+  }
+
+  Widget customFieldQty({GestureTapCallback? removeWidget}) {
+
+    TextEditingController controller = TextEditingController();
+    controllersQty.add(controller);
+    for (int i = 0; i < controllersQty.length; i++) {
+      print(
+          controllersQty[i].text); //printing the values to show that it's working
+    }
+    return TextField(
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
+      ],
+      maxLength: 20,
+      autofocus: true,
+      showCursor: true,
+      controller: controller,
+      textInputAction: TextInputAction.done,
+      onSubmitted: (value) {
+        if(controllersQty[textFeildListQty.length-1].text!=""){
+          textFeildListQty.add(customField());
+        }
+      },
+      decoration: InputDecoration(
+        hintText: "Qty",
         counterText: "",
       ),
     );
@@ -63,6 +96,7 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
     // TODO: implement initState
     super.initState();
     textFeildList.add(customField());
+    textFeildListQty.add(customFieldQty());
     orderDate=fulfillmentInfo['fulfillmentDate'];
     orderDate=orderDate.toString().substring(0,10);
     DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
@@ -96,7 +130,10 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ConfirmationPage(fulfillmentInfo)),
+          );
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -108,18 +145,18 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
     final sourceCartons = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
-      color: Colors.green,
+      color: Colors.grey.shade800,
       child: MaterialButton(
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
 
         },
-        child: Text("Confirmation",
+        child: Text("Assignment- Non Serialized",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 fontSize: 12,
-                color: Colors.white, fontWeight: FontWeight.bold)),
+                color: Colors.grey.shade400, fontWeight: FontWeight.bold)),
       ),
     );
     return Scaffold(
@@ -195,10 +232,11 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
                           child: Row(
                             children: <Widget>[
                               Text('S.NO.'),
-                              SizedBox(width: 15,),
-                              Text('SKU#'),
-                              SizedBox(width: 30,),
+                              SizedBox(width: 10,),
+                              Text('Carton#'),
+                              Spacer(),
                               Text('QTY'),
+                              SizedBox(width: 35,),
                             ],
                           )
                         ),
@@ -221,10 +259,11 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
                                       Text(
                                         ""+ (index+1).toString()+". ",
                                       ),
-                                      SizedBox(width: 35,),
-                                      Text('SKU002'),
-                                      SizedBox(width: 15,),
-                                      Expanded(child: textFeildList[index]),
+                                      SizedBox(width: 25,),
+                                      SizedBox(width: 220,child: Expanded(child: textFeildList[index]),),
+                                      Spacer(),
+                                      SizedBox(width: 50,child: Expanded(child: textFeildListQty[index]),),
+                                      SizedBox(width: 10,),
                                     ],
                                   );
                                 },
