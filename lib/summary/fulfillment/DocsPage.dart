@@ -362,7 +362,7 @@ class _DocsPage extends State<DocsPage> {
     String? companyID = myPrefs.getString("companyID");
     String? companyName = myPrefs.getString("companyName");
     // String? fileName = myPrefs.getString("companyLogo");
-    var url="https://api.langlobal.com/fulfillment/v1/Customers/"+companyID!+"/packingslip/"+fulfillmentInfo['customerOrderNumber'];
+    var url="https://api.langlobal.com/fulfillment/v1/Customers/"+companyID!+"/packingslip/"+fulfillmentInfo['fulfillmentNumber'];
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${token!}'

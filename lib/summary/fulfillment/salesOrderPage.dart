@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:langlobal/summary/fulfillment/DocsPage.dart';
 import 'package:langlobal/summary/fulfillment/LogsPage.dart';
 import 'package:langlobal/summary/fulfillment/lineItemsPage.dart';
+import 'package:langlobal/summary/fulfillment/orderSearchPage.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/lineItem.dart';
 import 'package:langlobal/summary/fulfillment/shipmentPage.dart';
 import 'package:langlobal/summary/fulfillment/tabPage.dart';
@@ -68,7 +69,7 @@ class _SalesOrderPage extends State<SalesOrderPage>
             title: Row(
               children: [
                 const Text(
-                  'Sales Order Search',
+                  'Fulfillment Lookup',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'Montserrat',
@@ -85,11 +86,19 @@ class _SalesOrderPage extends State<SalesOrderPage>
                             child: const Text('Search'),
                             onPressed: () {
                               Navigator.of(context).pop();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => OrderSearchPage('Fulfillment Lookup')),
+                              );
                             },
                           ),
                         )),
                     onTap: () {
                       Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OrderSearchPage('Fulfillment Lookup')),
+                      );
                     }),
                Visibility(
                  visible: _visibleProvisioning,
@@ -103,7 +112,7 @@ class _SalesOrderPage extends State<SalesOrderPage>
                            onPressed: () {
                              Navigator.push(
                                context,
-                               MaterialPageRoute(builder: (context) => LineItemPage(fulfillmentInfo)),
+                               MaterialPageRoute(builder: (context) => LineItemPage(fulfillmentInfo,false)),
                              );
                            },
                          ),

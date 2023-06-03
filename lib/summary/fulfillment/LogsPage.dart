@@ -173,7 +173,7 @@ class _LogsPage extends State<LogsPage> {
                                                 width: 100,
                                                 child: Text(orderDate,
                                                     style: TextStyle(
-                                                        fontSize: 13,
+                                                        fontSize: 10,
                                                         color: Colors.black)
                                                 ),
                                               ),
@@ -182,16 +182,16 @@ class _LogsPage extends State<LogsPage> {
                                                 width: 120,
                                                 child: Text(fulfillmentInfo['logs'][indexx]['actionName'].toString(),
                                                     style: TextStyle(
-                                                        fontSize: 13,
+                                                        fontSize: 10,
                                                         color: Colors.black)),
                                               ),
                                               Spacer(),
                                               SizedBox(
                                                   child: Text(fulfillmentInfo['logs'][indexx]['status'].toString(),
                                                       style: TextStyle(
-                                                          fontSize: 13,
+                                                          fontSize: 10,
                                                           color: Colors.black))),
-                                              SizedBox(width: 12,),
+                                              SizedBox(width: 16,),
                                             ],
                                           ),
                                         );

@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/lineItem.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/nonSerializedInventoryPage.dart';
 
 import '../../../model/requestParams/cartonList2.dart';
@@ -33,6 +35,9 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
   List<String> trackingList=[];
   late String? _trackingList = null;
   String? trackingNumber;
+  var bg_color=Colors.grey.shade800;
+  var txt_color=Colors.grey.shade400;
+  bool _visibleLineItem=false;
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -129,13 +134,14 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
       borderRadius: BorderRadius.circular(0.0),
       color: Colors.blue,
       child: MaterialButton(
-        minWidth: 250,
+        minWidth: 100,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo)),
-          );
+           setState(() {
+            /* bg_color=Colors.green.shade800;
+             txt_color=Colors.white;*/
+             _visibleLineItem=true;
+           });
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -147,30 +153,37 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
     final sourceCartons = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
-      color: Colors.grey.shade800,
+      color: bg_color,
       child: MaterialButton(
-        minWidth:250,
+        minWidth:100,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo)),
+            MaterialPageRoute(builder: (context) => LineItemPage(fulfillmentInfo,true)),
           );
         },
-        child: Text("Assignment - Non Serialized",
+        child: Text("Line Items",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 fontSize: 12,
-                color: Colors.grey.shade400, fontWeight: FontWeight.bold)),
+                color: txt_color, fontWeight: FontWeight.bold)),
       ),
     );
     return Scaffold(
       bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Expanded(child: backToLookup),
-            Expanded(child: sourceCartons),
+            backToLookup,
+            SizedBox(width: 5,),
+            Visibility(
+              visible: _visibleLineItem,
+              child: sourceCartons,
+            )
           ],
         ),
       ),

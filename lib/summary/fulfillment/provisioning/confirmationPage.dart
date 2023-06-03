@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:langlobal/summary/fulfillment/provisioning/lineItem.dart';
 
 import '../../../model/requestParams/cartonList2.dart';
+import '../salesOrderPage.dart';
 
 class ConfirmationPage extends StatefulWidget {
   var fulfillmentInfo;
@@ -32,6 +34,9 @@ class _ConfirmationPage extends State<ConfirmationPage> {
 
   List<Widget> textFeildListQty = [];
   List<TextEditingController> controllersQty = [];
+
+  var bg_color=Colors.grey.shade800;
+  var txt_color=Colors.grey.shade400;
 
   List<String> trackingList=[];
   late String? _trackingList = null;
@@ -111,6 +116,10 @@ class _ConfirmationPage extends State<ConfirmationPage> {
     tempDate = new DateFormat("yyyy-MM-dd").parse(shipmentDate);
     formatter = DateFormat('MM/dd/yyyy');
     shipmentDate = formatter.format(tempDate);
+
+    trackingList.add("Value1");
+    trackingList.add("Value2");
+
   }
 
   void _showToast(String errorMessage) {
@@ -163,7 +172,10 @@ class _ConfirmationPage extends State<ConfirmationPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+          setState(() {
+            bg_color=Colors.green.shade800;
+            txt_color=Colors.white;
+          });
         },
         child: Text("Validate",
             textAlign: TextAlign.center,
@@ -175,18 +187,22 @@ class _ConfirmationPage extends State<ConfirmationPage> {
     final sourceCartons = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
-      color: Colors.grey.shade800,
+      color: bg_color,
       child: MaterialButton(
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LineItemPage(fulfillmentInfo,false)),
+          );
         },
         child: Text("Confirmation",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 fontSize: 12,
-                color: Colors.grey.shade400, fontWeight: FontWeight.bold)),
+                color: txt_color, fontWeight: FontWeight.bold)),
       ),
     );
     return Scaffold(
@@ -328,9 +344,9 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                                         ""+ (index+1).toString()+". ",
                                       ),
                                       SizedBox(width: 25,),
-                                      SizedBox(width: 220,child: Expanded(child: textFeildList[index]),),
+                                      SizedBox(width: 220,child: textFeildList[index]),
                                       Spacer(),
-                                      SizedBox(width: 50,child: Expanded(child: textFeildListQty[index]),),
+                                      SizedBox(width: 50,child: textFeildListQty[index]),
                                       SizedBox(width: 10,),
                                     ],
                                   );

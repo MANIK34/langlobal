@@ -167,24 +167,24 @@ class _LineItemsPage extends State<LineItemsPage> {
                                                 child: Text(fulfillmentInfo['lineItems'][indexx]['category'],
                                                     style: TextStyle(
                                                       color: Colors.black,
-                                                        fontSize: 13)
+                                                        fontSize: 10)
                                                 ),
                                               ),
                                               SizedBox(width: 5,),
                                               SizedBox(
-                                                width: 120,
+                                                width: 110,
                                                 child: Text(fulfillmentInfo['lineItems'][indexx]['sku'].toString(),
                                                     style: TextStyle(
                                                         color: Colors.black,
-                                                        fontSize: 13)),
+                                                        fontSize: 10)),
                                               ),
-                                          Spacer(),
                                           SizedBox(
-                                            width: 40,
-                                            child: Text(fulfillmentInfo['lineItems'][indexx]['qty'].toString(),
+                                            width: 20,
+                                            child: Text('10',
                                                 style: TextStyle(
                                                      color: Colors.black,
-                                                    fontSize: 13))),
+                                                    fontSize: 10))),
+                                              SizedBox(width: 15,),
                                             ],
                                           ),
                                         );

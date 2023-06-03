@@ -211,7 +211,7 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                 ),
                                                 Spacer(),
                                                 const SizedBox(
-                                                  child: Text("Ship Date",
+                                                  child: Text("Ship\nDate",
                                                       style: TextStyle(
                                                           color: Colors.black,
                                                           fontWeight:
@@ -287,7 +287,7 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                                   color: Colors
                                                                       .black,
                                                                   fontSize:
-                                                                      13)),
+                                                                      10)),
                                                         ),
                                                         const SizedBox(
                                                           width: 5,
@@ -306,7 +306,7 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                                 .toString();
                                                           },
                                                           child: SizedBox(
-                                                            width: 80,
+                                                            width: 90,
                                                             child: Text(
                                                                 fulfillmentInfo['shipments']
                                                                             [
@@ -321,10 +321,10 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                                         TextDecoration
                                                                             .underline,
                                                                     fontSize:
-                                                                        13)),
+                                                                        10)),
                                                           ),
                                                         ),
-                                                        Spacer(),
+                                                        SizedBox(width: 6,),
                                                         SizedBox(
                                                             child: Text(
                                                                 orderDate,
@@ -332,10 +332,8 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                                     color: Colors
                                                                         .black,
                                                                     fontSize:
-                                                                        13))),
-                                                        SizedBox(
-                                                          width: 5,
-                                                        ),
+                                                                        10))),
+
                                                       ],
                                                     ),
                                                   );

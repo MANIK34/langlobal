@@ -6,19 +6,24 @@ import 'package:langlobal/summary/fulfillment/provisioning/nonSerializedInventor
 import 'package:langlobal/summary/fulfillment/provisioning/serializedInventory.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
 
-class LineItemPage extends StatefulWidget {
-  var fulfillmentInfo;
+import '../salesOrderPage.dart';
 
-  LineItemPage(this.fulfillmentInfo, {Key? key}) : super(key: key);
+class LineItemPage extends StatefulWidget {
+
+  var fulfillmentInfo;
+  var orderDateTime;
+
+  LineItemPage(this.fulfillmentInfo , this.orderDateTime, {Key? key}) : super(key: key);
 
   @override
-  _LineItemPage createState() => _LineItemPage(fulfillmentInfo);
+  _LineItemPage createState() => _LineItemPage(this.fulfillmentInfo,this.orderDateTime);
 }
 
 class _LineItemPage extends State<LineItemPage> {
   var fulfillmentInfo;
+  var orderDateTime;
 
-  _LineItemPage(this.fulfillmentInfo);
+  _LineItemPage(this.fulfillmentInfo,this.orderDateTime);
 
   String orderDate = "";
   String shipmentDate="";
@@ -61,12 +66,36 @@ class _LineItemPage extends State<LineItemPage> {
       borderRadius: BorderRadius.circular(0.0),
       color: Colors.blue,
       child: MaterialButton(
-        minWidth: 250,
+        minWidth: 100,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SalesOrderPage(fulfillmentInfo)),
+          );
         },
         child: Text("Back To Lookup",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
+
+    final confirmation = Material(
+      elevation: 5.0,
+      borderRadius: BorderRadius.circular(0.0),
+      color: Colors.orange,
+      child: MaterialButton(
+        minWidth: 100,
+        padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ConfirmationPage(fulfillmentInfo)),
+          );
+        },
+        child: Text("Confirmation",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 color: Colors.white, fontWeight: FontWeight.bold)),
@@ -76,8 +105,15 @@ class _LineItemPage extends State<LineItemPage> {
       bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Expanded(child: backToLookup),
+            backToLookup,
+            SizedBox(width: 10,),
+            Visibility(
+              visible: orderDateTime,
+              child: confirmation,
+            )
           ],
         ),
       ),
@@ -99,6 +135,10 @@ class _LineItemPage extends State<LineItemPage> {
                         child: Text('Cancel'),
                         onPressed: () {
                           Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SalesOrderPage(fulfillmentInfo)),
+                          );
                         },
                       ),
                     )),
@@ -225,12 +265,14 @@ class _LineItemPage extends State<LineItemPage> {
                                                     .toString(),textAlign: TextAlign.center,),
                                               ),
                                               SizedBox(width: 22,),
-                                              SizedBox(
-                                                width: 120,
-                                                child: Text(dummy!),
-                                              ),
-                                              SizedBox(width: 5,),
                                               GestureDetector(
+                                                child: SizedBox(
+                                                  width: 125,
+                                                  child: Text(dummy!,style: TextStyle(
+                                                      decoration: TextDecoration.underline,
+                                                      color: Colors.blue,
+                                                      fontSize: 13)),
+                                                ),
                                                 onTap: (){
                                                   if(indexx==0){
                                                     Navigator.push(
@@ -243,20 +285,22 @@ class _LineItemPage extends State<LineItemPage> {
                                                       MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo)),
                                                     );
                                                   }
-
                                                 },
+                                              ),
+                                              SizedBox(width: 5,),
+                                              GestureDetector(
+                                                onTap: (){},
                                                 child: SizedBox(
-                                                  width: 120,
+                                                  width: 100,
                                                   child: Text("XYZ",
                                                       style: TextStyle(
-                                                          decoration: TextDecoration.underline,
-                                                          color: Colors.blue,
+                                                          color: Colors.black,
                                                           fontSize: 13)),
                                                 ),
                                               ),
                                               Spacer(),
                                               SizedBox(
-                                                  width: 40,
+                                                  width: 30,
                                                   child: Text('2',
                                                       style: TextStyle(
                                                           color: Colors.black,
