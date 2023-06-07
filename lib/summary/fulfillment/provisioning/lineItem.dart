@@ -246,14 +246,8 @@ class _LineItemPage extends State<LineItemPage> {
                                       shrinkWrap: true,
                                       primary: false,
                                       physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 2,
+                                      itemCount: fulfillmentInfo['lineItems'].length,
                                       itemBuilder: (BuildContext context, int indexx) {
-                                        if(indexx==0){
-                                          dummy="iPhone";
-                                        }else{
-                                          dummy="Charger";
-                                        }
-
                                         return Container(
                                           color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
                                           height: 30,
@@ -268,40 +262,43 @@ class _LineItemPage extends State<LineItemPage> {
                                               GestureDetector(
                                                 child: SizedBox(
                                                   width: 125,
-                                                  child: Text(dummy!,style: TextStyle(
-                                                      decoration: TextDecoration.underline,
-                                                      color: Colors.blue,
-                                                      fontSize: 13)),
+                                                  child: Text(fulfillmentInfo['lineItems'][indexx]['category'],),
                                                 ),
-                                                onTap: (){
-                                                  if(indexx==0){
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => SerializedInventoryPage(fulfillmentInfo)),
-                                                    );
-                                                  }else{
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo)),
-                                                    );
-                                                  }
-                                                },
+                                                onTap: (){},
                                               ),
                                               SizedBox(width: 5,),
                                               GestureDetector(
-                                                onTap: (){},
+                                                onTap: (){
+
+                                                },
                                                 child: SizedBox(
                                                   width: 100,
-                                                  child: Text("XYZ",
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 13)),
+                                                  child: GestureDetector(
+                                                    child:  Text(fulfillmentInfo['lineItems'][indexx]['sku'].toString(),
+                                                        style: TextStyle(
+                                                            decoration: TextDecoration.underline,
+                                                            color: Colors.blue,
+                                                            fontSize: 13)),
+                                                    onTap: (){
+                                                      if(indexx==0){
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => SerializedInventoryPage(fulfillmentInfo)),
+                                                        );
+                                                      }else{
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo)),
+                                                        );
+                                                      }
+                                                    },
+                                                  )
                                                 ),
                                               ),
                                               Spacer(),
                                               SizedBox(
                                                   width: 30,
-                                                  child: Text('2',
+                                                  child: Text(fulfillmentInfo['lineItems'][indexx]['qty'].toString(),
                                                       style: TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 13))),

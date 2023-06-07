@@ -6,8 +6,13 @@ import 'package:intl/intl.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/lineItem.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/nonSerializedInventoryPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../model/requestParams/cartonList2.dart';
+import '../../../model/requestParams/imeIsList.dart';
+import '../../../model/requestParams/imeIsList.dart';
+import '../../../model/requestParams/imeIsList.dart';
+import '../../../model/requestParams/imeIsList.dart';
 
 class SerializedInventoryPage extends StatefulWidget {
   var fulfillmentInfo;
@@ -38,6 +43,8 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
   var bg_color=Colors.grey.shade800;
   var txt_color=Colors.grey.shade400;
   bool _visibleLineItem=false;
+  BuildContext? _context;
+  List<ImeiList> ImeisList = <ImeiList>[];
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -83,9 +90,10 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
     tempDate = new DateFormat("yyyy-MM-dd").parse(shipmentDate);
     formatter = DateFormat('MM/dd/yyyy');
     shipmentDate = formatter.format(tempDate);
-
-    trackingList.add("Value1");
-    trackingList.add("Value2");
+    trackingList.add('Select Tracking Number');
+    for(int m=0;m<fulfillmentInfo['shipments'].length;m++){
+      trackingList.add(fulfillmentInfo['shipments'][m]['trackingNumber']);
+    }
   }
 
   void _showToast(String errorMessage) {
@@ -141,6 +149,7 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
             /* bg_color=Colors.green.shade800;
              txt_color=Colors.white;*/
              _visibleLineItem=true;
+             callSerializedApi();
            });
         },
         child: Text("Validate",
@@ -246,7 +255,7 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
                                 Row(
                                   children: <Widget>[
                                     Text('Tracking#:',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black),),
-                                    SizedBox(width: 200,
+                                    SizedBox(width: 250,
                                     height: 35,
                                     child: trackingDropdown,),
 
@@ -451,5 +460,86 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
           ],
         )
     );
+  }
+
+  void callSerializedApi() async{
+    buildShowDialog(context);
+
+
+    ImeisList= <ImeiList>[];
+    for (int i = 0; i < controllers.length; i++) {
+      if(controllers[i].text! != ""){
+        ImeiList obj= ImeiList(imei: controllers[i].text!,itemCompanyGUID: 0, trackingNumber: trackingNumber,);
+        ImeisList.add(obj);
+      }
+    }
+    var _cartonList = ImeisList.map((e){
+      return {
+        "imei": e.imei,
+        "itemCompanyGUID": e.itemCompanyGUID,
+        "trackingNumber": e.trackingNumber
+      };
+    }).toList();
+    var jsonstringmap = json.encode(_cartonList);
+    print("_cartonList$jsonstringmap" );
+
+
+
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    String? companyID = myPrefs.getString("companyID");
+
+    var url="https://api.langlobal.com/fulfillment/v1/provisoningserialized";
+
+    var body = json.encode(
+        {
+          "action": "validate",
+          "companyID": companyID!,
+          "poid": fulfillmentInfo['fulfillmentID'],
+          "trackingNumber": trackingNumber,
+          "imeIs":jsonstringmap,
+    });
+    body=body.replaceAll("\"[", "[");
+    body=body.replaceAll("]\"", "]");
+    body=body.replaceAll("\\\"", "\"");
+    print("StockInHandPage$body" );
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${token!}'
+    };
+    print("requestParams$body");
+    var response = await http.post(Uri.parse(url),body: body, headers: headers);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      print(response.statusCode);
+    }
+    Navigator.of(_context!).pop();
+    debugPrint(response.body);
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }
