@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/nonSerializedInventoryPage.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/serializedInventory.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
+import 'package:langlobal/utilities.dart';
 
 import '../salesOrderPage.dart';
 
@@ -255,7 +256,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                                                       color: Colors.black,
                                                       fontSize: 13)),
                                               Spacer(),
-                                              Text('0',
+                                              Text(fulfillmentInfo['lineItems'][indexx]['assignedQty'].toString(),
                                                   style: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 13)),

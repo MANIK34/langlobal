@@ -243,9 +243,10 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
               Utilities.cartonProList.remove(Utilities.ImeisList[m]);
             }
           }
-
+          int skuTotalAssignedQty=0;
           for (int i = 0; i < controllers.length; i++) {
             if(controllers[i].text! != ""){
+              skuTotalAssignedQty=skuTotalAssignedQty= returnCartons[i]['assignedQty'];
               CartonProvisioningList obj= CartonProvisioningList(cartonID: controllers[i].text!,
                   assignedQty: returnCartons[i]['assignedQty'],
                   itemCompanyGUID:  fulfillmentInfo['lineItems'][lineItemIndex]['itemCompanyGUID'],
@@ -255,7 +256,7 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
               Utilities.cartonProList.add(obj);
             }
           }
-
+          fulfillmentInfo['lineItems'][lineItemIndex]['assignedQty']=skuTotalAssignedQty;
           print("array values non serialized ::::: "+Utilities.cartonProList.length.toString());
           print("array values1 non serialized ::::: "+Utilities.cartonProList[0].cartonID.toString());
           //print("array values2 non serialized ::::: "+Utilities.cartonProList[1].cartonID.toString());

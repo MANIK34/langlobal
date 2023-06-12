@@ -206,10 +206,12 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
                   itemCompanyGUID: fulfillmentInfo['lineItems'][lineItemIndex]
                       ['itemCompanyGUID'],
                   trackingNumber: trackingNumber,
-                  skuID: fulfillmentInfo['lineItems'][lineItemIndex]['sku']);
+                  skuID: fulfillmentInfo['lineItems'][lineItemIndex]['sku'],
+              );
               Utilities.ImeisList.add(obj);
             }
           }
+          fulfillmentInfo['lineItems'][lineItemIndex]['assignedQty']=controllers.length.toString();
           print("array values ::::: " + Utilities.ImeisList.length.toString());
           print(
               "array values1 ::::: " + Utilities.ImeisList[0].imei.toString());
