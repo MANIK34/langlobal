@@ -280,15 +280,15 @@ class _LineItemPage extends State<LineItemPage> {
                                                             color: Colors.blue,
                                                             fontSize: 13)),
                                                     onTap: (){
-                                                      if(indexx==0){
+                                                      if(fulfillmentInfo['lineItems'][indexx]['isESNRequired']){
                                                         Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(builder: (context) => SerializedInventoryPage(fulfillmentInfo)),
+                                                          MaterialPageRoute(builder: (context) => SerializedInventoryPage(fulfillmentInfo,indexx)),
                                                         );
                                                       }else{
                                                         Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo)),
+                                                          MaterialPageRoute(builder: (context) => NonSerializedInventoryPage(fulfillmentInfo,indexx)),
                                                         );
                                                       }
                                                     },

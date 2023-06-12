@@ -6,6 +6,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:intl/intl.dart';
 import 'package:langlobal/summary/fulfillment/salesOrderPage.dart';
 import 'package:langlobal/transientSearch/transientOrderValidate.dart';
+import 'package:langlobal/utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
@@ -162,16 +163,13 @@ class _OrderSearchPage extends State<OrderSearchPage> {
   }
 
   void callGetTransientOrderApi() async {
-    SharedPreferences myPrefs = await SharedPreferences.getInstance();
-    String? token = myPrefs.getString("token");
-    String? companyID = myPrefs.getString("companyID");
-    var url = "https://api.langlobal.com/Customers/"+companyID!+"/Fulfillments/"+memoController.text.toString();
+
+    var url = Utilities.baseUrl!+"Customers/"+Utilities.companyID!+"/Fulfillments/"+memoController.text.toString();
+    print("wfw >> "+url);
     Map<String, String> headers = {
-      'Authorization': 'Bearer ${token!}'
+      'Authorization': 'Bearer ${Utilities.token}'
     };
 
-    print("URL>>>>>>>>>"+url);
-    print("Token>>>>>>>>>"+token!);
     var response = await http.get(Uri.parse(url), headers: headers);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);

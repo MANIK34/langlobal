@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/select_company.dart';
+import 'package:langlobal/utilities.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dashboard/DashboardPage.dart';
@@ -31,6 +32,7 @@ class _LoginPage extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   Int8List? _bytes;
+  Utilities utilities = Utilities();
 
   @override
   void initState() {
@@ -111,7 +113,6 @@ class _LoginPage extends State<LoginPage> {
             });
             callLoginApi();
           }
-         // callGetCartonLookupApi(false);
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -199,7 +200,10 @@ class _LoginPage extends State<LoginPage> {
 
     //http://api.sanvitti.com // https://api.langlobal.com
 
-    var url = "https://api.langlobal.com/auth/v1/authenticateuser";
+
+    var url = "${Utilities.baseUrl}auth/v1/authenticateuser";
+    print("url :::: "+url);
+    print("Baseurl :::: "+Utilities.baseUrl!);
     Map<String, String> headers = {'Content-type': 'application/json'};
     var body = json.encode({
       "username": emailController.text.toString(),
@@ -285,52 +289,4 @@ class _LoginPage extends State<LoginPage> {
       print(_bytes);
     });
   }
-
-/* Image.memory(
-  Uint8List.fromList(_bytes!),
-  width: 250,
-  height: 250,
-  fit: BoxFit.contain,
-  ),*/
-}
-
-void openPdf() async {
-  var url = "https://langlobal.com/label/638177496557943705.pdf";
-  Uri myUri = Uri.parse(url);
-  var data = await http.get(myUri);
-  await Printing.layoutPdf(onLayout: (_) => data.bodyBytes);
-}
-
-
-void callGetCartonLookupApi(bool isPrint) async {
-  SharedPreferences myPrefs = await SharedPreferences.getInstance();
-  String? token = myPrefs.getString("token");
-  String? companyID = myPrefs.getString("companyID");
-  var url;
-  url = "https://api.langlobal.com/inventoryallocation/v1/cartonlookup/"+
-     "LGI20230322221005023"+"?action=print";
-  Map<String, String> headers = {
-    'Authorization': 'Bearer ${token!}'
-  };
-  print(url.toString());
-  var response = await http.get(Uri.parse(url), headers: headers);
-  if (response.statusCode == 200) {
-    var jsonResponse = json.decode(response.body);
-    try {
-      var returnCode=jsonResponse['returnCode'];
-      if(returnCode=="1"){
-        var base64Image=jsonResponse['base64String'];
-        print("base_64"+ base64Image);
-        Uint8List bytx=Base64Decoder().convert(base64Image);
-        await Printing.layoutPdf(onLayout: (_) => bytx);
-      }
-    } catch (e) {
-      print('returnCode'+e.toString());
-      // TODO: handle exception, for example by showing an alert to the user
-    }
-  } else {
-    print(response.statusCode);
-  }
-  debugPrint(response.body);
-
 }

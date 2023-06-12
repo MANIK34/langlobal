@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/dashboard/DashboardPage.dart';
+import 'package:langlobal/utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'model/responseParams/companies.dart';
 
 class SelectCompany extends StatefulWidget {
@@ -33,11 +33,13 @@ class _SelectCompany extends State<SelectCompany> {
   late CompanyList? _companyList = null;
   var selectedCompanyID;
   var header = 'Select Company';
+  Utilities utilities = Utilities();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    utilities.writeToken();
     setState(() {
       _isLoading = true;
     });
@@ -53,9 +55,9 @@ class _SelectCompany extends State<SelectCompany> {
     }
 
     String? _token = myPrefs.getString("token");
-    var url = "https://api.langlobal.com/common/v1/Companies";
+    var url = "${Utilities.baseUrl}common/v1/Companies";
 
-    Map<String, String> headers = {'Authorization': 'Bearer ' + _token!};
+    Map<String, String> headers = {'Authorization': 'Bearer ' + Utilities.token!};
 
     final response1 = await http.get(Uri.parse(url), headers: headers);
     if (response1.statusCode == 200) {
@@ -104,12 +106,14 @@ class _SelectCompany extends State<SelectCompany> {
   }
 
   void callGetCompanyLogoApi() async {
-    SharedPreferences myPrefs = await SharedPreferences.getInstance();
-    String? _token = myPrefs.getString("token");
-    var url = "https://api.langlobal.com/common/v1/CompanyLogo?companyID=" +
+    /*SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? _token = myPrefs.getString("token");*/
+
+
+    var url = "${Utilities.baseUrl}common/v1/CompanyLogo?companyID=" +
         companyID.toString();
 
-    Map<String, String> headers = {'Authorization': 'Bearer ' + _token!};
+    Map<String, String> headers = {'Authorization': 'Bearer ' + Utilities.token!};
 
     final response1 = await http.get(Uri.parse(url), headers: headers);
     if (response1.statusCode == 200) {
@@ -126,6 +130,7 @@ class _SelectCompany extends State<SelectCompany> {
             MaterialPageRoute(builder: (context) => DashboardPage(token)),
           );
         }
+        utilities.writeToken();
       }
     }
     print(response1.body);
