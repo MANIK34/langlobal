@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/nonSerializedInventoryPage.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/serializedInventory.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
+import 'package:langlobal/summary/shipment/shipmentSubmit.dart';
  
 
 class TrackingDetailPage extends StatefulWidget {
@@ -82,9 +83,10 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
         minWidth: 100,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ConfirmationPage(fulfillmentInfo)),
+            MaterialPageRoute(builder: (context) => ShipmentSubmitPage()),
           );
         },
         child: Text("Tracking",
@@ -172,7 +174,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                         )),
                                       ),
                                       const SizedBox(
-                                        width: 130,
+                                        width: 80,
                                         child:   Text("Date",style: TextStyle(
                                             color: Colors.black,
                                             fontWeight:
@@ -181,7 +183,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                         )),
                                       ),
                                       const SizedBox(
-                                        width: 100,
+                                        width: 70,
                                         child:   Text("Action",style: TextStyle(
                                             color: Colors.black,
                                             fontWeight:
@@ -191,7 +193,6 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                       ),
                                       Spacer(),
                                       const SizedBox(
-                                        width: 30,
                                         child:   Text("Location",style: TextStyle(
                                             color: Colors.black,
                                             fontWeight:
@@ -313,39 +314,91 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Row(
                         children: <Widget>[
-                          Text('Ship  Via:'),
+                          Text('Label Status:',style:
+                          TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text('status',style:
+                          TextStyle(fontWeight: FontWeight.normal)),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
+                      child: Row(
+                        children: <Widget>[
+                          Text('Ship  Via:', style:
+                          TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(
                             width: 5,
                           ),
                           Text( 'Ship  Via',
                               style:
-                              TextStyle(fontWeight: FontWeight.bold)),
+                              TextStyle(fontWeight: FontWeight.normal)),
                         ],
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Row(
                         children: <Widget>[
-                          Text('Ship Date:'),
+                          Text('Ship Date:',style:
+                          TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('14 June, 2023',style:
+                          Text('date',style:
+                          TextStyle(fontWeight: FontWeight.normal)),
+                          Spacer(),
+                          Text('Weight:(Oz): ',style:
                           TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text('',style:
+                          TextStyle(fontWeight: FontWeight.normal)),
+
                         ],
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Row(
+                        children: <Widget>[
+                          Text('Price:',style:
+                          TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text('0.0',style:
+                          TextStyle(fontWeight: FontWeight.normal)),
+                          Spacer(),
+                          Text('Status: ',style:
+                          TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text('',style:
+                          TextStyle(fontWeight: FontWeight.normal)),
+
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
                     ),
                     Padding(
                       padding: EdgeInsets.only(
                         left: 10,
                         right: 10,
+                        bottom: 5
                       ),
                       child: Row(
                         children: [
@@ -357,7 +410,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                     children: <Widget>[
                                       const Text(
                                         'Package: ',
-                                        style: TextStyle(),
+                                        style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         "",
@@ -372,9 +425,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+
                   ],
                 ),
               ),
@@ -410,41 +461,63 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                 ),
                 child: Column(
                   children: <Widget>[
-                    const SizedBox(
-                      height: 10,
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Order Type",
+                            style: TextStyle(
+                                color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
+                          ),
+                          Text(
+                            "Order#",
+                            style: TextStyle(
+                                color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
+                          ),
+                          Text(
+                            "Status",
+                            style: TextStyle(
+                                color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
+                          ),
+                        ],
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Row(
                         children: <Widget>[
-                          Text('Customer Order#:'),
+                          Text('Customer Order#:',style:
+                          TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(
                             width: 5,
                           ),
                           Text( '',
                               style:
-                              TextStyle(fontWeight: FontWeight.bold)),
+                              TextStyle(fontWeight: FontWeight.normal)),
                         ],
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Row(
                         children: <Widget>[
-                          Text('Order Date:'),
+                          Text('Order Date:',style:
+                          TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('14 June, 2023',style:
-                          TextStyle(fontWeight: FontWeight.bold)),
+                          Text('',style:
+                          TextStyle(fontWeight: FontWeight.normal)),
                         ],
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     Padding(
                       padding: EdgeInsets.only(
@@ -460,8 +533,8 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                   Row(
                                     children: <Widget>[
                                       const Text(
-                                        'Shipmnet Date: ',
-                                        style: TextStyle(),
+                                        'Shipmnet Date: ',style:
+                                      TextStyle(fontWeight: FontWeight.bold)
                                       ),
                                       Text(
                                         "",
@@ -477,12 +550,31 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                   ],
                 ),
               ),
             ),
+            Padding(padding: EdgeInsets.only(left: 10,right: 10),
+                child: Column(
+                  children: <Widget>[
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Logs:',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      thickness: 2.0,
+                      color: Colors.black,
+                    ),
+                  ],
+                )),
           ],
         )
     );

@@ -247,11 +247,7 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                                               SizedBox(
                                                   width: 200,
                                                   child: GestureDetector(
-                                                    child: Text(
-                                                        fulfillmentInfo[
-                                                                    'lineItems']
-                                                                [indexx]['sku']
-                                                            .toString(),
+                                                    child: Text(fulfillmentInfo['lineItems'][indexx]['sku'].toString(),
                                                         style: TextStyle(
                                                             decoration:
                                                                 TextDecoration
@@ -263,10 +259,10 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                                                                   'lineItems']
                                                               [indexx]
                                                           ['isESNRequired']) {
-                                                        /* Navigator.push(
+                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(builder: (context) => SerializedInventoryPage(fulfillmentInfo,indexx)),
-                                                        );*/
+                                                        );
                                                       } else {
                                                         Navigator.push(
                                                           context,

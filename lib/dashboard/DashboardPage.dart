@@ -566,6 +566,115 @@ class _DashboardPage extends State<DashboardPage> {
                               ),)
                             ],
                           )),
+                      Padding(
+                          padding: const EdgeInsets.all(1),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 110,
+                                width: 160,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ShipmentSearchPage('')),
+                                      );
+                                    },
+                                    child: Card(
+                                      color: Colors.teal,
+                                      semanticContainer: true,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(10.0),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Image.asset(
+                                            'assets/payee_user.png',
+                                            width: 30,
+                                            height: 30,
+                                          ),
+                                          const Padding(
+                                              padding:
+                                              EdgeInsets.fromLTRB(
+                                                  0.0, 10, 0.0, 0.0),
+                                              child: Align(
+                                                alignment:
+                                                Alignment.center,
+                                                child: Text('Shipment',
+                                                    style: TextStyle(
+                                                        color:
+                                                        Colors.white,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold,
+                                                        fontSize: 16)),
+                                              )),
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                              Visibility(
+                                maintainSize: true,
+                                maintainAnimation: true,
+                                maintainState: true,
+                                visible: false,
+                                child: SizedBox(
+                                  height: 110,
+                                  width: 160,
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        showInventoryDialog();
+                                      },
+                                      child: Card(
+                                        color: Colors.redAccent,
+                                        semanticContainer: true,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10.0),
+                                        ),
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Image.asset(
+                                              'assets/graph.png',
+                                              width: 30,
+                                              height: 30,
+                                            ),
+                                            const Padding(
+                                                padding:
+                                                EdgeInsets.fromLTRB(
+                                                    0.0, 10, 0.0, 0.0),
+                                                child: Align(
+                                                  alignment:
+                                                  Alignment.center,
+                                                  child: Text('Inventory',
+                                                      style: TextStyle(
+                                                          color:
+                                                          Colors.white,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .bold,
+                                                          fontSize: 16)),
+                                                )),
+                                          ],
+                                        ),
+                                      )),
+                                ),)
+                            ],
+                          ))
                     ],
                   ),
                 ),

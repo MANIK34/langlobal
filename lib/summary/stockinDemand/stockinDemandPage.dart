@@ -362,7 +362,7 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
         _showToast(jsonResponse['returnMessage']);
       }
     }
-    print(stockInDemand[0]['categoryName']);
+   // print(stockInDemand[0]['categoryName']);
     print(response1.body);
   }
 
