@@ -15,6 +15,4 @@ class Utilities {
     token = myPrefs.getString("token");
     companyID = myPrefs.getString("companyID");
   }
-
-
 }

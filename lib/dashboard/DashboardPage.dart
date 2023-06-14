@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:langlobal/summary/shipment/shipmentSearch.dart';
 import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentPage.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolidationPage.dart';
 import 'package:langlobal/warehouseAllocation/cartonCreations/creationConfiguration.dart';
@@ -815,6 +816,11 @@ class _DashboardPage extends State<DashboardPage> {
                             50) // put the width and height you want
                     ),
                     onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ShipmentSearchPage('')),
+                      );
                     }),
                 /*const SizedBox(
                   height: 10,
