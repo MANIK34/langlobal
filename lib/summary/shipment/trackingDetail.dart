@@ -174,7 +174,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                         )),
                                       ),
                                       const SizedBox(
-                                        width: 80,
+                                        width: 100,
                                         child:   Text("Date",style: TextStyle(
                                             color: Colors.black,
                                             fontWeight:
@@ -227,8 +227,8 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                               SizedBox(width: 22,),
                                               GestureDetector(
                                                 child: SizedBox(
-                                                  width: 125,
-                                                  child: Text(''),
+                                                  width: 95,
+                                                  child: Text('06/06/2023'),
                                                 ),
                                                 onTap: (){},
                                               ),
@@ -240,7 +240,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                                 child: SizedBox(
                                                     width: 100,
                                                     child: GestureDetector(
-                                                      child:  Text("",
+                                                      child:  Text("Action",
                                                           style: TextStyle(
                                                               decoration: TextDecoration.underline,
                                                               color: Colors.blue,
@@ -253,11 +253,11 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                               ),
                                               Spacer(),
                                               SizedBox(
-                                                  width: 30,
-                                                  child: Text("",
+                                                  child: Text("A1-9-A",
                                                       style: TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 13))),
+                                              SizedBox(width: 10,),
                                             ],
                                           ),
                                         );
@@ -493,7 +493,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text( '',
+                          Text( 'QTQYY@78',
                               style:
                               TextStyle(fontWeight: FontWeight.normal)),
                         ],
@@ -511,7 +511,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('',style:
+                          Text('06/06/2023',style:
                           TextStyle(fontWeight: FontWeight.normal)),
                         ],
                       ),
@@ -537,7 +537,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                       TextStyle(fontWeight: FontWeight.bold)
                                       ),
                                       Text(
-                                        "",
+                                        "06/06/2023",
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                         ),

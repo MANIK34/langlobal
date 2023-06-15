@@ -3,29 +3,29 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/lineItem.dart';
-import 'package:langlobal/summary/shipment/shipmentSubmit2.dart';
+import 'package:langlobal/summary/shipment/shipmentLookup.dart';
 import 'package:langlobal/utilities.dart';
-import 'package:shared_preferences/shared_preferences.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../model/requestParams/cartonList2.dart';
-import '../../../model/requestParams/imeIsList.dart'; 
+import '../../../model/requestParams/imeIsList.dart';
 
-class ShipmentSubmitPage extends StatefulWidget {
+class ShipmentSubmit2Page extends StatefulWidget {
 
 
-  ShipmentSubmitPage( {Key? key})
+  ShipmentSubmit2Page( {Key? key})
       : super(key: key);
 
   @override
-  _ShipmentSubmitPage createState() =>
-      _ShipmentSubmitPage();
+  _ShipmentSubmit2Page createState() =>
+      _ShipmentSubmit2Page();
 }
 
-class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
+class _ShipmentSubmit2Page extends State<ShipmentSubmit2Page> {
 
 
-  _ShipmentSubmitPage();
+  _ShipmentSubmit2Page();
 
   String orderDate = "";
   String shipmentDate = "";
@@ -100,13 +100,15 @@ class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           setState(() {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ShipmentSubmit2Page()),
-            );
+            setState(() {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ShipmentLookup("")),
+              );
+            });
           });
         },
-        child: Text("Next",
+        child: Text("Submit",
             textAlign: TextAlign.center,
             style: style.copyWith(
                 fontSize: 12,
@@ -236,180 +238,9 @@ class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
                     child: Column(
                       children: <Widget>[
-                        Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                color: Colors.grey,
-                                width: 1, //<-- SEE HERE
-                              ),
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only(left: 10, right: 10,top: 10),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            Text(
-                                              'Shipment Label By: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
-                                            ),
-                                            SizedBox(
-                                              width: 150,
-                                              height: 35,
-                                              child: trackingDropdown,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            SizedBox(width: 170,
-                                              height: 40,
-                                              child:  memoField,),
-                                            SizedBox(width: 10,),
-                                            SizedBox(
-                                              height: 40,
-                                              child:  generateLabel,),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
-                                    )),
-                              ],
-                            ),
-                          ),),
-                        Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                color: Colors.grey,
-                                width: 1, //<-- SEE HERE
-                              ),
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only(left: 10, right: 10,top: 10),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            Text(
-                                              'Carrier: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
-                                            ),
-                                            SizedBox(
-                                              width: 200,
-                                              height: 35,
-                                              child: trackingDropdown,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
-                                    )),
-                              ],
-                            ),
-                          ),),
-                        Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                color: Colors.grey,
-                                width: 1, //<-- SEE HERE
-                              ),
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            child: Column(
-                              children: <Widget>[
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only(left: 10, right: 10,top: 10),
-                                    child: Column(
-                                      children: <Widget>[
-                                        Row(
-                                          children: <Widget>[
-                                            Text(
-                                              'Ship Via: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
-                                            ),
-                                            SizedBox(
-                                              width: 100,
-                                              height: 35,
-                                              child: trackingDropdown,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            Text(
-                                              'Package: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
-                                            ),
-                                            SizedBox(
-                                              width: 100,
-                                              height: 35,
-                                              child: trackingDropdown,
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              'Weight: ',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
-                                            ),
-                                            SizedBox(
-                                              width: 80,
-                                              height: 40,
-                                              child: memoField2,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
-                                    )),
-                              ],
-                            ),
-                          ),),
                         Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                           child: Card(
                             shape: RoundedRectangleBorder(
@@ -427,13 +258,13 @@ class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
                                   height: 5,
                                 ),
                                 Padding(padding: EdgeInsets.only(left: 10),
-                                child: Text(
-                                  'Ship From: ',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
-                                ),),
+                                  child: Text(
+                                    'Ship To: ',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                  ),),
                                 Divider(
                                   thickness: 2,
                                   color: Colors.black,
