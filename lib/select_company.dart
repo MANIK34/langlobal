@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -39,12 +40,37 @@ class _SelectCompany extends State<SelectCompany> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    utilities.checkUserConnection();
     utilities.writeToken();
     setState(() {
       _isLoading = true;
     });
-    callGetCompanyApi();
+    if(!Utilities.ActiveConnection){
+      callGetCompanyApi();
+    }else{
+      _showToast('No internet connection found!');
+    }
+
   }
+
+  /*Future checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+          print('Connection Active');
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+        print('Connection Not Active');
+      });
+    }
+  }*/
 
   void callGetCompanyApi() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
@@ -178,15 +204,19 @@ class _SelectCompany extends State<SelectCompany> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () async {
-          SharedPreferences myPrefs = await SharedPreferences.getInstance();
-          myPrefs.setString('companyID', companyID.toString());
-          myPrefs.setString('companyName', companyName.toString());
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            SharedPreferences myPrefs = await SharedPreferences.getInstance();
+            myPrefs.setString('companyID', companyID.toString());
+            myPrefs.setString('companyName', companyName.toString());
+            print("companyName :::: "+companyName.toString());
+            setState(() {
+              _isLoading = true;
+            });
+            callGetCompanyLogoApi();
+          }
 
-          print("companyName :::: "+companyName.toString());
-          setState(() {
-            _isLoading = true;
-          });
-          callGetCompanyLogoApi();
         },
         child: Text("Go",
             textAlign: TextAlign.center,

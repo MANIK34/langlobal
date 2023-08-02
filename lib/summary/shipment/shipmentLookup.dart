@@ -5,12 +5,10 @@ import 'package:langlobal/summary/fulfillment/provisioning/serializedInventory.d
 import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
 import 'package:langlobal/summary/shipment/shipmentSubmit.dart';
 
-
 class ShipmentLookup extends StatefulWidget {
-
   var fulfillmentInfo;
 
-  ShipmentLookup(this.fulfillmentInfo , {Key? key}) : super(key: key);
+  ShipmentLookup(this.fulfillmentInfo, {Key? key}) : super(key: key);
 
   @override
   _ShipmentLookup createState() => _ShipmentLookup(this.fulfillmentInfo);
@@ -19,13 +17,12 @@ class ShipmentLookup extends StatefulWidget {
 class _ShipmentLookup extends State<ShipmentLookup> {
   var fulfillmentInfo;
 
-
   _ShipmentLookup(this.fulfillmentInfo);
 
   String orderDate = "";
-  String shipmentDate="";
+  String shipmentDate = "";
   bool _isLoading = false;
-  String  dummy="";
+  String dummy = "";
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
 
@@ -58,8 +55,6 @@ class _ShipmentLookup extends State<ShipmentLookup> {
 
   @override
   Widget build(BuildContext context) {
-
-
     final confirmation = Material(
       elevation: 5.0,
       borderRadius: BorderRadius.circular(0.0),
@@ -68,11 +63,10 @@ class _ShipmentLookup extends State<ShipmentLookup> {
         minWidth: 100,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
-          Navigator.push(
+          /* Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ShipmentSubmitPage()),
-          );
+          );*/
         },
         child: Text("Shipment Lookup",
             textAlign: TextAlign.center,
@@ -81,24 +75,27 @@ class _ShipmentLookup extends State<ShipmentLookup> {
       ),
     );
     return Scaffold(
-      bottomSheet: Container(
+     /* bottomSheet: Container(
         width: MediaQuery.of(context).size.width,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            confirmation
-          ],
+          children: <Widget>[confirmation],
         ),
-      ),
+      ),*/
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children:  [
-            const Text('Shipment Label Lookup',textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Montserrat',fontSize: 16,fontWeight: FontWeight.bold),
+          children: [
+            const Text(
+              'Shipment Label Lookup',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
             ),
             GestureDetector(
                 child: Container(
@@ -122,192 +119,159 @@ class _ShipmentLookup extends State<ShipmentLookup> {
         child: SingleChildScrollView(
             reverse: false,
             child: Padding(
-              padding:EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child:  Column(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Column(
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Column(
                       children: <Widget>[
                         orderInfo(),
+                        SizedBox(height: 80,),
+                        confirmation
                       ],
                     ),
                   ),
                 ],
               ),
-            )
-        ),
+            )),
       ),
     );
   }
 
-  Widget orderInfo(){
-    return(
-        Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Shipment label is created.",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.normal,fontSize: 16),
-                  ),
-                ],
+  Widget orderInfo() {
+    return (Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Shipment label is created.",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Tracking#",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(
-                    color: Colors.grey,
-                    width: 1, //<-- SEE HERE
-                  ),
-                  borderRadius: BorderRadius.circular(5.0),
+            ],
+          ),
+        ),
+        Padding(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(
+                  color: Colors.grey,
+                  width: 1, //<-- SEE HERE
                 ),
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        children: <Widget>[
-                          Text('Label Status:',style:
-                          TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text('status',style:
-                          TextStyle(fontWeight: FontWeight.normal)),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
-                      child: Row(
-                        children: <Widget>[
-                          Text('Ship  Via:', style:
-                          TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text( 'Ship  Via',
-                              style:
-                              TextStyle(fontWeight: FontWeight.normal)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        children: <Widget>[
-                          Text('Ship Date:',style:
-                          TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text('date',style:
-                          TextStyle(fontWeight: FontWeight.normal)),
-                          Spacer(),
-                          Text('Weight:(Oz): ',style:
-                          TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text('',style:
-                          TextStyle(fontWeight: FontWeight.normal)),
-
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        children: <Widget>[
-                          Text('Price:',style:
-                          TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text('0.0',style:
-                          TextStyle(fontWeight: FontWeight.normal)),
-                          Spacer(),
-                          Text('Status: ',style:
-                          TextStyle(fontWeight: FontWeight.bold)),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text('',style:
-                          TextStyle(fontWeight: FontWeight.normal)),
-
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: 10,
-                          right: 10,
-                          bottom: 5
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: <Widget>[
-                                      const Text(
-                                        'Package: ',
-                                        style: TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )),
-                        ],
-                      ),
-                    ),
-
-                  ],
-                ),
+                borderRadius: BorderRadius.circular(5.0),
               ),
+              child: SizedBox(
+                height: 40,
+                width: double.infinity,
+                child: Padding(padding: EdgeInsets.only(top: 10),child: Text(
+                  "Tracking#",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),),
+              )
+              ,
+            )),
+        Padding(
+          padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(
+                color: Colors.grey,
+                width: 1, //<-- SEE HERE
+              ),
+              borderRadius: BorderRadius.circular(5.0),
             ),
-          ],
-        )
-    );
+            child: Column(
+              children: <Widget>[
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Ship Via:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text('date',
+                          style: TextStyle(fontWeight: FontWeight.normal)),
+                      Spacer(),
+                      Text('Ship Date ',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text('', style: TextStyle(fontWeight: FontWeight.normal)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Package:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text('date',
+                          style: TextStyle(fontWeight: FontWeight.normal)),
+                      Spacer(),
+                      Text('Weight:(Oz): ',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text('', style: TextStyle(fontWeight: FontWeight.normal)),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Price:',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text('date',
+                          style: TextStyle(fontWeight: FontWeight.normal)),
+                      Spacer(),
+                      Text('Shipment Status: ',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text('', style: TextStyle(fontWeight: FontWeight.normal)),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+              ],
+            ),
+          ),
+        ),
+
+      ],
+    ));
   }
 }

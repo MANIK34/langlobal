@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/locationLookup/locationLookupDetailPage.dart';
+import 'package:langlobal/utilities.dart';
 import 'package:langlobal/warehouseAllocation/skuLookup/skuLookupDetailPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,12 +41,14 @@ class _SkuLookupPage extends State<SkuLookupPage> {
   String filterType = "";
   String labelText="SKU";
   BuildContext? _context;
+  Utilities _utilities = Utilities();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";
+    _utilities.checkUserConnection();
   }
 
   @override
@@ -61,6 +64,8 @@ class _SkuLookupPage extends State<SkuLookupPage> {
         onSubmitted: (value) {
           if (memoController.text.toString() == "") {
             _showToast("SKU can't be empty");
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
           } else {
             buildShowDialog(context);
             callGetSkuApi();
@@ -88,7 +93,10 @@ class _SkuLookupPage extends State<SkuLookupPage> {
         onPressed: () {
           if (memoController.text.toString() == "") {
             _showToast("SKU can't be empty");
-          } else {
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else {
             buildShowDialog(context);
             callGetSkuApi();
           }

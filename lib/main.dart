@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:langlobal/login.dart';
 
 void main() {
+
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
@@ -35,6 +37,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -81,8 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Center(
           child:Image.asset(
             "assets/lan_global_icon.jpeg",
-             height: 500,
-             width: 300,
+            height: 500,
+            width: 300,
           ),
         ));
   }

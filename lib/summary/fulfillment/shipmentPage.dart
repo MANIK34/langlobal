@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utilities.dart';
+import '../shipment/shipmentSubmit.dart';
+
 class ShipmentPage extends StatefulWidget {
   var fulfillmentInfo;
 
@@ -28,10 +31,12 @@ class _ShipmentPage extends State<ShipmentPage> {
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   BuildContext? _context;
   var trackingId;
-
+  Utilities _utilities = Utilities();
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
+
     super.initState();
     orderDate = fulfillmentInfo['fulfillmentDate'];
     orderDate = orderDate.toString().substring(0, 10);
@@ -66,7 +71,11 @@ class _ShipmentPage extends State<ShipmentPage> {
         minWidth: 80,
         padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         onPressed: () {
-          callDocumentPrintApi("");
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            callDocumentPrintApi("");
+          }
         },
         child: Text("Print Label",
             textAlign: TextAlign.center,
@@ -101,7 +110,12 @@ class _ShipmentPage extends State<ShipmentPage> {
       child: MaterialButton(
         minWidth: 100,
         padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ShipmentSubmitPage(fulfillmentInfo)),
+          );
+        },
         child: Text("Generate Labels",
             textAlign: TextAlign.center,
             style: style.copyWith(

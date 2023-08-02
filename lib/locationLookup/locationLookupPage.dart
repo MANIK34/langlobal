@@ -10,6 +10,8 @@ import 'package:langlobal/locationLookup/locationLookupDetailPage.dart';
 import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupDetailPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utilities.dart';
+
 class LocationLookupPage extends StatefulWidget {
   String heading = '';
 
@@ -37,9 +39,12 @@ class _LocationLookupPage extends State<LocationLookupPage> {
   TextEditingController fromDateInput = TextEditingController();
   TextEditingController toDateInput = TextEditingController();
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";
@@ -59,7 +64,10 @@ class _LocationLookupPage extends State<LocationLookupPage> {
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
             _showToast("Location can't be empty");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             setState(() {
               _isLoading = true;
             });
@@ -90,7 +98,10 @@ class _LocationLookupPage extends State<LocationLookupPage> {
         onPressed: () {
           if(memoController.text.toString()==""){
             _showToast("Carton ID can't be empty");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             setState(() {
               _isLoading = true;
             });

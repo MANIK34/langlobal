@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utilities.dart';
+
 class DocsPage extends StatefulWidget {
   var fulfillmentInfo;
 
@@ -24,10 +26,11 @@ class _DocsPage extends State<DocsPage> {
   String shipmentDate="";
   bool _isLoading = false;
   BuildContext? _context;
-
+  Utilities _utilities = Utilities();
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     orderDate=fulfillmentInfo['fulfillmentDate'];
     orderDate=orderDate.toString().substring(0,10);
@@ -161,9 +164,11 @@ class _DocsPage extends State<DocsPage> {
                                                           decoration: TextDecoration.underline)),
                                                 ),
                                                 onTap: (){
-                                                 if(fulfillmentInfo['documents'][indexx]['fileName'].toString()=='PACKING SLIP'){
+                                                  if(!Utilities.ActiveConnection){
+                                                    _showToast("No internet connection found!");
+                                                  }else if(fulfillmentInfo['documents'][indexx]['fileName'].toString()=='PACKING SLIP'){
                                                    callPackingSlipPrintApi(fulfillmentInfo['documents'][indexx]['filePath'].toString());
-                                                 }else{
+                                                 } else{
                                                    callDocumentPrintApi(fulfillmentInfo['documents'][indexx]['filePath'].toString());
                                                  }
                                                 },

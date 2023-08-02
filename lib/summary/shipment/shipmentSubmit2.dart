@@ -3,13 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:langlobal/summary/fulfillment/provisioning/lineItem.dart';
 import 'package:langlobal/summary/shipment/shipmentLookup.dart';
-import 'package:langlobal/utilities.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../../model/requestParams/cartonList2.dart';
-import '../../../model/requestParams/imeIsList.dart';
 
 class ShipmentSubmit2Page extends StatefulWidget {
 

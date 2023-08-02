@@ -84,10 +84,10 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
 
-          Navigator.push(
+         /* Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ShipmentSubmitPage()),
-          );
+          );*/
         },
         child: Text("Tracking",
             textAlign: TextAlign.center,

@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
 import '../model/responseParams/companies.dart';
+import '../utilities.dart';
 
 class ChangeCompanyPage extends StatefulWidget {
   String heading = '';
@@ -44,15 +45,22 @@ class _ChangeCompanyPage extends State<ChangeCompanyPage> {
   // BluetoothDevice? _device;
   String tips = 'no device connect';
   String? base64Image;
-
+  Utilities _utilities = Utilities();
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     setState(() {
       _isLoading = true;
     });
-    callGetCompanyApi();
+
+   if(!Utilities.ActiveConnection){
+    _showToast("No internet connection found!");
+    }else{
+     callGetCompanyApi();
+   }
+
 
   }
 

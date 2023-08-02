@@ -47,6 +47,8 @@ dependencies:
   printing: ^5.10.4
   path_provider: ^2.0.15
   connectivity_plus: ^4.0.1
+  blue_thermal_printer:
+  path:
 
 dev_dependencies:
   flutter_test:

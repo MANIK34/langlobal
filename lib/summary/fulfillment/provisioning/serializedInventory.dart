@@ -11,9 +11,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../model/requestParams/cartonList2.dart';
 import '../../../model/requestParams/imeIsList.dart';
-import '../../../model/requestParams/imeIsList.dart';
-import '../../../model/requestParams/imeIsList.dart';
-import '../../../model/requestParams/imeIsList.dart';
 
 class SerializedInventoryPage extends StatefulWidget {
   var fulfillmentInfo;
@@ -53,6 +50,9 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
   var jsonstringmap;
   String addedImeiValue = "";
 
+  Utilities _utilities = Utilities();
+
+
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
     controller.text = addedImeiValue;
@@ -85,6 +85,8 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
+
     super.initState();
     orderDate = fulfillmentInfo['fulfillmentDate'];
     orderDate = orderDate.toString().substring(0, 10);
@@ -172,6 +174,8 @@ class _SerializedInventoryPage extends State<SerializedInventoryPage> {
             print("trackingNumber ::::: " + trackingNumber);
             if (trackingNumber == "") {
               _showToast('Please select tracking number');
+            }else if(!Utilities.ActiveConnection){
+              _showToast("No internet connection found!");
             } else {
               callSerializedApi();
             }

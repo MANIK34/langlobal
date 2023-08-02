@@ -39,9 +39,13 @@ class _OrderSearchPage extends State<OrderSearchPage> {
   TextEditingController fromDateInput = TextEditingController();
   TextEditingController toDateInput = TextEditingController();
 
+  Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";
@@ -61,7 +65,10 @@ class _OrderSearchPage extends State<OrderSearchPage> {
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
             _showToast("Fulfillment Order can't be empty");
-          }else{
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             setState(() {
               _isLoading = true;
             });
@@ -90,7 +97,10 @@ class _OrderSearchPage extends State<OrderSearchPage> {
         onPressed: () {
           if(memoController.text.toString()==""){
             _showToast("Fulfillment Number can't be empty");
-          }else{
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             setState(() {
               _isLoading = true;
             });

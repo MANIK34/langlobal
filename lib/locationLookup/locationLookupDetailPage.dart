@@ -7,6 +7,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/locationLookup/locationLookupPage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../utilities.dart';
 import '../warehouseAllocation/cartonLookup/cartonLookupDetailPage.dart';
  
 
@@ -25,6 +26,8 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
   var cartonContent;
 
   _LocationLookupDetailPage(this.cartonContent);
+
+  Utilities _utilities = Utilities();
 
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
@@ -50,6 +53,7 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
 
   }
@@ -368,7 +372,11 @@ class _LocationLookupDetailPage extends State<LocationLookupDetailPage> {
                                                     ),
                                                     GestureDetector(
                                                       onTap: (){
-                                                        callGetCartonLookupApi(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString());
+                                                        if(!Utilities.ActiveConnection){
+                                                          _showToast("No internet connection found!");
+                                                        }else{
+                                                          callGetCartonLookupApi(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString());
+                                                        }
                                                       },
                                                       child:  Text(cartonContent['skuList'][index]['cartons'][indexx]['cartonID'].toString(),style: TextStyle(
                                                           fontWeight: FontWeight.normal,color: Colors.blue,decoration: TextDecoration.underline

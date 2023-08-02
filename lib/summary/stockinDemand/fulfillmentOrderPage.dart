@@ -8,6 +8,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/requestParams/locationList.dart';
+import '../../utilities.dart';
 import '../../warehouseAllocation/skuLookup/skuLookupDetailPage.dart';
 
 class FulfillmentOrderPage extends StatefulWidget {
@@ -46,14 +47,22 @@ class _FulfillmentOrderPage extends State<FulfillmentOrderPage> {
     return Text(cartonValue.toString());
   }
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       buildShowDialog(context);
     });
-    callStockInDemandApi();
+    if(!Utilities.ActiveConnection){
+      _showToast("No internet connection found!");
+    }else{
+      callStockInDemandApi();
+    }
+
   }
 
   @override
@@ -204,7 +213,11 @@ class _FulfillmentOrderPage extends State<FulfillmentOrderPage> {
                                     Spacer(),
                                     GestureDetector(
                                       onTap: (){
-                                        callGetSkuApi(stockInDemand['sku'].toString());
+                                        if(!Utilities.ActiveConnection){
+                                          _showToast("No internet connection found!");
+                                        }else{
+                                          callGetSkuApi(stockInDemand['sku'].toString());
+                                        }
                                       },
                                       child: Text(
                                         'Stock in hand: '+ stockInDemand['currentStock'].toString(),

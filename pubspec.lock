@@ -37,18 +37,26 @@ packages:
     dependency: transitive
     description:
       name: barcode
-      sha256: "52570564684bbb0240a9f1fdb6bad12adc5e0540103c1c96d6dd550bd928b1c9"
+      sha256: "789f898eef0bd88312470bdb2cc996f895ad7dd5f89e9adde84b204546a90b45"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.3"
+    version: "2.2.4"
   bidi:
     dependency: transitive
     description:
       name: bidi
-      sha256: dc00274c7edabae2ab30c676e736ea1eb0b1b7a1b436cb5fe372e431ccb39ab0
+      sha256: "6794b226bc939731308b8539c49bb6c2fdbf0e78c3a65e9b9e81e727c256dfe6"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.6"
+    version: "2.0.7"
+  blue_thermal_printer:
+    dependency: "direct main"
+    description:
+      name: blue_thermal_printer
+      sha256: "2b8a93f90be335494d2172dbc869c31b95638087f89591b4ad69fd9305eaf80b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -401,7 +409,7 @@ packages:
     source: hosted
     version: "1.0.2"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       sha256: "8829d8a55c13fc0e37127c29fedf290c102f4e40ae94ada574091fe0ff96c917"
@@ -468,18 +476,10 @@ packages:
     dependency: transitive
     description:
       name: pdf
-      sha256: "70d84154dc5b6ddf28eee6c012510a4cbbebb3a1879c0957e05364a95e8f3832"
+      sha256: "9f75fc7f5580ea5e635b5724de58fb27f684c9ad03ed46fdc1aac768e4557315"
       url: "https://pub.dev"
     source: hosted
-    version: "3.10.3"
-  pdf_widget_wrapper:
-    dependency: transitive
-    description:
-      name: pdf_widget_wrapper
-      sha256: e9d31fd7782ce28ae346b127ea7d1cd748d799bddee379f31191693610e23749
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
+    version: "3.10.4"
   pedantic:
     dependency: transitive
     description:
@@ -524,10 +524,10 @@ packages:
     dependency: "direct main"
     description:
       name: printing
-      sha256: "6aa86779d51f1c60608defee7b231e1133ab9b00f63b3b71abfa85cb39898571"
+      sha256: e7c383dca95ee7b88c02dc1c66638628d3dcdc2fb2cc47e7a595facd47e46b56
       url: "https://pub.dev"
     source: hosted
-    version: "5.10.4"
+    version: "5.11.0"
   process:
     dependency: transitive
     description:
@@ -742,5 +742,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=3.0.0-0 <4.0.0"
-  flutter: ">=3.9.0"
+  dart: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"

@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/select_company.dart';
 import 'package:langlobal/utilities.dart';
-import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dashboard/DashboardPage.dart';
+import 'dart:io';
 
 class LoginPage extends StatefulWidget {
   String bookName = '';
@@ -25,6 +24,9 @@ class _LoginPage extends State<LoginPage> {
 
   _LoginPage(this.bookName);
 
+  bool ActiveConnection = false;
+  String T = "";
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
@@ -36,7 +38,28 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   void initState() {
+    //checkUserConnection();
+    utilities.checkUserConnection();
     super.initState();
+  }
+
+  Future checkUserConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          ActiveConnection = true;
+          T = "Turn off the data and repress again";
+          print('Connection Active');
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        ActiveConnection = false;
+        T = "Turn On the data and repress again";
+        print('Connection Not Active');
+      });
+    }
   }
 
   @override
@@ -76,6 +99,8 @@ class _LoginPage extends State<LoginPage> {
             _showToast("Username can't be empty");
           } else if (passwordController.text == "") {
             _showToast("Password can't be empty");
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
           } else {
             setState(() {
               _isLoading = true;
@@ -103,16 +128,20 @@ class _LoginPage extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+          //checkUserConnection();
           if (emailController.text == "") {
             _showToast("Username can't be empty");
           } else if (passwordController.text == "") {
             _showToast("Password can't be empty");
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
           } else {
             setState(() {
               _isLoading = true;
             });
             callLoginApi();
           }
+
         },
         child: Text("Login",
             textAlign: TextAlign.center,
@@ -178,29 +207,7 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void callLoginApi() async {
-  /*  final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network.
-    } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a wifi network.
-    } else if (connectivityResult == ConnectivityResult.ethernet) {
-      // I am connected to a ethernet network.
-    } else if (connectivityResult == ConnectivityResult.vpn) {
-      // I am connected to a vpn network.
-      // Note for iOS and macOS:
-      // There is no separate network interface type for [vpn].
-      // It returns [other] on any device (also simulator)
-    } else if (connectivityResult == ConnectivityResult.bluetooth) {
-      // I am connected to a bluetooth.
-    } else if (connectivityResult == ConnectivityResult.other) {
-      // I am connected to a network which is not in the above mentioned networks.
-    } else if (connectivityResult == ConnectivityResult.none) {
-      // I am not connected to any network.
-    }*/
-
     //http://api.sanvitti.com // https://api.langlobal.com
-
-
     var url = "${Utilities.baseUrl}auth/v1/authenticateuser";
     print("url :::: "+url);
     print("Baseurl :::: "+Utilities.baseUrl!);
@@ -257,6 +264,7 @@ class _LoginPage extends State<LoginPage> {
     } else {
       print(response.statusCode);
     }
+    print("statusCode :: "+response.statusCode.toString());
     print(response.body);
     setState(() {
       _isLoading = false;

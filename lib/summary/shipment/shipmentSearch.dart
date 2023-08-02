@@ -37,9 +37,11 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
   TextEditingController fromDateInput = TextEditingController();
   TextEditingController toDateInput = TextEditingController();
   var trackingInfo;
+  Utilities _utilities = Utilities();
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";

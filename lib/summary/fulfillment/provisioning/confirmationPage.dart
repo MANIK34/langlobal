@@ -34,10 +34,12 @@ class _ConfirmationPage extends State<ConfirmationPage> {
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   BuildContext? _context;
+  Utilities _utilities = Utilities();
 
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     orderDate = fulfillmentInfo['fulfillmentDate'];
     orderDate = orderDate.toString().substring(0, 10);
@@ -72,7 +74,12 @@ class _ConfirmationPage extends State<ConfirmationPage> {
         minWidth: 200,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          callProvisoningApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            callProvisoningApi();
+          }
+
         },
         child: Text("Submit",
             textAlign: TextAlign.center,

@@ -57,6 +57,9 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
   var skuQty="";
   String addedCartonValue = "";
 
+  Utilities _utilities = Utilities();
+
+
   Widget customField({GestureTapCallback? removeWidget}) {
 
     TextEditingController controller = TextEditingController();
@@ -122,6 +125,8 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
+
     super.initState();
 
     for (int m = 0; m < Utilities.cartonProList.length; m++) {
@@ -218,7 +223,10 @@ class _NonSerializedInventoryPage extends State<NonSerializedInventoryPage> {
             print("trackingNumber ::::: " + trackingNumber);
             if (trackingNumber == "") {
               _showToast('Please select tracking number');
-            } else {
+            }else if(!Utilities.ActiveConnection){
+              _showToast("No internet connection found!");
+            }
+            else {
               callSerializedApi();
             }
           });

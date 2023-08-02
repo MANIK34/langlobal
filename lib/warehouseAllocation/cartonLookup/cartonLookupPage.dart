@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:langlobal/utilities/testprint.dart';
 import 'package:langlobal/warehouseAllocation/cartonLookup/cartonLookupDetailPage.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +26,7 @@ class _CartonLookupPage extends State<CartonLookupPage> {
   String heading = '';
 
   _CartonLookupPage(this.heading);
-
+  TestPrint testPrint = TestPrint();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
@@ -289,8 +290,9 @@ class _CartonLookupPage extends State<CartonLookupPage> {
           if(isPrint){
             print("jsonResponse :::: "+jsonResponse.toString());
             var base64Image=jsonResponse['base64String'];
-            Uint8List bytx=Base64Decoder().convert(base64Image);
-            await Printing.layoutPdf(onLayout: (_) => bytx);
+            Uint8List bytx=const Base64Decoder().convert(base64Image);
+            testPrint.sample(bytx);
+           // await Printing.layoutPdf(onLayout: (_) => bytx);
           }else{
             Navigator.push(
               context,
