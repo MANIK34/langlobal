@@ -39,18 +39,19 @@ class _SelectCompany extends State<SelectCompany> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     utilities.checkUserConnection();
+    super.initState();
     utilities.writeToken();
-    setState(() {
-      _isLoading = true;
-    });
     if(!Utilities.ActiveConnection){
-      callGetCompanyApi();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        _showToast('No internet connection found!');
+      });
     }else{
-      _showToast('No internet connection found!');
+      setState(() {
+        _isLoading = true;
+      });
+      callGetCompanyApi();
     }
-
   }
 
   /*Future checkUserConnection() async {

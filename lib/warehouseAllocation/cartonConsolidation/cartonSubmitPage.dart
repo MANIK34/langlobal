@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:langlobal/utilities.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/consolidationConfirmationPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -72,10 +73,12 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
     controllers.add(controller);
     return Text(cartonValue);
   }
+  Utilities _utilities = Utilities();
 
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     print(" ::::: " + sourceJsonStringMap.length.toString());
     for (int m = 0; m < sourceCartonList.length; m++) {
@@ -102,8 +105,13 @@ class _CartonSubmitPage extends State<CartonSubmitPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonMovementApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callCartonMovementApi();
+          }
+
         },
         child: Text("Submit",
             textAlign: TextAlign.center,

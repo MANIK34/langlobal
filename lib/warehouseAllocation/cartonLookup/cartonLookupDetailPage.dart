@@ -56,9 +56,12 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
     return Text(esnValue.toString());
   }
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     var imeiList = cartonContent['imeiList'];
     for (int m = 0; m < imeiList.length; m++) {
@@ -174,7 +177,11 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          callGetCartonLookupPrintApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            callGetCartonLookupPrintApi();
+          }
         },
         child: Text("Print",
             textAlign: TextAlign.center,
@@ -308,9 +315,14 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                     children: <Widget>[
                                       GestureDetector(
                                         onTap: () {
-                                          callGetCartonLookupApi(
-                                              cartonContent['location']
-                                                  .toString());
+                                          if(!Utilities.ActiveConnection){
+                                            _showToast("No internet connection found!");
+                                          }else{
+                                            callGetCartonLookupApi(
+                                                cartonContent['location']
+                                                    .toString());
+                                          }
+
                                         },
                                         child: Row(
                                           children: <Widget>[
@@ -410,7 +422,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                           thickness: 2.0,
                           color: Colors.black,
                         ),
-                        Row(
+                       /* Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
@@ -460,7 +472,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                               ),
                             ),
                           ],
-                        ),
+                        ),*/
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
                           child: Card(
@@ -613,9 +625,13 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                             ),
                                             GestureDetector(
                                                 onTap: () {
-                                                  callGetIMEISApi(
-                                                      cartonContent['imeiList']
-                                                          [index]['imei']);
+                                                  if(!Utilities.ActiveConnection){
+                                                    _showToast("No internet connection found!");
+                                                  }else{
+                                                    callGetIMEISApi(
+                                                        cartonContent['imeiList']
+                                                        [index]['imei']);
+                                                  }
                                                 },
                                                 child: Text(
                                                   cartonContent['imeiList']

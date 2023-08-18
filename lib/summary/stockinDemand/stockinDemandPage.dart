@@ -8,6 +8,7 @@ import 'package:langlobal/summary/stockinDemand/fulfillmentOrderPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/requestParams/locationList.dart';
+import '../../utilities.dart';
 import '../../warehouseAllocation/skuLookup/skuLookupDetailPage.dart';
 
 class StockInDemandlPage extends StatefulWidget {
@@ -37,6 +38,7 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
   var cartonValue;
   var previousindx = -1;
   var obj_stockInDemand;
+  Utilities _utilities = Utilities();
 
   Widget customField({GestureTapCallback? removeWidget}) {
     TextEditingController controller = TextEditingController();
@@ -48,11 +50,18 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      buildShowDialog(context);
-    });
-    callStockInDemandApi();
+    if(!Utilities.ActiveConnection){
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        _showToast('No internet connection found!');
+      });
+    }else{
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        buildShowDialog(context);
+      });
+      callStockInDemandApi();
+    }
   }
 
   @override
@@ -86,8 +95,12 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
         minWidth: 150,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callStockInDemandApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callStockInDemandApi();
+          }
         },
         child: Text("Refresh",
             textAlign: TextAlign.center,
@@ -246,9 +259,14 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
                                         ),
                                       )),
                                       onTap: () {
-                                        callGetSkuApi(stockInDemand[index]
-                                                ['sku']
-                                            .toString());
+                                        if(!Utilities.ActiveConnection){
+                                          _showToast("No internet connection found!");
+                                        }else{
+                                          callGetSkuApi(stockInDemand[index]
+                                          ['sku']
+                                              .toString());
+                                        }
+
                                       },
                                     )
                                   ],
@@ -288,9 +306,14 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
                                     ),
                                     GestureDetector(
                                         onTap: () {
-                                          callGetSkuApi(stockInDemand[index]
-                                                  ['sku']
-                                              .toString());
+                                          if(!Utilities.ActiveConnection){
+                                          _showToast("No internet connection found!");
+                                        }else{
+                                            callGetSkuApi(stockInDemand[index]
+                                            ['sku']
+                                                .toString());
+                                        }
+
                                         },
                                         child: Text(
                                           'Stock in hand: ' +

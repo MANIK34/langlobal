@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:http/http.dart' as http;
+import 'package:langlobal/utilities.dart';
 import 'package:langlobal/warehouseAllocation/movement/validateCartonMovement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,9 +62,12 @@ class _CartonMovementPage extends State<CartonMovementPage> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     textFeildList.add(customField());
   }
@@ -104,8 +108,12 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonMovementApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callCartonMovementApi();
+          }
         },
         child: Text(btn_text,
             textAlign: TextAlign.center,

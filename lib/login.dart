@@ -106,6 +106,7 @@ class _LoginPage extends State<LoginPage> {
               _isLoading = true;
             });
             callLoginApi();
+           // utilities.callAppErrorLogApi('NULL pointer exception.');
           }
         },
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
@@ -259,6 +260,7 @@ class _LoginPage extends State<LoginPage> {
         }
       } catch (e) {
         print('returnCode' + e.toString());
+        utilities.callAppErrorLogApi(e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {

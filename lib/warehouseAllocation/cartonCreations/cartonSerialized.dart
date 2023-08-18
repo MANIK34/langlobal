@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:langlobal/model/requestParams/imei.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utilities.dart';
 import 'creationSubmit.dart';
 
 class CartonSerializedPage extends StatefulWidget {
@@ -82,9 +83,14 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
+
     super.initState();
     textFeildList.add(customField());
     print(_jsonResponse['itemCompanyGUID']);
@@ -106,9 +112,12 @@ class _CartonSerializedPage extends State<CartonSerializedPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callValidateApi();
-
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callValidateApi();
+          }
         },
         child: Text("Validate",
             textAlign: TextAlign.center,

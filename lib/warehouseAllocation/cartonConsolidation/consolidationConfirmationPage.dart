@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
+import 'package:langlobal/utilities.dart';
 import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonConsolidationPage.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,9 +63,12 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
     );
   }
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     textFeildList.add(customField());
     if(location.toString().isEmpty){
@@ -88,7 +92,11 @@ class _ConsolidationConfirmationPage extends State<ConsolidationConfirmationPage
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          callGetCartonLookupPrintApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            callGetCartonLookupPrintApi();
+          }
         },
         child: Text("Print",
             textAlign: TextAlign.center,

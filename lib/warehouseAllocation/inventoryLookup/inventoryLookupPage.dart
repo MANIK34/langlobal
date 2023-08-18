@@ -10,6 +10,8 @@ import 'package:langlobal/locationLookup/locationLookupDetailPage.dart';
 import 'package:langlobal/warehouseAllocation/inventoryLookup/inventoryLookupDetail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utilities.dart';
+
 class InventoryLookupPage extends StatefulWidget {
   String heading = '';
 
@@ -36,9 +38,13 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
   TextEditingController toDateInput = TextEditingController();
   BuildContext? _context;
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
+
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";
@@ -59,7 +65,10 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
             _showToast("IMEI can't be empty");
-          }else{
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             buildShowDialog(context);
             callGetIMEISApi();
           }
@@ -88,7 +97,10 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
         onPressed: () {
           if(memoController.text.toString()==""){
             _showToast("IMEI can't be empty");
-          }else{
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             buildShowDialog(context);
             callGetIMEISApi();
           }

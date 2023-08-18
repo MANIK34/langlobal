@@ -8,6 +8,7 @@ import 'package:langlobal/warehouseAllocation/cartonConsolidation/cartonSubmitPa
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../model/requestParams/cartonList2.dart';
+import '../../utilities.dart';
 
 class CartonDestinationPage extends StatefulWidget {
   var jsonResponse;
@@ -48,6 +49,8 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
   bool _focusLocation=false;
   var sourceQty;
   var sourceCount;
+  Utilities _utilities = Utilities();
+
 
   Widget customField({GestureTapCallback? removeWidget}) {
 
@@ -81,6 +84,7 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     textFeildList.add(customField());
     sourceQty=jsonResponse['movementInfo']['cartornItemsCount'].toString();
@@ -150,7 +154,10 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
             _showToast("Carton can't be empty!");
           }else if(carton_text=='Remove Carton ID' && locationController.text.toString().isEmpty){
               _showToast("Warehouse location can't be empty!");
-          }else{
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             buildShowDialog(context);
             callCartonMovementApi();
           }
@@ -171,10 +178,14 @@ class _CartonDestinationPage extends State<CartonDestinationPage> {
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
           if(carton_text=='Generate Carton ID'){
-            locationController.text="";
-            _focusLocation=true;
-            buildShowDialog(context);
-            callGetCartonIDApi();
+            if(!Utilities.ActiveConnection){
+              _showToast("No internet connection found!");
+            }else{
+              locationController.text="";
+              _focusLocation=true;
+              buildShowDialog(context);
+              callGetCartonIDApi();
+            }
           }else{
             locationController.text="";
             _focusLocation=false;

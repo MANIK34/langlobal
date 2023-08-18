@@ -42,9 +42,12 @@ class _SkuLookupPage extends State<SkuLookupPage> {
   String labelText="SKU";
   BuildContext? _context;
   Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";

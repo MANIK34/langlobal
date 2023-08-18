@@ -70,7 +70,9 @@ class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
     zipController1.text=fulfillmentInfo['customer']['zip'];
     stateController1.text=fulfillmentInfo['customer']['state'];
     if(!Utilities.ActiveConnection){
-      _showToast("No internet connection found!");
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        _showToast('No internet connection found!');
+      });
     }else{
       callGetShipViaApi();
     }

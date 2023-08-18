@@ -2,15 +2,21 @@ import 'dart:async';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'model/requestParams/cartonProvisioning.dart';
 import 'model/requestParams/imeIsList.dart';
+
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class Utilities  {
   static String? baseUrl = "https://api.langlobal.com/";
   static String? token = "";
   static String? companyID="";
+  static String? userId= "";
   static List<ImeiList> ImeisList = <ImeiList>[];
   static List<CartonProvisioningList> cartonProList = <CartonProvisioningList>[];
 
@@ -36,5 +42,46 @@ class Utilities  {
       T = "Turn On the data and repress again";
       print('Connection Not Active');
     }
+  }
+
+  void callAppErrorLogApi(var errorMessage) async {
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    userId=myPrefs.getString("userId");
+    var token=myPrefs.getString("token");
+    var url = "${Utilities.baseUrl}common/v1/apperrorlog";
+
+    Map<String, String> headers = {'Content-type': 'application/json','Authorization': 'Bearer ' + token!};
+    var body = json.encode({
+      "moduleName": "",
+      "errorMessage": errorMessage,
+      "methodName": "",
+      "userID": userId,
+      "pageUrl": "",
+      "stackTrace": "",
+      "className":"",
+
+    });
+    var jsonRequest = json.decode(body);
+    print("requestParams$body");
+    print("requestUrl $url");
+    print("requestToken $token");
+    var response =
+    await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode = jsonResponse['returnCode'];
+        if (returnCode == "1") {
+        }
+      } catch (e) {
+        print('returnCode' + e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      print(response.statusCode);
+    }
+    print("app Error API Response :: ${response.body}");
+
+
   }
 }

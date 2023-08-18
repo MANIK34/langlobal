@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonValidatePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
+import '../../utilities.dart';
 
 class CartonAssignmentPage extends StatefulWidget {
   var heading;
@@ -77,15 +78,25 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
+    if(!Utilities.ActiveConnection){
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        _showToast('No internet connection found!');
+      });
+    }else{
+      callGetConditionApi();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        buildShowDialog(context);
+      });
+    }
     textFeildList.add(customField());
-    callGetConditionApi();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      buildShowDialog(context);
-    });
   }
 
   @override
@@ -176,7 +187,10 @@ class _CartonAssignmentPage extends State<CartonAssignmentPage> {
         onPressed: () {
           if(controllers[0].text == ""){
             _showToast("Carton value can't be empty!");
-          }else{
+          }else if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             buildShowDialog(context);
             callCartonAssignmentApi();
           }

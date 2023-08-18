@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/requestParams/imei.dart';
+import '../../utilities.dart';
 import 'creationConfirmation.dart';
 
 class CreationSubmitPage extends StatefulWidget {
@@ -72,9 +73,13 @@ class _CreationSubmitPage extends State<CreationSubmitPage> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     for(int m=0; m<imeiList2.length;m++){
       if(imeiList2[m].imei.toString().isNotEmpty){
@@ -103,9 +108,12 @@ class _CreationSubmitPage extends State<CreationSubmitPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callValidateApi();
-
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callValidateApi();
+          }
         },
         child: Text("Submit",
             textAlign: TextAlign.center,

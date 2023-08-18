@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../utilities.dart';
+
 class CartonAssignmentSubmitPage extends StatefulWidget {
   var sku;
   var category;
@@ -79,9 +81,14 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
     return Text(cartonId);
   }
 
+  Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
+
     super.initState();
     for (int m = 0; m < obj_cartonList.length; m++) {
       cartonId = obj_cartonList[m].cartonID.toString();
@@ -104,8 +111,12 @@ class _CartonAssignmentSubmitPage extends State<CartonAssignmentSubmitPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonAssignmentSubmitApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callCartonAssignmentSubmitApi();
+          }
         },
         child: Text("Submit",
             textAlign: TextAlign.center,

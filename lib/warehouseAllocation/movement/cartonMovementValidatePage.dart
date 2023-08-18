@@ -8,6 +8,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/requestParams/cartonList2.dart';
+import '../../utilities.dart';
 import 'cartonMovementSubmit.dart';
 
 class CartonMovementValidate extends StatefulWidget {
@@ -48,9 +49,12 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     for(int m=0;m<movementInfo['cartons'].length;m++){
       cartonValue=movementInfo['cartons'][m]['cartonID'];
@@ -95,8 +99,12 @@ class _CartonMovementValidate extends State<CartonMovementValidate> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonMovementApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callCartonMovementApi();
+          }
         },
         child: Text("Validate",
             textAlign: TextAlign.center,

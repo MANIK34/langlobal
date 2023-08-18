@@ -56,7 +56,9 @@ class _ChangeCompanyPage extends State<ChangeCompanyPage> {
     });
 
    if(!Utilities.ActiveConnection){
-    _showToast("No internet connection found!");
+     WidgetsBinding.instance.addPostFrameCallback((_) async {
+       _showToast('No internet connection found!');
+     });
     }else{
      callGetCompanyApi();
    }

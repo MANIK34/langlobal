@@ -9,6 +9,7 @@ import 'package:langlobal/warehouseAllocation/movement/cartonMovementConfirmatio
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/requestParams/locationList.dart';
+import '../../utilities.dart';
 
 class CartonMovementSubmit extends StatefulWidget {
   var movementInfo;
@@ -51,9 +52,13 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
+
     super.initState();
     for(int m=0;m<movementInfo['cartons'].length;m++){
       cartonValue=movementInfo['cartons'][m]['cartonID'];
@@ -77,8 +82,12 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonMovementApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callCartonMovementApi();
+          }
         },
         child: Text("Submit",
             textAlign: TextAlign.center,

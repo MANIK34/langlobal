@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:langlobal/warehouseAllocation/cartonCreations/validateSourceCarton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../utilities.dart';
 import 'cartonSerialized.dart';
 
 class CreationConfigurationPage extends StatefulWidget {
@@ -45,14 +46,25 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
   bool isChecked = false;
   String cartonID='';
   BuildContext? _context;
+
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
-    callGetConditionApi();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      buildShowDialog(context);
-    });
+    if(!Utilities.ActiveConnection){
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        _showToast('No internet connection found!');
+      });
+    }else{
+      callGetConditionApi();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        buildShowDialog(context);
+      });
+    }
+
   }
 
   @override
@@ -194,7 +206,10 @@ class _CreationConfigurationPage extends State<CreationConfigurationPage> {
             _showToast("Qty/Carton can't be empty!");
           }else if(locationController.text == ""){
             _showToast("Warehouse Location can't be empty!");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             buildShowDialog(context);
             callValidateApi();
           }

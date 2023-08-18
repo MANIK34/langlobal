@@ -7,6 +7,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../model/requestParams/cartonList2.dart';
+import '../../utilities.dart';
 import 'cartonDestinationPage.dart';
 
 class CartonConsolidationPage extends StatefulWidget {
@@ -67,9 +68,12 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     textFeildList.add(customField());
   }
@@ -90,8 +94,12 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonMovementApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callCartonMovementApi();
+          }
         },
         child: Text("Validate",
             textAlign: TextAlign.center,

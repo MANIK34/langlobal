@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class BluetoothDemo extends StatefulWidget {
@@ -17,11 +18,13 @@ class _BluetoothDemo extends State<BluetoothDemo> {
   BluetoothDevice? _device;
   bool _connected = false;
   TestPrint testPrint = TestPrint();
-
+  String deviceName='';
+  String bluetoothDeviceName="Select Device";
   @override
   void initState() {
     super.initState();
     initPlatformState();
+   // getSavedData();
   }
 
   Future<void> initPlatformState() async {
@@ -103,6 +106,7 @@ class _BluetoothDemo extends State<BluetoothDemo> {
     if (!mounted) return;
     setState(() {
       _devices = devices;
+      print("device size ::::"+_devices.length.toString());
     });
 
     if (isConnected == true) {
@@ -110,14 +114,25 @@ class _BluetoothDemo extends State<BluetoothDemo> {
         _connected = true;
       });
     }
+    getSavedData();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Blue Thermal Printer'),
+          title: const Text("Select Bluetooth Device"),
+          leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -137,6 +152,7 @@ class _BluetoothDemo extends State<BluetoothDemo> {
                   const SizedBox(width: 30),
                   Expanded(
                     child: DropdownButton(
+                      hint: Text(bluetoothDeviceName),
                       items: _getDeviceItems(),
                       onChanged: (BluetoothDevice? value) =>
                           setState(() => _device = value),
@@ -151,7 +167,7 @@ class _BluetoothDemo extends State<BluetoothDemo> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(primary: Colors.brown),
+                    style: ElevatedButton.styleFrom(primary: Colors.black),
                     onPressed: () {
                       initPlatformState();
                     },
@@ -172,7 +188,9 @@ class _BluetoothDemo extends State<BluetoothDemo> {
                   ),
                 ],
               ),
-              Padding(
+              Visibility(
+                visible: false,
+                child: Padding(
                 padding:
                 const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
                 child: ElevatedButton(
@@ -183,7 +201,7 @@ class _BluetoothDemo extends State<BluetoothDemo> {
                   child: const Text('PRINT TEST',
                       style: TextStyle(color: Colors.white)),
                 ),
-              ),
+              ),)
             ],
           ),
         ),
@@ -208,12 +226,19 @@ class _BluetoothDemo extends State<BluetoothDemo> {
     return items;
   }
 
-  void _connect() {
+  void _connect() async{
+
+    if (_device != null) {
+      deviceName=_device!.name!;
+      SharedPreferences myPrefs = await SharedPreferences.getInstance();
+      myPrefs.setString('bluetoothDevice', deviceName);
+    }
+
     if (_device != null) {
       bluetooth.isConnected.then((isConnected) {
         if (isConnected == false) {
           bluetooth.connect(_device!).catchError((error) {
-            setState(() => _connected = false);
+            //setState(() => _connected = false);
           });
           setState(() => _connected = true);
         }
@@ -223,9 +248,11 @@ class _BluetoothDemo extends State<BluetoothDemo> {
     }
   }
 
-  void _disconnect() {
+  void _disconnect() async{
     bluetooth.disconnect();
     setState(() => _connected = false);
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    myPrefs.setString('bluetoothDevice', "Select Device");
   }
 
   Future show(
@@ -242,5 +269,25 @@ class _BluetoothDemo extends State<BluetoothDemo> {
         duration: duration,
       ),
     );
+  }
+
+  void getSavedData()  async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    bluetoothDeviceName = myPrefs.getString("bluetoothDevice")!;
+
+    if(bluetoothDeviceName==null||bluetoothDeviceName==""){
+      bluetoothDeviceName="Select Device";
+    }else{
+      print("device size ::::"+_devices.length.toString());
+      if (_devices.isNotEmpty) {
+        for(int m=0;m<_devices.length;m++){
+          if(_devices[m].name==bluetoothDeviceName){
+            _device=_devices[m];
+            _connect();
+            print("device ::::"+bluetoothDeviceName);
+          }
+        }
+      }
+    }
   }
 }

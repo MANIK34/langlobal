@@ -9,6 +9,7 @@ import 'package:langlobal/warehouseAllocation/movement/cartonMovementValidatePag
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/requestParams/cartonList2.dart';
+import '../../utilities.dart';
 
 class ValidateCartonMovementPage extends StatefulWidget {
   var sourceLocation;
@@ -61,9 +62,13 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     textFeildList.add(customField());
   }
@@ -84,8 +89,12 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callCartonMovementApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callCartonMovementApi();
+          }
         },
         child: Text(btn_text,
             textAlign: TextAlign.center,

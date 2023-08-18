@@ -8,6 +8,7 @@ import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/summary/stockinHand/stockinHandDetailPage.dart';
+import 'package:langlobal/utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/categoryList.dart';
 
@@ -59,14 +60,24 @@ class _StockInHandPage extends State<StockInHandPage> {
   bool isChecked = false;
   String cartonID='';
   BuildContext? _context;
+
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
-    callGetConditionApi();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      buildShowDialog(context);
-    });
+    if(!Utilities.ActiveConnection){
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        _showToast('No internet connection found!');
+      });
+    }else{
+      callGetConditionApi();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        buildShowDialog(context);
+      });
+    }
   }
 
   @override
@@ -233,8 +244,12 @@ class _StockInHandPage extends State<StockInHandPage> {
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callStockInHandApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callStockInHandApi();
+          }
         },
         child: Text("Search",
             textAlign: TextAlign.center,

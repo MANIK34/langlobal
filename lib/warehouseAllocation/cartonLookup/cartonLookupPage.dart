@@ -12,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../utilities.dart';
+
 class CartonLookupPage extends StatefulWidget {
   String heading = '';
 
@@ -45,10 +47,13 @@ class _CartonLookupPage extends State<CartonLookupPage> {
  // BluetoothDevice? _device;
   String tips = 'no device connect';
   String? base64Image;
+  Utilities _utilities = Utilities();
+
 
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";
@@ -105,7 +110,9 @@ class _CartonLookupPage extends State<CartonLookupPage> {
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
             _showToast("Carton Id can't be empty");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          } else{
             setState(() {
               _isLoading = true;
             });
@@ -152,7 +159,10 @@ class _CartonLookupPage extends State<CartonLookupPage> {
           );*/
           if(memoController.text.toString()==""){
             _showToast("Carton ID can't be empty");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             setState(() {
               _isLoading = true;
             });
@@ -176,7 +186,10 @@ class _CartonLookupPage extends State<CartonLookupPage> {
         onPressed: () {
           if(memoController.text.toString()==""){
             _showToast("Carton ID can't be empty");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             setState(() {
               _isLoading = true;
             });

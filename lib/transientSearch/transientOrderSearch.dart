@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:langlobal/transientSearch/transientOrderValidate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utilities.dart';
+
 class TransientOrderSearchPage extends StatefulWidget {
   String heading = '';
 
@@ -36,9 +38,13 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
   TextEditingController fromDateInput = TextEditingController();
   TextEditingController toDateInput = TextEditingController();
 
+  Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     fromDateInput.text = "";
     toDateInput.text = "";
@@ -59,7 +65,10 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
         onSubmitted: (value) {
           if(memoController.text.toString()==""){
             _showToast("Order Number can't be empty");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             setState(() {
               _isLoading = true;
             });
@@ -150,7 +159,10 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
         onPressed: () {
           if(memoController.text.toString()==""){
             _showToast("Order Number can't be empty");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             setState(() {
               _isLoading = true;
             });

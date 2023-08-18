@@ -8,6 +8,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/requestParams/locationList.dart';
+import '../../utilities.dart';
 import '../../warehouseAllocation/skuLookup/skuLookupDetailPage.dart';
 
 class StockInHandDetailPage extends StatefulWidget {
@@ -61,9 +62,12 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
     );
   }
 
+  Utilities _utilities = Utilities();
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
     print("stockLength ::"+stockInHands.length.toString());
   }
@@ -100,8 +104,13 @@ class _StockInHandDetailPage extends State<StockInHandDetailPage> {
         minWidth:150,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callStockInHandApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callStockInHandApi();
+          }
+
         },
         child: Text("Refresh",
             textAlign: TextAlign.center,

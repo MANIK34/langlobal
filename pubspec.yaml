@@ -46,9 +46,10 @@ dependencies:
   firebase_analytics:
   printing: ^5.10.4
   path_provider: ^2.0.15
-  connectivity_plus: ^4.0.1
+  connectivity_plus:
   blue_thermal_printer:
   path:
+  network_info_plus: ^4.0.2
 
 dev_dependencies:
   flutter_test:

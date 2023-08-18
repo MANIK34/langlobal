@@ -9,6 +9,7 @@ import 'package:langlobal/warehouseAllocation/cartonCreations/cartonSerialized.d
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/responseParams/sourceCartonConditions.dart';
+import '../../utilities.dart';
 
 class ValidateSourceCartonPage extends StatefulWidget {
   String cartonID = '';
@@ -55,16 +56,23 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
   var conditionID;
   List<SourceCartonConditions> conditionList = <SourceCartonConditions>[];
   late SourceCartonConditions? _conditionList = null;
-
+  Utilities _utilities = Utilities();
   BuildContext? _context;
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
-    callSourceConditionsApi();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      buildShowDialog(context);
-    });
+    if(!Utilities.ActiveConnection){
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        _showToast('No internet connection found!');
+      });
+    }else{
+      callSourceConditionsApi();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        buildShowDialog(context);
+      });
+    }
   }
 
   @override
@@ -125,8 +133,13 @@ class _ValidateSourceCartonPage extends State<ValidateSourceCartonPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          buildShowDialog(context);
-          callValidateSourceCartonApi();
+          if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }else{
+            buildShowDialog(context);
+            callValidateSourceCartonApi();
+          }
+
         },
         child: Text("Validate",
             textAlign: TextAlign.center,

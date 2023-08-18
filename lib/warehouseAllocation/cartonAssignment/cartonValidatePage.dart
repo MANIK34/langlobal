@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/requestParams/cartonList2.dart';
+import '../../utilities.dart';
 
 class CartonValidatePage extends StatefulWidget {
   var sku;
@@ -67,12 +68,13 @@ class _CartonValidatePage extends State<CartonValidatePage> {
   TextEditingController locationController = TextEditingController();
   bool isReverse=false;
   BuildContext? _context;
-
-
+  Utilities _utilities = Utilities();
 
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
+
     super.initState();
   }
 
@@ -96,7 +98,10 @@ class _CartonValidatePage extends State<CartonValidatePage> {
         onSubmitted: (value){
           if(locationController.text == ""){
             _showToast("Location can't be empty!");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             buildShowDialog(context);
             callCartonAssignmentApi();
           }
@@ -123,7 +128,10 @@ class _CartonValidatePage extends State<CartonValidatePage> {
         onPressed: () {
           if(locationController.text == ""){
             _showToast("Location can't be empty!");
-          }else{
+          }else  if(!Utilities.ActiveConnection){
+            _showToast("No internet connection found!");
+          }
+          else{
             buildShowDialog(context);
             callCartonAssignmentApi();
           }

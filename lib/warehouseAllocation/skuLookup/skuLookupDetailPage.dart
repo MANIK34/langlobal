@@ -7,6 +7,7 @@ import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../../utilities.dart';
 import '../cartonLookup/cartonLookupDetailPage.dart';
 
 class SkuLookupDetailPage extends StatefulWidget {
@@ -49,9 +50,13 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
     return Text(esnValue.toString());
   }
 
+  Utilities _utilities = Utilities();
+
+
   @override
   void initState() {
     // TODO: implement initState
+    _utilities.checkUserConnection();
     super.initState();
   }
 
@@ -665,8 +670,12 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                                           color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
                                           child: GestureDetector(
                                             onTap: (){
-                                              callGetCartonLookupApi(jsonResponse['cartons'][indexx]['cartonID'].toString());
-                                              print(jsonResponse['cartons'][indexx]['cartonID'].toString());
+                                              if(!Utilities.ActiveConnection){
+                                                _showToast("No internet connection found!");
+                                              }else{
+                                                callGetCartonLookupApi(jsonResponse['cartons'][indexx]['cartonID'].toString());
+                                                print(jsonResponse['cartons'][indexx]['cartonID'].toString());
+                                              }
                                             },
                                             child: Column(
                                               children: <Widget>[
