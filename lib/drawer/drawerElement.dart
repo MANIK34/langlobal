@@ -141,6 +141,9 @@ class _DrawerElement extends State<DrawerElement> {
     }
 
     setState(() {
+      if(wifiName==null||wifiName==""){
+        wifiName="WiFi turned off";
+      }
       _connectionStatus = 'Wifi Name: $wifiName\n'
           'Wifi BSSID: $wifiBSSID\n'
           'Wifi IPv4: $wifiIPv4\n'
@@ -202,7 +205,7 @@ class _DrawerElement extends State<DrawerElement> {
                 title: const Text(
                   'Home',
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.black,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.normal),
@@ -224,7 +227,7 @@ class _DrawerElement extends State<DrawerElement> {
                 title: const Text(
                   'Transient Receive',
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.black,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.normal),
@@ -247,7 +250,7 @@ class _DrawerElement extends State<DrawerElement> {
                 title: const Text(
                   'Location Lookup',
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.black,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.normal),
@@ -270,7 +273,7 @@ class _DrawerElement extends State<DrawerElement> {
                 title: const Text(
                   'SKU Lookup',
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.black,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.normal),
@@ -292,7 +295,7 @@ class _DrawerElement extends State<DrawerElement> {
                 title: const Text(
                   'IMEI Lookup',
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.black,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.normal),
@@ -315,7 +318,7 @@ class _DrawerElement extends State<DrawerElement> {
                 title: const Text(
                   'Fulfillment Lookup',
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.black,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.normal),
@@ -338,7 +341,7 @@ class _DrawerElement extends State<DrawerElement> {
                 title: const Text(
                   'Carton Lookup',
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.black,
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.normal),
@@ -365,7 +368,7 @@ class _DrawerElement extends State<DrawerElement> {
                         title: const Text(
                           'Change Company',
                           style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               color: Colors.black,
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.normal),
@@ -438,44 +441,33 @@ class _DrawerElement extends State<DrawerElement> {
                   )
               ),
 
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: ListTile(
+                  minLeadingWidth: 2,
+                  leading: const FaIcon(
+                    FontAwesomeIcons.lock,
+                    color: Colors.black,
+                    size: 16,
+                  ),
+                  title: const Text(
+                    'Logout',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.normal),
+                  ),
+                  onTap: () {
+                    _showMyDialog();
+                  },
+                ),
+              ),
+
             ],
           ),
         ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: 10.0,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: ListTile(
-                    minLeadingWidth: 2,
-                    leading: const FaIcon(
-                      FontAwesomeIcons.lock,
-                      color: Colors.black,
-                      size: 16,
-                    ),
-                    title: const Text(
-                      'Logout',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal),
-                    ),
-                    onTap: () {
-                      _showMyDialog();
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+
       ],
     ));
   }

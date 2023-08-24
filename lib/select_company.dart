@@ -269,7 +269,7 @@ class _SelectCompany extends State<SelectCompany> {
                     const SizedBox(height: 60.0),
                     submitButton,
                     const SizedBox(
-                      height: 250.0,
+                      height: 100.0,
                     ),
                   ],
                 ),

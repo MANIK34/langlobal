@@ -364,7 +364,7 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
     String? _companyID = myPrefs.getString("companyID");
     String? _userID = myPrefs.getString("userId");
     var url =
-        "https://api.langlobal.com/inventory/v1/Customers/${_companyID!}/Stock";
+        "https://api.langlobal.com/inventory/v1/Customers/${_companyID!}/StockInDimand";
     print(":::: " + url);
     Map<String, String> headers = {
       'Authorization': 'Bearer ' + _token!,
@@ -372,7 +372,11 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
       "content-type": "application/json"
     };
 
-    final response1 = await http.get(Uri.parse(url), headers: headers);
+    var body = json.encode({
+      "companyID": int.parse(_companyID!),
+    });
+
+    final response1 = await http.post(Uri.parse(url), headers: headers);
     if (response1.statusCode == 200) {
       Navigator.of(_context!).pop();
       var jsonResponse = json.decode(response1.body);
@@ -387,6 +391,7 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
     }
    // print(stockInDemand[0]['categoryName']);
     print(response1.body);
+    print(response1.statusCode);
   }
 
   buildShowDialog(BuildContext context) {

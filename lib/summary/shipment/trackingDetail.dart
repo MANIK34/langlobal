@@ -3,47 +3,62 @@ import 'package:intl/intl.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/nonSerializedInventoryPage.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/serializedInventory.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
+import 'package:langlobal/summary/shipment/shipmentSearch.dart';
 import 'package:langlobal/summary/shipment/shipmentSubmit.dart';
- 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../model/requestParams/accountNumber.dart';
+import '../../utilities.dart';
 
 class TrackingDetailPage extends StatefulWidget {
 
-  var fulfillmentInfo;
+  var trackingInfo;
 
-  TrackingDetailPage(this.fulfillmentInfo , {Key? key}) : super(key: key);
+  TrackingDetailPage(this.trackingInfo , {Key? key}) : super(key: key);
 
   @override
-  _TrackingDetailPage createState() => _TrackingDetailPage(this.fulfillmentInfo);
+  _TrackingDetailPage createState() => _TrackingDetailPage(this.trackingInfo);
 }
 
 class _TrackingDetailPage extends State<TrackingDetailPage> {
-  var fulfillmentInfo;
+  var trackingInfo;
 
 
-  _TrackingDetailPage(this.fulfillmentInfo);
+  _TrackingDetailPage(this.trackingInfo);
 
   String orderDate = "";
   String shipmentDate="";
+  String shipDate="";
   bool _isLoading = false;
   String  dummy="";
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
+  BuildContext? _context;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    /*orderDate=fulfillmentInfo['fulfillmentDate'];
+    orderDate=trackingInfo['orderDate'];
     orderDate=orderDate.toString().substring(0,10);
     DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
     DateFormat formatter = DateFormat('MM/dd/yyyy');
     orderDate = formatter.format(tempDate);
 
-    shipmentDate=fulfillmentInfo['requestedShipDate'];
-    shipmentDate=shipmentDate.toString().substring(0,10);
-    tempDate = new DateFormat("yyyy-MM-dd").parse(shipmentDate);
+    shipDate=trackingInfo['shipDate'];
+    shipDate=shipDate.toString().substring(0,10);
+    tempDate = new DateFormat("yyyy-MM-dd").parse(shipDate);
     formatter = DateFormat('MM/dd/yyyy');
-    shipmentDate = formatter.format(tempDate);*/
+    shipDate = formatter.format(tempDate);
+
+    shipmentDate=trackingInfo['shipmentDate'];
+    shipmentDate=shipmentDate.toString().substring(0,10);
+  /*  tempDate = new DateFormat("MM/dd/yyyy").parse(shipmentDate);
+    formatter = DateFormat('MM/dd/yyyy');*/
+    shipmentDate = formatter.format(tempDate);
   }
 
   void _showToast(String errorMessage) {
@@ -66,7 +81,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
         minWidth: 100,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.of(context).pop();
+          callVoidShipmentApi();
         },
         child: Text("Request for Void",
             textAlign: TextAlign.center,
@@ -83,11 +98,11 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
         minWidth: 100,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
-         /* Navigator.push(
+          Navigator.of(context).pop();
+          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ShipmentSubmitPage()),
-          );*/
+            MaterialPageRoute(builder: (context) => ShipmentSearchPage('Shipment Label Lookup')),
+          );
         },
         child: Text("Tracking",
             textAlign: TextAlign.center,
@@ -143,7 +158,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
               child:  Column(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10,90),
                     child: Column(
                       children: <Widget>[
                         orderInfo(),
@@ -212,7 +227,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                       shrinkWrap: true,
                                       primary: false,
                                       physics: NeverScrollableScrollPhysics(),
-                                      itemCount: 2,
+                                      itemCount: trackingInfo['trackingLogs'].length,
                                       itemBuilder: (BuildContext context, int indexx) {
                                         return Container(
                                           color: indexx % 2 == 0 ? Color(0xffd3d3d3) : Colors.white,
@@ -228,7 +243,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                               GestureDetector(
                                                 child: SizedBox(
                                                   width: 95,
-                                                  child: Text('06/06/2023'),
+                                                  child: Text(trackingInfo['trackingLogs'][indexx]['shipmentLogDate'].toString().substring(0,10)),
                                                 ),
                                                 onTap: (){},
                                               ),
@@ -240,10 +255,10 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                                 child: SizedBox(
                                                     width: 100,
                                                     child: GestureDetector(
-                                                      child:  Text("Action",
+                                                      child:  Text(trackingInfo['trackingLogs'][indexx]['action'],
                                                           style: TextStyle(
-                                                              decoration: TextDecoration.underline,
-                                                              color: Colors.blue,
+                                                              /*decoration: TextDecoration.underline,
+                                                              color: Colors.blue,*/
                                                               fontSize: 13)),
                                                       onTap: (){
 
@@ -253,7 +268,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                               ),
                                               Spacer(),
                                               SizedBox(
-                                                  child: Text("A1-9-A",
+                                                  child: Text(trackingInfo['trackingLogs'][indexx]['location'],
                                                       style: TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 13))),
@@ -288,7 +303,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Tracking#",
+                    trackingInfo['trackingNumber'],
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                   ),
@@ -319,7 +334,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('status',style:
+                          Text(trackingInfo['labelStatus'],style:
                           TextStyle(fontWeight: FontWeight.normal)),
                         ],
                       ),
@@ -333,7 +348,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text( 'Ship  Via',
+                          Text(trackingInfo['shipVia'],
                               style:
                               TextStyle(fontWeight: FontWeight.normal)),
                         ],
@@ -351,7 +366,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('date',style:
+                          Text(shipDate,style:
                           TextStyle(fontWeight: FontWeight.normal)),
                           Spacer(),
                           Text('Weight:(Oz): ',style:
@@ -359,7 +374,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('',style:
+                          Text(trackingInfo['weight'].toString(),style:
                           TextStyle(fontWeight: FontWeight.normal)),
 
                         ],
@@ -377,7 +392,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('0.0',style:
+                          Text(trackingInfo['price'].toString(),style:
                           TextStyle(fontWeight: FontWeight.normal)),
                           Spacer(),
                           Text('Status: ',style:
@@ -385,7 +400,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('',style:
+                          Text(trackingInfo['orderSatus'],style:
                           TextStyle(fontWeight: FontWeight.normal)),
 
                         ],
@@ -413,7 +428,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                         style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        "",
+                                        trackingInfo['package'],
                                         style: TextStyle(
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -467,17 +482,17 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Order Type",
+                            trackingInfo['orderType'],
                             style: TextStyle(
                                 color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                           ),
                           Text(
-                            "Order#",
+                            trackingInfo['orderNumber'],
                             style: TextStyle(
                                 color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                           ),
                           Text(
-                            "Status",
+                            trackingInfo['orderSatus'],
                             style: TextStyle(
                                 color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
                           ),
@@ -493,7 +508,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text( 'QTQYY@78',
+                          Text(trackingInfo['customerOrderNumber'],
                               style:
                               TextStyle(fontWeight: FontWeight.normal)),
                         ],
@@ -511,7 +526,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                           const SizedBox(
                             width: 5,
                           ),
-                          Text('06/06/2023',style:
+                          Text(orderDate,style:
                           TextStyle(fontWeight: FontWeight.normal)),
                         ],
                       ),
@@ -533,13 +548,13 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
                                   Row(
                                     children: <Widget>[
                                       const Text(
-                                        'Shipmnet Date: ',style:
+                                        'Shipment Date: ',style:
                                       TextStyle(fontWeight: FontWeight.bold)
                                       ),
                                       Text(
-                                        "06/06/2023",
+                                        shipmentDate,
                                         style: TextStyle(
-                                          fontWeight: FontWeight.w700,
+                                          fontWeight: FontWeight.normal,
                                         ),
                                       ),
                                     ],
@@ -578,5 +593,81 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
           ],
         )
     );
+  }
+
+  void callVoidShipmentApi() async {
+    buildShowDialog(context);
+
+    List<AccountNumber> accountNumberList = <AccountNumber>[];
+    AccountNumber _list= AccountNumber(value: "");
+    accountNumberList.add(_list);
+
+    var _cartonList = accountNumberList.map((e) {
+      return {
+        "value": e.value,
+      };
+    }).toList();
+    var jsonstringmap = json.encode(_cartonList);
+    print("accountNumber$jsonstringmap");
+
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    String? companyID = myPrefs.getString("companyID");
+
+    var url = Utilities.baseUrl!+"api/v1/carrier/Fedex/voidshipment";
+    print("void url ::::"+url.toString());
+
+    var body = json.encode({
+      "trackingNumber": trackingInfo['trackingNumber'],
+      "deletionControl": '',
+      "senderCountryCode": '',
+      "accountNumber": jsonstringmap,
+    });
+    body = body.replaceAll("\"[", "[");
+    body = body.replaceAll("]\"", "]");
+    body = body.replaceAll("\\\"", "\"");
+    print("void :: $body");
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${token!}'
+    };
+    print("requestParams$body");
+    var response =
+    await http.post(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode = jsonResponse['returnCode'];
+        if (returnCode == "1") {
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ShipmentSearchPage('Shipment Label Lookup')),
+          );
+        } else {
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print('returnCode' + e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      print(response.statusCode);
+    }
+    Navigator.of(_context!).pop();
+    debugPrint(response.body);
+  }
+
+  buildShowDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context = context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }

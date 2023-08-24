@@ -54,6 +54,7 @@ class _CartonConsolidationPage extends State<CartonConsolidationPage> {
       maxLength: 20,
       autofocus: true,
       showCursor: true,
+      keyboardType: TextInputType.none,
       controller: controller,
       textInputAction: TextInputAction.done,
       onSubmitted: (value) {

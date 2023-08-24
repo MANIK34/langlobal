@@ -62,14 +62,11 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
           if(memoController.text.toString()==""){
             _showToast("Tracking Number can't be empty");
           }else{
-           /* setState(() {
+            setState(() {
               _isLoading = true;
             });
-            callShipmentSearchApi();*/
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TrackingDetailPage(trackingInfo,)),
-            );
+            callShipmentSearchApi();
+
           }
         },
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
@@ -95,14 +92,10 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
           if(memoController.text.toString()==""){
             _showToast("Tracking Number can't be empty");
           }else{
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TrackingDetailPage(trackingInfo,)),
-            );
-          /*  setState(() {
+            setState(() {
               _isLoading = true;
             });
-            callShipmentSearchApi();*/
+            callShipmentSearchApi();
           }
         },
         child: Text("Search",
@@ -189,9 +182,9 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
   }
 
   void callShipmentSearchApi() async {
-
-    var url = Utilities.baseUrl!+"Customers/"+Utilities.companyID!+"/Fulfillments/"+memoController.text.toString();
-    print("wfw >> "+url);
+    //https://api.langlobal.com/shipment/v1/trackinginfo/449044304137821
+    var url = Utilities.baseUrl!+"shipment/v1/trackinginfo/"+memoController.text.toString();
+    print("trackinginfo URL  >> "+url);
     Map<String, String> headers = {
       'Authorization': 'Bearer ${Utilities.token}'
     };
@@ -201,12 +194,12 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode=jsonResponse['returnCode'];
-        var fulfillmentInfo= jsonResponse['fulfillmentInfo'];
+        trackingInfo= jsonResponse['trackingInfo'];
         print('returnCode'+ returnCode.toString());
         if(returnCode=="1"){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SalesOrderPage(fulfillmentInfo)),
+            MaterialPageRoute(builder: (context) => TrackingDetailPage(trackingInfo,)),
           );
         }else{
           _showToast(jsonResponse['returnMessage']);

@@ -301,7 +301,7 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                                   color: Colors
                                                                       .black,
                                                                   fontSize:
-                                                                      10)),
+                                                                      12)),
                                                         ),
                                                         const SizedBox(
                                                           width: 5,
@@ -335,10 +335,10 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                                         TextDecoration
                                                                             .underline,
                                                                     fontSize:
-                                                                        10)),
+                                                                        12)),
                                                           ),
                                                         ),
-                                                        SizedBox(width: 6,),
+                                                        SizedBox(width: 16,),
                                                         SizedBox(
                                                             child: Text(
                                                                 orderDate,
@@ -346,7 +346,7 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                                     color: Colors
                                                                         .black,
                                                                     fontSize:
-                                                                        10))),
+                                                                        12))),
 
                                                       ],
                                                     ),
