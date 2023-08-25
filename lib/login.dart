@@ -260,7 +260,7 @@ class _LoginPage extends State<LoginPage> {
         }
       } catch (e) {
         print('returnCode' + e.toString());
-        utilities.callAppErrorLogApi(e.toString());
+        utilities.callAppErrorLogApi(e.toString(),"login.dart","callLoginApi");
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {

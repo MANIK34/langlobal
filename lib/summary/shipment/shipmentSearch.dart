@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/summary/fulfillment/salesOrderPage.dart';
+import 'package:langlobal/summary/shipment/shipmentSubmit.dart';
 import 'package:langlobal/summary/shipment/trackingDetail.dart';
 import 'package:langlobal/utilities.dart';
 import 'package:flutter/services.dart';
@@ -113,7 +114,10 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ShipmentSubmitPage(null)),
+          );
         },
         child: Text("New Shipment Label",
             textAlign: TextAlign.center,
@@ -174,7 +178,7 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
                 const SizedBox(
                   height: 15.0,
                 ),
-                newShipmentButton
+               // newShipmentButton
               ],
             ),
           ),

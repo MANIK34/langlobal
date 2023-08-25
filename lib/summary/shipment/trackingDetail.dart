@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:langlobal/summary/fulfillment/provisioning/nonSerializedInventoryPage.dart';
-import 'package:langlobal/summary/fulfillment/provisioning/serializedInventory.dart';
-import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart';
 import 'package:langlobal/summary/shipment/shipmentSearch.dart';
-import 'package:langlobal/summary/shipment/shipmentSubmit.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -28,7 +24,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
 
 
   _TrackingDetailPage(this.trackingInfo);
-
+  Utilities utilities = Utilities();
   String orderDate = "";
   String shipmentDate="";
   String shipDate="";
@@ -253,7 +249,7 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
 
                                                 },
                                                 child: SizedBox(
-                                                    width: 100,
+                                                    width: 80,
                                                     child: GestureDetector(
                                                       child:  Text(trackingInfo['trackingLogs'][indexx]['action'],
                                                           style: TextStyle(
@@ -650,9 +646,11 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
         }
       } catch (e) {
         print('returnCode' + e.toString());
+        utilities.callAppErrorLogApi(e.toString(),"login.dart","callLoginApi");
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {
+      utilities.callAppErrorLogApi(response.body.toString(),"TrackingDetail.dart","callVoidShipmentApi");
       print(response.statusCode);
     }
     Navigator.of(_context!).pop();

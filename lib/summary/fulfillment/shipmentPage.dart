@@ -320,7 +320,7 @@ class _ShipmentPage extends State<ShipmentPage> {
                                                                 .toString();
                                                           },
                                                           child: SizedBox(
-                                                            width: 90,
+                                                            width: 50,
                                                             child: Text(
                                                                 fulfillmentInfo['shipments']
                                                                             [

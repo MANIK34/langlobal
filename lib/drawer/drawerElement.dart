@@ -391,7 +391,7 @@ class _DrawerElement extends State<DrawerElement> {
                   children: <Widget>[
                     Text('App Version: '),
                     Text(
-                      '1.0.1',
+                      '1.0.2',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],

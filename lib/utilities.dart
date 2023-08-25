@@ -44,7 +44,7 @@ class Utilities  {
     }
   }
 
-  void callAppErrorLogApi(var errorMessage) async {
+  void callAppErrorLogApi(var errorMessage, var className, var methodName) async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     userId=myPrefs.getString("userId");
     var token=myPrefs.getString("token");
@@ -52,13 +52,14 @@ class Utilities  {
 
     Map<String, String> headers = {'Content-type': 'application/json','Authorization': 'Bearer ' + token!};
     var body = json.encode({
-      "moduleName": "",
+      "moduleName": "Login",
       "errorMessage": errorMessage,
-      "methodName": "",
+      "methodName": methodName,
       "userID": userId,
       "pageUrl": "",
       "stackTrace": "",
-      "className":"",
+      "className":className,
+      "uiSource":"A",
 
     });
     var jsonRequest = json.decode(body);

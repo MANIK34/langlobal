@@ -798,18 +798,21 @@ class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
         await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
+      var returnCode = jsonResponse['returnCode'];
+      if (returnCode == "1") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ShipmentLookup(fulfillmentInfo)),
+        );
+      }else{
+        _utilities.callAppErrorLogApi(response.body.toString(),"ShipmentSubmit.dart","callShipmentLabelApi");
+      }
 
     } else {
       print(response.statusCode);
     }
     Navigator.of(_context!).pop();
     debugPrint(response.body);
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ShipmentLookup(fulfillmentInfo)),
-    );
-
   }
 }
 
