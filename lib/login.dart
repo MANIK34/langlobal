@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:langlobal/select_company.dart';
 import 'package:langlobal/utilities.dart';
+import 'package:langlobal/utilities/testprint.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dashboard/DashboardPage.dart';
 import 'dart:io';
@@ -36,13 +38,110 @@ class _LoginPage extends State<LoginPage> {
   Int8List? _bytes;
   Utilities utilities = Utilities();
 
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+  List<BluetoothDevice> _devices = [];
+  BluetoothDevice? _device;
+  bool _connected = false;
+  TestPrint testPrint = TestPrint();
+  String deviceName='';
+  String bluetoothDeviceName="Select Device";
+
   @override
   void initState() {
     //checkUserConnection();
     utilities.checkUserConnection();
+    initPlatformState();
     super.initState();
   }
+  Future<void> initPlatformState() async {
+    // TODO here add a permission request using permission_handler
+    // if permission is not granted, kzaki's thermal print plugin will ask for location permission
+    // which will invariably crash the app even if user agrees so we'd better ask it upfront
 
+    // var statusLocation = Permission.location;
+    // if (await statusLocation.isGranted != true) {
+    //   await Permission.location.request();
+    // }
+    // if (await statusLocation.isGranted) {
+    // ...
+    // } else {
+    // showDialogSayingThatThisPermissionIsRequired());
+    // }
+    bool? isConnected = await bluetooth.isConnected;
+    List<BluetoothDevice> devices = [];
+    try {
+      devices = await bluetooth.getBondedDevices();
+    } on PlatformException {}
+
+    bluetooth.onStateChanged().listen((state) {
+      switch (state) {
+        case BlueThermalPrinter.CONNECTED:
+          setState(() {
+            _connected = true;
+            print("bluetooth device state: connected");
+          });
+          break;
+        case BlueThermalPrinter.DISCONNECTED:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: disconnected");
+          });
+          break;
+        case BlueThermalPrinter.DISCONNECT_REQUESTED:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: disconnect requested");
+          });
+          break;
+        case BlueThermalPrinter.STATE_TURNING_OFF:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth turning off");
+          });
+          break;
+        case BlueThermalPrinter.STATE_OFF:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth off");
+          });
+          break;
+        case BlueThermalPrinter.STATE_ON:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth on");
+          });
+          break;
+        case BlueThermalPrinter.STATE_TURNING_ON:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth turning on");
+          });
+          break;
+        case BlueThermalPrinter.ERROR:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: error");
+          });
+          break;
+        default:
+          print(state);
+          break;
+      }
+    });
+
+    if (!mounted) return;
+    setState(() {
+      _devices = devices;
+      print("device size ::::"+_devices.length.toString());
+    });
+
+    if (isConnected == true) {
+      setState(() {
+        _connected = true;
+      });
+    }
+
+  }
   Future checkUserConnection() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -243,6 +342,8 @@ class _LoginPage extends State<LoginPage> {
               'companyLogo', companyInfo['companyLogo'].toString());
           myPrefs.setString('companyID', "");
           _showToast("Login successfully!");
+
+          utilities.writeToken();
           if (userType == "LANGlobal") {
             Navigator.push(
               context,

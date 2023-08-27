@@ -110,6 +110,8 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         onPressed: () {
           if(!Utilities.ActiveConnection){
             _showToast("No internet connection found!");
+          }else if( locationController.text!.isEmpty){
+            _showToast("Please enter the source location");
           }else{
             buildShowDialog(context);
             callCartonMovementApi();

@@ -452,7 +452,7 @@ class _CartonMovementSubmit extends State<CartonMovementSubmit> {
                                         movementInfo['cartons'][index]['cartonID'],
                                       ),
                                       SizedBox(
-                                        width: 110,
+                                        width: 70,
                                         child:Text(
                                           movementInfo['cartons'][index]['sku'],
                                           textAlign: TextAlign.end,

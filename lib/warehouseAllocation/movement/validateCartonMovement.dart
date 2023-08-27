@@ -222,9 +222,11 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
                                       Expanded(child: textFeildList[index]),
                                       GestureDetector(
                                           onTap: () {
-                                            textFeildList.removeAt(index);
-                                            controllers.removeAt(index);
-                                            setState(() {});
+                                            if(textFeildList.length>1){
+                                              textFeildList.removeAt(index);
+                                              controllers.removeAt(index);
+                                              setState(() {});
+                                            }
                                           },
                                           child: index < 0
                                               ? Container()
@@ -320,6 +322,7 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
       try {
         var returnCode=jsonResponse['returnCode'];
         if(returnCode=="1"){
+          String obj=jsonResponse['movementInfo']['sourceLocation'];
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>
@@ -329,6 +332,7 @@ class _ValidateCartonMovementPage extends State<ValidateCartonMovementPage> {
           _showToast(jsonResponse['returnMessage']);
         }
       } catch (e) {
+        _utilities.callAppErrorLogApi(e.toString(),"ValidateCartonMovementPage.dart","callCartonMovementApi");
         print("error message ::"+e.toString());
         print('returnCode'+e.toString());
         // TODO: handle exception, for example by showing an alert to the user

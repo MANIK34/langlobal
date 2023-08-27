@@ -1,3 +1,4 @@
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../locationLookup/locationLookupPage.dart';
 import '../summary/fulfillment/orderSearchPage.dart';
 import '../transientSearch/transientOrderSearch.dart';
+import '../utilities/testprint.dart';
 import '../warehouseAllocation/cartonLookup/cartonLookupPage.dart';
 import '../warehouseAllocation/inventoryLookup/inventoryLookupPage.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -36,11 +38,109 @@ class _DrawerElement extends State<DrawerElement> {
   String _connectionStatus = 'Unknown';
   final NetworkInfo _networkInfo = NetworkInfo();
 
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+
+  List<BluetoothDevice> _devices = [];
+  BluetoothDevice? _device;
+  bool _connected = false;
+  TestPrint testPrint = TestPrint();
+  String deviceName='';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    initPlatformState();
     getUserInfo();
+
+  }
+
+  Future<void> initPlatformState() async {
+    // TODO here add a permission request using permission_handler
+    // if permission is not granted, kzaki's thermal print plugin will ask for location permission
+    // which will invariably crash the app even if user agrees so we'd better ask it upfront
+
+    // var statusLocation = Permission.location;
+    // if (await statusLocation.isGranted != true) {
+    //   await Permission.location.request();
+    // }
+    // if (await statusLocation.isGranted) {
+    // ...
+    // } else {
+    // showDialogSayingThatThisPermissionIsRequired());
+    // }
+    bool? isConnected = await bluetooth.isConnected;
+    List<BluetoothDevice> devices = [];
+    try {
+      devices = await bluetooth.getBondedDevices();
+    } on PlatformException {}
+
+    bluetooth.onStateChanged().listen((state) {
+      switch (state) {
+        case BlueThermalPrinter.CONNECTED:
+          setState(() {
+            _connected = true;
+            print("bluetooth device state: connected");
+          });
+          break;
+        case BlueThermalPrinter.DISCONNECTED:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: disconnected");
+          });
+          break;
+        case BlueThermalPrinter.DISCONNECT_REQUESTED:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: disconnect requested");
+          });
+          break;
+        case BlueThermalPrinter.STATE_TURNING_OFF:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth turning off");
+          });
+          break;
+        case BlueThermalPrinter.STATE_OFF:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth off");
+          });
+          break;
+        case BlueThermalPrinter.STATE_ON:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth on");
+          });
+          break;
+        case BlueThermalPrinter.STATE_TURNING_ON:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth turning on");
+          });
+          break;
+        case BlueThermalPrinter.ERROR:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: error");
+          });
+          break;
+        default:
+          print(state);
+          break;
+      }
+    });
+
+    if (!mounted) return;
+    setState(() {
+      _devices = devices;
+      print("device size ::::"+_devices.length.toString());
+    });
+
+    if (isConnected == true) {
+      setState(() {
+        _connected = true;
+      });
+    }
     _initNetworkInfo();
   }
 
@@ -154,6 +254,7 @@ class _DrawerElement extends State<DrawerElement> {
 
       _connectionStatus = ' $wifiName';
     });
+
   }
 
   @override
@@ -197,194 +298,208 @@ class _DrawerElement extends State<DrawerElement> {
                 ),
               ),
               Divider(color: Colors.black),
-              ListTile(
-                dense: true,
-                visualDensity: VisualDensity(vertical: -4),
-                minLeadingWidth: 2,
-                //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
-                title: const Text(
-                  'Home',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal),
+              SizedBox(
+                height: 20,
+                child:  GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DashboardPage('')),
+                    );
+                  },
+                  child:Padding(
+                    padding: EdgeInsets.only(left: 20,top: 5),
+                    child:  const Text(
+                      'Home',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.normal),
+                    ),
+                  )
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DashboardPage('')),
-                  );
-                },
               ),
               Divider(color: Colors.black),
-              ListTile(
-                dense: true,
-                visualDensity: VisualDensity(vertical: -4),
-                minLeadingWidth: 2,
-                //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
-                title: const Text(
-                  'Transient Receive',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal),
+              SizedBox(
+                height: 20,
+                child:  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TransientOrderSearchPage('3')),
+                      );
+                    },
+                    child:Padding(
+                      padding: EdgeInsets.only(left: 20,top: 5),
+                      child:  const Text(
+                        'Transient Receive',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TransientOrderSearchPage('3')),
-                  );
-                },
               ),
               Divider(color: Colors.black),
-              ListTile(
-                dense: true,
-                visualDensity: VisualDensity(vertical: -4),
-                minLeadingWidth: 2,
-                //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
-                title: const Text(
-                  'Location Lookup',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal),
+              SizedBox(
+                height: 20,
+                child:  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LocationLookupPage('')),
+                      );
+                    },
+                    child:Padding(
+                      padding: EdgeInsets.only(left: 20,top: 5),
+                      child:  const Text(
+                        'Location Lookup',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => LocationLookupPage('')),
-                  );
-                },
               ),
               Divider(color: Colors.black),
-              ListTile(
-                dense: true,
-                visualDensity: VisualDensity(vertical: -4),
-                minLeadingWidth: 2,
-                //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
-                title: const Text(
-                  'SKU Lookup',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal),
+
+              SizedBox(
+                height: 20,
+                child:  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SkuLookupPage('')),
+                      );
+                    },
+                    child:Padding(
+                      padding: EdgeInsets.only(left: 20,top: 5),
+                      child:  const Text(
+                        'SKU Lookup',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SkuLookupPage('')),
-                  );
-                },
               ),
               Divider(color: Colors.black),
-              ListTile(
-                dense: true,
-                visualDensity: VisualDensity(vertical: -4),
-                minLeadingWidth: 2,
-                //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
-                title: const Text(
-                  'IMEI Lookup',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal),
+              SizedBox(
+                height: 20,
+                child:  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InventoryLookupPage('')),
+                      );
+                    },
+                    child:Padding(
+                      padding: EdgeInsets.only(left: 20,top: 5),
+                      child:  const Text(
+                        'IMEI Lookup',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )
                 ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => InventoryLookupPage('')),
-                  );
-                },
               ),
               Divider(color: Colors.black),
-              ListTile(
-                dense: true,
-                visualDensity: VisualDensity(vertical: -4),
-                minLeadingWidth: 2,
-                //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
-                title: const Text(
-                  'Fulfillment Lookup',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal),
+              SizedBox(
+                height: 20,
+                child:  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => OrderSearchPage('')),
+                      );
+                    },
+                    child:Padding(
+                      padding: EdgeInsets.only(left: 20,top: 5),
+                      child:  const Text(
+                        'Fulfillment Lookup',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )
                 ),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => OrderSearchPage("")),
-                  );
-                },
               ),
               Divider(color: Colors.black),
-              ListTile(
-                dense: true,
-                visualDensity: VisualDensity(vertical: -4),
-                minLeadingWidth: 2,
-                //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
-                title: const Text(
-                  'Carton Lookup',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.normal),
+              SizedBox(
+                height: 20,
+                child:  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CartonLookupPage('')),
+                      );
+                    },
+                    child:Padding(
+                      padding: EdgeInsets.only(left: 20,top: 5),
+                      child:  const Text(
+                        'Carton Lookup',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )
                 ),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => CartonLookupPage('')),
-                  );
-                },
               ),
               Divider(color: Colors.black),
               Visibility(
                   visible: visibleCompany,
-                  child: Column(
-                    children: <Widget>[
-                      ListTile(
-                        dense: true,
-                        visualDensity: VisualDensity(vertical: -4),
-                        minLeadingWidth: 2,
-                        //leading: const FaIcon(FontAwesomeIcons.home,color: Colors.black,size: 16,),
-                        title: const Text(
-                          'Change Company',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black,
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.normal),
-                        ),
+                  child: SizedBox(
+                    height: 20,
+                    child:  GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.pop(context);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ChangeCompanyPage('')),
                           );
                         },
-                      ),
-                      Divider(color: Colors.black),
-                    ],
-                  )),
+                        child:Padding(
+                          padding: EdgeInsets.only(left: 20,top: 5),
+                          child:  const Text(
+                            'Change Company',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.normal),
+                          ),
+                        )
+                    ),
+                  ),),
+              Divider(color: Colors.black),
               const Padding(
                 padding: EdgeInsets.only(left: 15,),
                 child: Row(

@@ -137,6 +137,7 @@ class _ChangeCompanyPage extends State<ChangeCompanyPage> {
         SharedPreferences myPrefs = await SharedPreferences.getInstance();
         myPrefs.setString('companyLogo', jsonResponse["logoPath"]);
         print(jsonResponse["logoPath"]);
+        _utilities.writeToken();
         Navigator.of(context).pop();
         Navigator.push(
           context,
