@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/summary/stockinDemand/fulfillmentOrderPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../dashboard/DashboardPage.dart';
 import '../../model/requestParams/cartonList2.dart';
 import '../../model/requestParams/locationList.dart';
 import '../../utilities.dart';
@@ -145,20 +147,31 @@ class _StockInDemandlPage extends State<StockInDemandlPage> {
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
               ),
             )*/
+            const Spacer(),
             GestureDetector(
-                child: Container(
-                    width: 85,
-                    height: 80,
-                    child: Center(
-                      child: ElevatedButton(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    )),
+                child: Image.asset(
+                  'assets/icon_back.png',
+                  width: 20,
+                  height: 20,
+                  color: Colors.white,
+                ),
                 onTap: () {
                   Navigator.of(context).pop();
+                }),
+            const SizedBox(width: 20,),
+            GestureDetector(
+                child:  const FaIcon(
+                  FontAwesomeIcons.home,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DashboardPage('')),
+                  );
                 }),
           ],
         ),

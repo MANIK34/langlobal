@@ -122,38 +122,23 @@ class _InventoryLookupPage extends State<InventoryLookupPage> {
               const Text('Serialized Inventory Lookup',textAlign: TextAlign.center,
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
               ),
-              ExpandTapWidget(
-                tapPadding: EdgeInsets.all(55.0),
-                onTap: (){
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DashboardPage('')),
-                  );
-                },
-                child: /*const Text('Cancel',textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
-                )*/
-                GestureDetector(
-                    child: Container(
-                        width: 85,
-                        height: 80,
-                        child: Center(
-                          child: ElevatedButton(
-                            child: Text('Cancel'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => DashboardPage('')),
-                              );
-                            },
-                          ),
-                        )),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    }),
-              )
+              const Spacer(),
+              GestureDetector(
+                  child: Image.asset(
+                    'assets/icon_back.png',
+                    width: 20,
+                    height: 20,
+                    color: Colors.white,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DashboardPage('')),
+                    );
+                  }),
+
             ],
           ),
         ),

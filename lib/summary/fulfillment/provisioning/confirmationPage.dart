@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import 'package:langlobal/summary/fulfillment/provisioning/confirmationPage.dart
 import 'package:langlobal/utilities.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../dashboard/DashboardPage.dart';
 import '../../../model/requestParams/imeIsList.dart';
 import '../salesOrderPage.dart';
 
@@ -113,26 +115,37 @@ class _ConfirmationPage extends State<ConfirmationPage> {
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
             ),
+            const Spacer(),
             GestureDetector(
-                child: Container(
-                    width: 85,
-                    height: 80,
-                    child: Center(
-                      child: ElevatedButton(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SalesOrderPage(fulfillmentInfo)),
-                          );
-                        },
-                      ),
-                    )),
+                child: Image.asset(
+                  'assets/icon_back.png',
+                  width: 20,
+                  height: 20,
+                  color: Colors.white,
+                ),
                 onTap: () {
                   Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            SalesOrderPage(fulfillmentInfo)),
+                  );
+                }),
+            const SizedBox(width: 20,),
+            GestureDetector(
+                child:  const FaIcon(
+                  FontAwesomeIcons.home,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DashboardPage('')),
+                  );
                 }),
           ],
         ),

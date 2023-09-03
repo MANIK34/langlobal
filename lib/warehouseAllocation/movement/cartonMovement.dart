@@ -4,6 +4,7 @@ import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:langlobal/dashboard/DashboardPage.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:http/http.dart' as http;
@@ -32,7 +33,7 @@ class _CartonMovementPage extends State<CartonMovementPage> {
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
   bool readOnly = true;
   TextEditingController locationController = TextEditingController();
-  String btn_text="Validate Location";
+  String btn_text = "Validate Location";
   BuildContext? _context;
 
   Widget customField({GestureTapCallback? removeWidget}) {
@@ -108,11 +109,11 @@ class _CartonMovementPage extends State<CartonMovementPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          if(!Utilities.ActiveConnection){
+          if (!Utilities.ActiveConnection) {
             _showToast("No internet connection found!");
-          }else if( locationController.text!.isEmpty){
+          } else if (locationController.text!.isEmpty) {
             _showToast("Please enter the source location");
-          }else{
+          } else {
             buildShowDialog(context);
             callCartonMovementApi();
           }
@@ -142,41 +143,16 @@ class _CartonMovementPage extends State<CartonMovementPage> {
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
             ),
-           /* ExpandTapWidget(
-              tapPadding: EdgeInsets.all(55.0),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardPage('')),
-                );
-              },
-              child: const Text(
-                'Cancel',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
-              ),
-            )*/
-
             GestureDetector(
                 child: Container(
-                    width: 85,
-                    height: 80,
                     child: Center(
-                      child: ElevatedButton(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => DashboardPage('')),
-                          );
-                        },
-                      ),
-                    )),
+                  child: Image.asset(
+                    'assets/icon_back.png',
+                    width: 20,
+                    height: 20,
+                    color: Colors.white,
+                  ),
+                )),
                 onTap: () {
                   Navigator.of(context).pop();
                   Navigator.push(
@@ -184,8 +160,6 @@ class _CartonMovementPage extends State<CartonMovementPage> {
                     MaterialPageRoute(builder: (context) => DashboardPage('')),
                   );
                 }),
-
-
           ],
         ),
       ),
@@ -261,60 +235,61 @@ class _CartonMovementPage extends State<CartonMovementPage> {
   }
 
   buildShowDialog(BuildContext context) {
-
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          _context=context;
+          _context = context;
           return const Center(
             child: CircularProgressIndicator(),
           );
         });
-
   }
 
-  void callCartonMovementApi() async{
+  void callCartonMovementApi() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     String? companyID = myPrefs.getString("companyID");
     String? userID = myPrefs.getString("userId");
     String? token = myPrefs.getString("token");
 
-    var url = "https://api.langlobal.com/inventoryallocation/v1/cartonmovement/validate";
+    var url =
+        "https://api.langlobal.com/inventoryallocation/v1/cartonmovement/validate";
     Map<String, String> headers = {
       'Authorization': 'Bearer ${token!}',
       "Accept": "application/json",
-      "content-type":"application/json"
+      "content-type": "application/json"
     };
     var body = json.encode({
       "companyID": int.parse(companyID!),
       "sourceLocation": locationController.text!,
       "destinationLocation": '',
-      "cartons":'[]',
+      "cartons": '[]',
     });
-    body=body.replaceAll("\"[", "[");
-    body=body.replaceAll("]\"", "]");
-    body=body.replaceAll("\\\"", "\"");
-    print("requestParams$body" );
+    body = body.replaceAll("\"[", "[");
+    body = body.replaceAll("]\"", "]");
+    body = body.replaceAll("\\\"", "\"");
+    print("requestParams$body");
     var response =
-    await http.post(Uri.parse(url), body: body, headers: headers);
+        await http.post(Uri.parse(url), body: body, headers: headers);
     if (response.statusCode == 200) {
       Navigator.of(_context!).pop();
       print(response.body);
       var jsonResponse = json.decode(response.body);
       try {
-        var returnCode=jsonResponse['returnCode'];
-        if(returnCode=="1"){
+        var returnCode = jsonResponse['returnCode'];
+        if (returnCode == "1") {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ValidateCartonMovementPage(locationController.text!)),
+            MaterialPageRoute(
+                builder: (context) =>
+                    ValidateCartonMovementPage(locationController.text!)),
           );
-        }else{
+        } else {
           _showToast(jsonResponse['returnMessage']);
         }
       } catch (e) {
-        print("error message ::"+e.toString());
-        print('returnCode'+e.toString());
+        print("error message ::" + e.toString());
+        print('returnCode' + e.toString());
         // TODO: handle exception, for example by showing an alert to the user
       }
     } else {

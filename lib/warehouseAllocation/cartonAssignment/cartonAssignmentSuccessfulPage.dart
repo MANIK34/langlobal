@@ -2,8 +2,11 @@ import 'package:expand_tap_area/expand_tap_area.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:langlobal/warehouseAllocation/cartonAssignment/cartonAssignmentPage.dart';
+
+import '../../dashboard/DashboardPage.dart';
 
 class CartonAssignmentSuccessfulPage extends StatefulWidget {
   var sku;
@@ -75,6 +78,7 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
         minWidth:250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CartonAssignmentPage('')),
@@ -109,20 +113,31 @@ class _CartonAssignmentSuccessfulPage extends State<CartonAssignmentSuccessfulPa
                 style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
               ),
             )*/
+            const Spacer(),
             GestureDetector(
-                child: Container(
-                    width: 85,
-                    height: 80,
-                    child: Center(
-                      child: ElevatedButton(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    )),
+                child: Image.asset(
+                  'assets/icon_back.png',
+                  width: 20,
+                  height: 20,
+                  color: Colors.white,
+                ),
                 onTap: () {
                   Navigator.of(context).pop();
+                }),
+            const SizedBox(width: 20,),
+            GestureDetector(
+                child:  const FaIcon(
+                  FontAwesomeIcons.home,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DashboardPage('')),
+                  );
                 }),
           ],
         ),),

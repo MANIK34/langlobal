@@ -18,8 +18,6 @@ import '../warehouseAllocation/inventoryLookup/inventoryLookupPage.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'dart:developer' as developer;
 
 class DrawerElement extends StatefulWidget {
@@ -44,14 +42,14 @@ class _DrawerElement extends State<DrawerElement> {
   BluetoothDevice? _device;
   bool _connected = false;
   TestPrint testPrint = TestPrint();
-  String deviceName='';
+  String deviceName = '';
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     initPlatformState();
     getUserInfo();
-
   }
 
   Future<void> initPlatformState() async {
@@ -133,7 +131,7 @@ class _DrawerElement extends State<DrawerElement> {
     if (!mounted) return;
     setState(() {
       _devices = devices;
-      print("device size ::::"+_devices.length.toString());
+      print("device size ::::" + _devices.length.toString());
     });
 
     if (isConnected == true) {
@@ -241,8 +239,8 @@ class _DrawerElement extends State<DrawerElement> {
     }
 
     setState(() {
-      if(wifiName==null||wifiName==""){
-        wifiName="WiFi turned off";
+      if (wifiName == null || wifiName == "") {
+        wifiName = "WiFi turned off";
       }
       _connectionStatus = 'Wifi Name: $wifiName\n'
           'Wifi BSSID: $wifiBSSID\n'
@@ -254,7 +252,6 @@ class _DrawerElement extends State<DrawerElement> {
 
       _connectionStatus = ' $wifiName';
     });
-
   }
 
   @override
@@ -284,13 +281,29 @@ class _DrawerElement extends State<DrawerElement> {
                       SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        userName,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              userName,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16),
+                            ),
+                            Spacer(),
+                            Text(
+                              '9/1/2023 3:10 pm',
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 12),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 5.0),
                     ],
@@ -298,44 +311,63 @@ class _DrawerElement extends State<DrawerElement> {
                 ),
               ),
               Divider(color: Colors.black),
-              SizedBox(
-                height: 20,
-                child:  GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DashboardPage('')),
-                    );
-                  },
-                  child:Padding(
-                    padding: EdgeInsets.only(left: 20,top: 5),
-                    child:  const Text(
-                      'Home',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.normal),
-                    ),
-                  )
+              Container(
+                height: 40,
+                color: Colors.blue,
+                child: Align(
+                  child:  Text(
+                    'Favorite',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold),
+                  ),
+                  alignment: Alignment.center,
                 ),
               ),
-              Divider(color: Colors.black),
+              Divider(
+                height: 10,
+              ),
               SizedBox(
                 height: 20,
-                child:  GestureDetector(
+                child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => TransientOrderSearchPage('3')),
+                            builder: (context) => DashboardPage('')),
                       );
                     },
-                    child:Padding(
-                      padding: EdgeInsets.only(left: 20,top: 5),
-                      child:  const Text(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 0),
+                      child: const Text(
+                        'Home',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )),
+              ),
+              Divider(color: Colors.black),
+              SizedBox(
+                height: 20,
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                TransientOrderSearchPage('3')),
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5),
+                      child: const Text(
                         'Transient Receive',
                         style: TextStyle(
                             fontSize: 12,
@@ -343,13 +375,79 @@ class _DrawerElement extends State<DrawerElement> {
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.normal),
                       ),
-                    )
-                ),
+                    )),
               ),
               Divider(color: Colors.black),
+
               SizedBox(
                 height: 20,
-                child:  GestureDetector(
+                child: GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5),
+                      child: const Text(
+                        'Triage',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )),
+              ),
+              Divider(color: Colors.black),
+
+              SizedBox(
+                height: 20,
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                OrderSearchPage('3')),
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5),
+                      child: const Text(
+                        'Fulfillment',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                    )),
+              ),
+              Divider(
+                height: 8,
+              ),
+              Container(
+                height: 40,
+                color: Colors.blue,
+                child: Align(
+                  child:  Text(
+                    'Lookup',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold),
+                  ),
+                  alignment: Alignment.center,
+                ),
+              ),
+              Divider(
+                height: 8,
+              ),
+
+              SizedBox(
+                height: 20,
+                child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(
@@ -358,9 +456,9 @@ class _DrawerElement extends State<DrawerElement> {
                             builder: (context) => LocationLookupPage('')),
                       );
                     },
-                    child:Padding(
-                      padding: EdgeInsets.only(left: 20,top: 5),
-                      child:  const Text(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5),
+                      child: const Text(
                         'Location Lookup',
                         style: TextStyle(
                             fontSize: 12,
@@ -368,14 +466,12 @@ class _DrawerElement extends State<DrawerElement> {
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.normal),
                       ),
-                    )
-                ),
+                    )),
               ),
               Divider(color: Colors.black),
-
               SizedBox(
                 height: 20,
-                child:  GestureDetector(
+                child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(
@@ -384,9 +480,9 @@ class _DrawerElement extends State<DrawerElement> {
                             builder: (context) => SkuLookupPage('')),
                       );
                     },
-                    child:Padding(
-                      padding: EdgeInsets.only(left: 20,top: 5),
-                      child:  const Text(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5),
+                      child: const Text(
                         'SKU Lookup',
                         style: TextStyle(
                             fontSize: 12,
@@ -394,13 +490,12 @@ class _DrawerElement extends State<DrawerElement> {
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.normal),
                       ),
-                    )
-                ),
+                    )),
               ),
               Divider(color: Colors.black),
               SizedBox(
                 height: 20,
-                child:  GestureDetector(
+                child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(
@@ -409,9 +504,9 @@ class _DrawerElement extends State<DrawerElement> {
                             builder: (context) => InventoryLookupPage('')),
                       );
                     },
-                    child:Padding(
-                      padding: EdgeInsets.only(left: 20,top: 5),
-                      child:  const Text(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5),
+                      child: const Text(
                         'IMEI Lookup',
                         style: TextStyle(
                             fontSize: 12,
@@ -419,13 +514,12 @@ class _DrawerElement extends State<DrawerElement> {
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.normal),
                       ),
-                    )
-                ),
+                    )),
               ),
               Divider(color: Colors.black),
               SizedBox(
                 height: 20,
-                child:  GestureDetector(
+                child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(
@@ -434,9 +528,9 @@ class _DrawerElement extends State<DrawerElement> {
                             builder: (context) => OrderSearchPage('')),
                       );
                     },
-                    child:Padding(
-                      padding: EdgeInsets.only(left: 20,top: 5),
-                      child:  const Text(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5),
+                      child: const Text(
                         'Fulfillment Lookup',
                         style: TextStyle(
                             fontSize: 12,
@@ -444,13 +538,12 @@ class _DrawerElement extends State<DrawerElement> {
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.normal),
                       ),
-                    )
-                ),
+                    )),
               ),
               Divider(color: Colors.black),
               SizedBox(
                 height: 20,
-                child:  GestureDetector(
+                child: GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.push(
@@ -459,9 +552,9 @@ class _DrawerElement extends State<DrawerElement> {
                             builder: (context) => CartonLookupPage('')),
                       );
                     },
-                    child:Padding(
-                      padding: EdgeInsets.only(left: 20,top: 5),
-                      child:  const Text(
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 20, top: 5),
+                      child: const Text(
                         'Carton Lookup',
                         style: TextStyle(
                             fontSize: 12,
@@ -469,50 +562,65 @@ class _DrawerElement extends State<DrawerElement> {
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.normal),
                       ),
-                    )
-                ),
+                    )),
               ),
               Divider(color: Colors.black),
               Visibility(
-                  visible: visibleCompany,
-                  child: SizedBox(
-                    height: 20,
-                    child:  GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChangeCompanyPage('')),
-                          );
-                        },
-                        child:Padding(
-                          padding: EdgeInsets.only(left: 20,top: 5),
-                          child:  const Text(
-                            'Change Company',
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black,
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.normal),
-                          ),
-                        )
-                    ),
-                  ),),
+                visible: visibleCompany,
+                child: SizedBox(
+                  height: 20,
+                  child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChangeCompanyPage('')),
+                        );
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 20, top: 5),
+                        child: const Text(
+                          'Change Company',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.normal),
+                        ),
+                      )),
+                ),
+              ),
               Divider(color: Colors.black),
               const Padding(
-                padding: EdgeInsets.only(left: 15,),
+                padding: EdgeInsets.only(
+                  left: 15,
+                ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Text('App Version: '),
+                    Text('Ver: '),
                     Text(
                       '1.0.2',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    SizedBox(width: 35,),
+                    const FaIcon(
+                      FontAwesomeIcons.wifi,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    SizedBox(width: 35,),
+                    const FaIcon(
+                      FontAwesomeIcons.bluetooth,
+                      color: Colors.black,
+                      size: 20,
+                    ),
                   ],
                 ),
               ),
-              Padding(
+              /*Padding(
                 padding: EdgeInsets.only(left: 15, top: 5),
                 child: Row(
                   children: <Widget>[
@@ -533,7 +641,7 @@ class _DrawerElement extends State<DrawerElement> {
                       MaterialPageRoute(builder: (context) => BluetoothDemo()),
                     );
                   },
-                  child:Padding(
+                  child: Padding(
                     padding: EdgeInsets.fromLTRB(15, 5, 0, 5),
                     child: Row(
                       children: <Widget>[
@@ -553,9 +661,7 @@ class _DrawerElement extends State<DrawerElement> {
                         )
                       ],
                     ),
-                  )
-              ),
-
+                  )),*/
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: ListTile(
@@ -578,11 +684,9 @@ class _DrawerElement extends State<DrawerElement> {
                   },
                 ),
               ),
-
             ],
           ),
         ),
-
       ],
     ));
   }
@@ -628,9 +732,9 @@ class _DrawerElement extends State<DrawerElement> {
   void getUserInfo() async {
     SharedPreferences myPrefs = await SharedPreferences.getInstance();
     userType = myPrefs.getString("userType")!;
-    try{
+    try {
       bluetoothDeviceName = myPrefs.getString("bluetoothDevice")!;
-    }catch(e){
+    } catch (e) {
       bluetoothDeviceName = 'Connect Bluetooth Device.';
     }
     setState(() {

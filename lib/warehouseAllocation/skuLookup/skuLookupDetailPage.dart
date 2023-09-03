@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:langlobal/drawer/drawerElement.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
+import '../../dashboard/DashboardPage.dart';
 import '../../utilities.dart';
 import '../cartonLookup/cartonLookupDetailPage.dart';
 
@@ -147,20 +149,31 @@ class _SkuLookupDetailPage extends State<SkuLookupDetailPage> {
                     fontWeight: FontWeight.bold),
               ),
             ),*/
+            const Spacer(),
             GestureDetector(
-                child: Container(
-                    width: 85,
-                    height: 80,
-                    child: Center(
-                      child: ElevatedButton(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    )),
+                child: Image.asset(
+                  'assets/icon_back.png',
+                  width: 20,
+                  height: 20,
+                  color: Colors.white,
+                ),
                 onTap: () {
                   Navigator.of(context).pop();
+                }),
+            const SizedBox(width: 20,),
+            GestureDetector(
+                child:  const FaIcon(
+                  FontAwesomeIcons.home,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DashboardPage('')),
+                  );
                 }),
           ],
         ),

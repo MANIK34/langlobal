@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:langlobal/summary/fulfillment/DocsPage.dart';
 import 'package:langlobal/summary/fulfillment/LogsPage.dart';
 import 'package:langlobal/summary/fulfillment/lineItemsPage.dart';
@@ -6,6 +7,8 @@ import 'package:langlobal/summary/fulfillment/orderSearchPage.dart';
 import 'package:langlobal/summary/fulfillment/provisioning/lineItem.dart';
 import 'package:langlobal/summary/fulfillment/shipmentPage.dart';
 import 'package:langlobal/summary/fulfillment/tabPage.dart';
+
+import '../../dashboard/DashboardPage.dart';
 
 class SalesOrderPage extends StatefulWidget {
 
@@ -77,27 +80,34 @@ class _SalesOrderPage extends State<SalesOrderPage>
                       fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
+                const Spacer(),
                 GestureDetector(
-                    child: Container(
-                        width: 85,
-                        height: 80,
-                        child: Center(
-                          child: ElevatedButton(
-                            child: const Text('Search'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => OrderSearchPage('Fulfillment Lookup')),
-                              );
-                            },
-                          ),
-                        )),
+                    child: Image.asset(
+                      'assets/icon_back.png',
+                      width: 20,
+                      height: 20,
+                      color: Colors.white,
+                    ),
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => OrderSearchPage('Fulfillment Lookup')),
+                      );
+                    }),
+                const SizedBox(width: 20,),
+                GestureDetector(
+                    child:  const FaIcon(
+                      FontAwesomeIcons.home,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DashboardPage('')),
                       );
                     }),
                Visibility(

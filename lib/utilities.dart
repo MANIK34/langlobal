@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';

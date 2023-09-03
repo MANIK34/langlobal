@@ -55,7 +55,7 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
 
     final memoField = TextField(
         inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z _ -]")),
+          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
         ],
         maxLength: 9,
         controller: memoController,
@@ -195,21 +195,18 @@ class _TransientOrderSearchPage extends State<TransientOrderSearchPage> {
                   style: TextStyle(fontFamily: 'Montserrat',fontSize: 14,fontWeight: FontWeight.bold),
                 ),
               ),*/
+              const Spacer(),
               GestureDetector(
-                  child: Container(
-                      width: 85,
-                      height: 80,
-                      child: Center(
-                        child: ElevatedButton(
-                          child: Text('Cancel'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      )),
+                  child: Image.asset(
+                    'assets/icon_back.png',
+                    width: 20,
+                    height: 20,
+                    color: Colors.white,
+                  ),
                   onTap: () {
                     Navigator.of(context).pop();
                   }),
+
             ],
           ),
         ),

@@ -285,30 +285,22 @@ class _StockInHandPage extends State<StockInHandPage> {
               ),
             )*/
 
+            const Spacer(),
             GestureDetector(
-                child: Container(
-                    width: 85,
-                    height: 80,
-                    child: Center(
-                      child: ElevatedButton(
-                        child: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => DashboardPage('')),
-                          );
-                        },
-                      ),
-                    )),
+                child: Image.asset(
+                  'assets/icon_back.png',
+                  width: 20,
+                  height: 20,
+                  color: Colors.white,
+                ),
                 onTap: () {
                   Navigator.of(context).pop();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DashboardPage('')),
+                    MaterialPageRoute(
+                        builder: (context) => DashboardPage('')),
                   );
                 }),
-
           ],
         ),),
       drawer: DrawerElement(),

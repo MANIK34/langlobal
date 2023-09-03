@@ -910,7 +910,7 @@ class _DashboardPage extends State<DashboardPage> {
                         MaterialPageRoute(builder: (context) => StockInDemandlPage("")),
                       );
                     }),
-                const SizedBox(
+               /* const SizedBox(
                   height: 10,
                 ),
                 ElevatedButton(
@@ -930,7 +930,7 @@ class _DashboardPage extends State<DashboardPage> {
                         context,
                         MaterialPageRoute(builder: (context) => ShipmentSearchPage('')),
                       );
-                    }),
+                    }),*/
                 /*const SizedBox(
                   height: 10,
                 ),
