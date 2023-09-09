@@ -116,7 +116,7 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ShipmentSubmitPage(null)),
+            MaterialPageRoute(builder: (context) => ShipmentSubmitPage(null,true)),
           );
         },
         child: Text("New Shipment Label",
@@ -146,6 +146,11 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
                   ),
                   onTap: () {
                     Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DashboardPage('')),
+                    );
                   }),
             ],
           ),
@@ -169,7 +174,7 @@ class _ShipmentSearchPage extends State<ShipmentSearchPage> {
                 const SizedBox(
                   height: 15.0,
                 ),
-               // newShipmentButton
+                newShipmentButton
               ],
             ),
           ),

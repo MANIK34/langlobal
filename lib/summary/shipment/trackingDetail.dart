@@ -40,23 +40,29 @@ class _TrackingDetailPage extends State<TrackingDetailPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    orderDate=trackingInfo['orderDate'];
-    orderDate=orderDate.toString().substring(0,10);
-    DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
-    DateFormat formatter = DateFormat('MM/dd/yyyy');
-    orderDate = formatter.format(tempDate);
 
-    shipDate=trackingInfo['shipDate'];
-    shipDate=shipDate.toString().substring(0,10);
-    tempDate = new DateFormat("yyyy-MM-dd").parse(shipDate);
-    formatter = DateFormat('MM/dd/yyyy');
-    shipDate = formatter.format(tempDate);
+    try{
+      orderDate=trackingInfo['orderDate'];
+      orderDate=orderDate.toString().substring(0,10);
+      DateTime tempDate = new DateFormat("yyyy-MM-dd").parse(orderDate);
+      DateFormat formatter = DateFormat('MM/dd/yyyy');
+      orderDate = formatter.format(tempDate);
 
-    shipmentDate=trackingInfo['shipmentDate'];
-    shipmentDate=shipmentDate.toString().substring(0,10);
-  /*  tempDate = new DateFormat("MM/dd/yyyy").parse(shipmentDate);
+      shipDate=trackingInfo['shipDate'];
+      shipDate=shipDate.toString().substring(0,10);
+      tempDate = new DateFormat("yyyy-MM-dd").parse(shipDate);
+      formatter = DateFormat('MM/dd/yyyy');
+      shipDate = formatter.format(tempDate);
+
+      shipmentDate=trackingInfo['shipmentDate'];
+      shipmentDate=shipmentDate.toString().substring(0,10);
+      /*  tempDate = new DateFormat("MM/dd/yyyy").parse(shipmentDate);
     formatter = DateFormat('MM/dd/yyyy');*/
-    shipmentDate = formatter.format(tempDate);
+      shipmentDate = formatter.format(tempDate);
+    }catch(e){
+      utilities.callAppErrorLogApi(e.toString(),"trackingDetail.dart","callTrackingDetailApi");
+    }
+
   }
 
   void _showToast(String errorMessage) {

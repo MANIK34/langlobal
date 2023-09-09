@@ -16,18 +16,20 @@ import '../../model/requestParams/shipmentFromInfo.dart';
 class ShipmentSubmitPage extends StatefulWidget {
 
   var fulfillmentInfo;
-  ShipmentSubmitPage(this.fulfillmentInfo, {Key? key})
+  var isNewLabel;
+  ShipmentSubmitPage(this.fulfillmentInfo,this.isNewLabel, {Key? key})
       : super(key: key);
 
   @override
   _ShipmentSubmitPage createState() =>
-      _ShipmentSubmitPage(this.fulfillmentInfo);
+      _ShipmentSubmitPage(this.fulfillmentInfo,this.isNewLabel);
 }
 
 class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
 
   var fulfillmentInfo;
-  _ShipmentSubmitPage(this.fulfillmentInfo);
+  var isNewLabel;
+  _ShipmentSubmitPage(this.fulfillmentInfo,this.isNewLabel);
 
   String orderDate = "";
   String shipmentDate = "";
@@ -66,22 +68,26 @@ class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
     super.initState();
     shipViaList.add('Select ship via');
     packageList.add('Select package');
-    fullNameController1.text=fulfillmentInfo['customer']['fullName'];
-    addressController1.text=fulfillmentInfo['customer']['address']+fulfillmentInfo['customer']['address2'];
-    cityController1.text=fulfillmentInfo['customer']['city'];
-    zipController1.text=fulfillmentInfo['customer']['zip'];
-    stateController1.text=fulfillmentInfo['customer']['state'];
+    try{
+      fullNameController1.text=fulfillmentInfo['customer']['fullName'];
+      addressController1.text=fulfillmentInfo['customer']['address']+fulfillmentInfo['customer']['address2'];
+      cityController1.text=fulfillmentInfo['customer']['city'];
+      zipController1.text=fulfillmentInfo['customer']['zip'];
+      stateController1.text=fulfillmentInfo['customer']['state'];
+    }catch(e){
+
+    }
+
     if(!Utilities.ActiveConnection){
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         _showToast('No internet connection found!');
       });
     }else{
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        buildShowDialog(context);
+      });
       callGetShipViaApi();
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      buildShowDialog(context);
-    });
   }
 
   void _showToast(String errorMessage) {
@@ -784,20 +790,38 @@ class _ShipmentSubmitPage extends State<ShipmentSubmitPage> {
     String? userID = myPrefs.getString("userId");
 
     var url = "https://api.langlobal.com/fulfillment/v1/ShipmentLabel";
+    var body;
+    if(isNewLabel){
+      body = json.encode({
+        "fulfillmentNumber": '',
+        "customerName": '',
+        "shipVia": shipVia,
+        "shipPackage": package,
+        "weight": weightController.text.toString(),
+        "poid": 0,
+        "userId": userID!,
+        "companyID": companyID!,
+        "shipmentFromInfo": fromInfo,
+        "shipmentToInfo": toInfo,
+        "labelType":'custom'
 
-    var body = json.encode({
-      "fulfillmentNumber": fulfillmentInfo['fulfillmentNumber'],
-      "customerName": fulfillmentInfo['customer']['fullName'],
-      "shipVia": shipVia,
-      "shipPackage": package,
-      "weight": weightController.text.toString(),
-      "poid": fulfillmentInfo['fulfillmentID'],
-      "userId": userID!,
-      "companyID": companyID!,
-      "shipmentFromInfo": fromInfo,
-      "shipmentToInfo": toInfo,
+      });
+    }else{
+      body = json.encode({
+        "fulfillmentNumber": fulfillmentInfo['fulfillmentNumber'],
+        "customerName": fulfillmentInfo['customer']['fullName'],
+        "shipVia": shipVia,
+        "shipPackage": package,
+        "weight": weightController.text.toString(),
+        "poid": fulfillmentInfo['fulfillmentID'],
+        "userId": userID!,
+        "companyID": companyID!,
+        "shipmentFromInfo": fromInfo,
+        "shipmentToInfo": toInfo,
+        "labelType":'fulfillment'
+      });
+    }
 
-    });
     body = body.replaceAll("\"[", "[");
     body = body.replaceAll("]\"", "]");
     body = body.replaceAll("\\\"", "\"");

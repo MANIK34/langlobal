@@ -113,7 +113,7 @@ class _ShipmentPage extends State<ShipmentPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ShipmentSubmitPage(fulfillmentInfo)),
+            MaterialPageRoute(builder: (context) => ShipmentSubmitPage(fulfillmentInfo,false)),
           );
         },
         child: Text("Generate Labels",

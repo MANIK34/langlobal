@@ -196,7 +196,7 @@ class _BluetoothDemo extends State<BluetoothDemo> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.brown),
                   onPressed: () {
-                    //testPrint.sample();
+                   // testPrint.sample();
                   },
                   child: const Text('PRINT TEST',
                       style: TextStyle(color: Colors.white)),

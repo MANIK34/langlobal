@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -5,13 +7,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:langlobal/bluetooth_demo.dart';
 import 'package:langlobal/changeCompany/ChangeCompany.dart';
-import 'package:langlobal/dashboard/DashboardPage.dart';
+import 'package:http/http.dart' as http;
 import 'package:langlobal/login.dart';
+import 'package:langlobal/triage/triageLookupPage1.dart';
 import 'package:langlobal/warehouseAllocation/skuLookup/skuLookupPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../locationLookup/locationLookupPage.dart';
 import '../summary/fulfillment/orderSearchPage.dart';
 import '../transientSearch/transientOrderSearch.dart';
+import '../userInfo/userInfoPage.dart';
 import '../utilities/testprint.dart';
 import '../warehouseAllocation/cartonLookup/cartonLookupPage.dart';
 import '../warehouseAllocation/inventoryLookup/inventoryLookupPage.dart';
@@ -43,6 +47,9 @@ class _DrawerElement extends State<DrawerElement> {
   bool _connected = false;
   TestPrint testPrint = TestPrint();
   String deviceName = '';
+  var bluetoothIconColor=Colors.black;
+  var wifiIconColor=Colors.black;
+  BuildContext? _context;
 
   @override
   void initState() {
@@ -241,6 +248,9 @@ class _DrawerElement extends State<DrawerElement> {
     setState(() {
       if (wifiName == null || wifiName == "") {
         wifiName = "WiFi turned off";
+        wifiIconColor=Colors.black;
+      }else{
+        wifiIconColor=Colors.blue;
       }
       _connectionStatus = 'Wifi Name: $wifiName\n'
           'Wifi BSSID: $wifiBSSID\n'
@@ -273,7 +283,7 @@ class _DrawerElement extends State<DrawerElement> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        margin: const EdgeInsets.only(bottom: 0, top: 50),
+                        margin: const EdgeInsets.only(bottom: 0, top: 90),
                         width: 160,
                         height: 45,
                         child: buildProfileImage(),
@@ -281,28 +291,38 @@ class _DrawerElement extends State<DrawerElement> {
                       SizedBox(
                         height: 10,
                       ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              userName,
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16),
-                            ),
-                            Spacer(),
-                            Text(
-                              '9/1/2023 3:10 pm',
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: 'Montserrat',
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 12),
-                            ),
-                          ],
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserInfoPage()),
+                          );
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                userName,
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16),
+                              ),
+                              Spacer(),
+                              Text(
+                                '9/1/2023 3:10 pm',
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 12),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(height: 5.0),
@@ -313,13 +333,13 @@ class _DrawerElement extends State<DrawerElement> {
               Divider(color: Colors.black),
               Container(
                 height: 40,
-                color: Colors.blue,
+                color: Colors.grey,
                 child: Align(
-                  child:  Text(
+                  child: Text(
                     'Favorite',
                     style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white,
+                        color: Colors.black,
                         fontFamily: 'Montserrat',
                         fontWeight: FontWeight.bold),
                   ),
@@ -329,7 +349,7 @@ class _DrawerElement extends State<DrawerElement> {
               Divider(
                 height: 10,
               ),
-              SizedBox(
+             /* SizedBox(
                 height: 20,
                 child: GestureDetector(
                     onTap: () {
@@ -352,7 +372,7 @@ class _DrawerElement extends State<DrawerElement> {
                       ),
                     )),
               ),
-              Divider(color: Colors.black),
+              Divider(color: Colors.black),*/
               SizedBox(
                 height: 20,
                 child: GestureDetector(
@@ -378,12 +398,16 @@ class _DrawerElement extends State<DrawerElement> {
                     )),
               ),
               Divider(color: Colors.black),
-
               SizedBox(
                 height: 20,
                 child: GestureDetector(
                     onTap: () {
-
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TriageLookupPage1()),
+                      );
                     },
                     child: Padding(
                       padding: EdgeInsets.only(left: 20, top: 5),
@@ -398,7 +422,6 @@ class _DrawerElement extends State<DrawerElement> {
                     )),
               ),
               Divider(color: Colors.black),
-
               SizedBox(
                 height: 20,
                 child: GestureDetector(
@@ -407,8 +430,7 @@ class _DrawerElement extends State<DrawerElement> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                OrderSearchPage('3')),
+                            builder: (context) => OrderSearchPage('3')),
                       );
                     },
                     child: Padding(
@@ -428,13 +450,13 @@ class _DrawerElement extends State<DrawerElement> {
               ),
               Container(
                 height: 40,
-                color: Colors.blue,
+                color: Colors.grey,
                 child: Align(
-                  child:  Text(
+                  child: Text(
                     'Lookup',
                     style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white,
+                        color: Colors.black,
                         fontFamily: 'Montserrat',
                         fontWeight: FontWeight.bold),
                   ),
@@ -444,7 +466,6 @@ class _DrawerElement extends State<DrawerElement> {
               Divider(
                 height: 8,
               ),
-
               SizedBox(
                 height: 20,
                 child: GestureDetector(
@@ -459,7 +480,7 @@ class _DrawerElement extends State<DrawerElement> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 20, top: 5),
                       child: const Text(
-                        'Location Lookup',
+                        'Location',
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.black,
@@ -483,7 +504,7 @@ class _DrawerElement extends State<DrawerElement> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 20, top: 5),
                       child: const Text(
-                        'SKU Lookup',
+                        'SKU',
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.black,
@@ -507,7 +528,7 @@ class _DrawerElement extends State<DrawerElement> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 20, top: 5),
                       child: const Text(
-                        'IMEI Lookup',
+                        'IMEI',
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.black,
@@ -531,7 +552,7 @@ class _DrawerElement extends State<DrawerElement> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 20, top: 5),
                       child: const Text(
-                        'Fulfillment Lookup',
+                        'Fulfillment',
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.black,
@@ -555,7 +576,7 @@ class _DrawerElement extends State<DrawerElement> {
                     child: Padding(
                       padding: EdgeInsets.only(left: 20, top: 5),
                       child: const Text(
-                        'Carton Lookup',
+                        'Carton',
                         style: TextStyle(
                             fontSize: 12,
                             color: Colors.black,
@@ -592,7 +613,7 @@ class _DrawerElement extends State<DrawerElement> {
                 ),
               ),
               Divider(color: Colors.black),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(
                   left: 15,
                 ),
@@ -605,22 +626,37 @@ class _DrawerElement extends State<DrawerElement> {
                       '1.0.2',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(width: 35,),
-                    const FaIcon(
-                      FontAwesomeIcons.wifi,
-                      color: Colors.black,
-                      size: 20,
+                    SizedBox(
+                      width: 35,
                     ),
-                    SizedBox(width: 35,),
-                    const FaIcon(
-                      FontAwesomeIcons.bluetooth,
-                      color: Colors.black,
-                      size: 20,
+                    GestureDetector(
+                      onTap: () {
+                        showWifiDialog();
+                      },
+                      child:   FaIcon(
+                        FontAwesomeIcons.wifi,
+                        color: wifiIconColor,
+                        size: 20,
+                      ),
                     ),
+                    SizedBox(
+                      width: 35,
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        showBluetoothDialog();
+                      },
+                      child:    FaIcon(
+                        FontAwesomeIcons.bluetooth,
+                        color:bluetoothIconColor,
+                        size: 20,
+                      ),
+                    )
+
                   ],
                 ),
               ),
-              /*Padding(
+              /* Padding(
                 padding: EdgeInsets.only(left: 15, top: 5),
                 child: Row(
                   children: <Widget>[
@@ -662,28 +698,35 @@ class _DrawerElement extends State<DrawerElement> {
                       ],
                     ),
                   )),*/
-              Padding(
-                padding: const EdgeInsets.only(left: 5),
-                child: ListTile(
-                  minLeadingWidth: 2,
-                  leading: const FaIcon(
-                    FontAwesomeIcons.lock,
-                    color: Colors.black,
-                    size: 16,
-                  ),
-                  title: const Text(
-                    'Logout',
-                    style: TextStyle(
-                        fontSize: 16,
+              SizedBox(height: 10,),
+              SizedBox(
+                height: 45,
+                child: Container(
+                  color: Colors.grey,
+                  child:  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: ListTile(
+                      minLeadingWidth: 2,
+                      leading: const FaIcon(
+                        FontAwesomeIcons.lock,
                         color: Colors.black,
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.normal),
+                        size: 16,
+                      ),
+                      title: const Text(
+                        'Logout',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.normal),
+                      ),
+                      onTap: () {
+                        _showMyDialog();
+                      },
+                    ),
                   ),
-                  onTap: () {
-                    _showMyDialog();
-                  },
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -716,10 +759,8 @@ class _DrawerElement extends State<DrawerElement> {
               child: Text('Yes'),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage('')),
-                );
+                buildShowDialog(context);
+                callLogoutApi();
                 // exit(0);
               },
             ),
@@ -734,8 +775,13 @@ class _DrawerElement extends State<DrawerElement> {
     userType = myPrefs.getString("userType")!;
     try {
       bluetoothDeviceName = myPrefs.getString("bluetoothDevice")!;
+      bluetoothIconColor=Colors.blue;
     } catch (e) {
       bluetoothDeviceName = 'Connect Bluetooth Device.';
+      bluetoothIconColor=Colors.black;
+    }
+    if(bluetoothDeviceName=='Select Device'){
+      bluetoothIconColor=Colors.black;
     }
     setState(() {
       userName = myPrefs.getString("userName")!;
@@ -767,5 +813,185 @@ class _DrawerElement extends State<DrawerElement> {
           },
         ),
       );
+
+  void showWifiDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(50.0),
+                  topLeft: Radius.circular(50.0))),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                'WIFI',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 15, top: 5),
+                child: Row(
+                  children: <Widget>[
+                    Text('Wifi: '),
+                    Text(
+                      _connectionStatus,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showBluetoothDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(50.0),
+                  topLeft: Radius.circular(50.0))),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const SizedBox(
+                height: 10,
+              ),
+              const Text(
+                'BLUETOOTH',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BluetoothDemo()),
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(15, 5, 0, 5),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Bluetooth: '),
+                        Text(
+                          bluetoothDeviceName!,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Spacer(),
+                        FaIcon(
+                          FontAwesomeIcons.arrowRight,
+                          color: Colors.black,
+                          size: 14,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        )
+                      ],
+                    ),
+                  )),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+
+
+  void callLogoutApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? userID = myPrefs.getString("userId");
+    String? token = myPrefs.getString("token");
+    var url = "https://api.langlobal.com/auth/v1";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var body = json.encode({
+      "userID": int.parse(userID!),
+    });
+    print("requestParams$body" );
+    var response =
+    await http.delete(Uri.parse(url), body: body, headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LoginPage("")),
+          );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
+  }
+
+  void _showToast(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(errorMessage),
+      action: SnackBarAction(
+        label: "OK",
+        onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
+      ),
+    ));
+  }
 }
-//Copyrights © 2022 | All Rights Reserved by Department of Finance.\n
+

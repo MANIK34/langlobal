@@ -179,9 +179,9 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
         minWidth: 250,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          if(!Utilities.ActiveConnection){
+          if (!Utilities.ActiveConnection) {
             _showToast("No internet connection found!");
-          }else{
+          } else {
             callGetCartonLookupPrintApi();
           }
         },
@@ -257,9 +257,11 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                 onTap: () {
                   Navigator.of(context).pop();
                 }),
-            const SizedBox(width: 20,),
+            const SizedBox(
+              width: 20,
+            ),
             GestureDetector(
-                child:  const FaIcon(
+                child: const FaIcon(
                   FontAwesomeIcons.home,
                   color: Colors.white,
                   size: 16,
@@ -268,8 +270,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                   Navigator.of(context).pop();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => DashboardPage('')),
+                    MaterialPageRoute(builder: (context) => DashboardPage('')),
                   );
                 }),
           ],
@@ -328,14 +329,14 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                     children: <Widget>[
                                       GestureDetector(
                                         onTap: () {
-                                          if(!Utilities.ActiveConnection){
-                                            _showToast("No internet connection found!");
-                                          }else{
+                                          if (!Utilities.ActiveConnection) {
+                                            _showToast(
+                                                "No internet connection found!");
+                                          } else {
                                             callGetCartonLookupApi(
                                                 cartonContent['location']
                                                     .toString());
                                           }
-
                                         },
                                         child: Row(
                                           children: <Widget>[
@@ -435,7 +436,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                           thickness: 2.0,
                           color: Colors.black,
                         ),
-                       /* Row(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
@@ -485,7 +486,7 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                               ),
                             ),
                           ],
-                        ),*/
+                        ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
                           child: Card(
@@ -638,12 +639,15 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
                                             ),
                                             GestureDetector(
                                                 onTap: () {
-                                                  if(!Utilities.ActiveConnection){
-                                                    _showToast("No internet connection found!");
-                                                  }else{
+                                                  if (!Utilities
+                                                      .ActiveConnection) {
+                                                    _showToast(
+                                                        "No internet connection found!");
+                                                  } else {
                                                     callGetIMEISApi(
-                                                        cartonContent['imeiList']
-                                                        [index]['imei']);
+                                                        cartonContent[
+                                                                'imeiList']
+                                                            [index]['imei']);
                                                   }
                                                 },
                                                 child: Text(
@@ -757,34 +761,38 @@ class _CartonLookupDetailPage extends State<CartonLookupDetailPage> {
     String? token = myPrefs.getString("token");
     String? companyID = myPrefs.getString("companyID");
 
-    String url = "${Utilities.baseUrl}inventoryallocation/v1/cartonlookup/${cartonContent['cartonID']}?action=print";
+    String url =
+        "${Utilities.baseUrl}inventoryallocation/v1/cartonlookupnew/${cartonContent['cartonID']}?action=print";
+    url =
+        "https://api.langlobal.com/inventoryallocation/v1/cartonlookupnew/LGI20230822151153295?base64Type=image&action=print";
 
     Map<String, String> headers = {'Authorization': 'Bearer ${token!}'};
-    print(url.toString());
+
     var response = await http.get(Uri.parse(url), headers: headers);
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       try {
         var returnCode = jsonResponse['returnCode'];
         if (returnCode == "1") {
-          print("jsonResponse :::: " + jsonResponse.toString());
           var base64Image = jsonResponse['base64String'];
-          Uint8List bytx = Base64Decoder().convert(base64Image);
+
+          print("base64Image :::: " + base64Image);
+
+          Uint8List bytx = base64.decode(base64Image);
           testPrint.sample(bytx);
 
-        //  await Printing.layoutPdf(onLayout: (_) => bytx);
+          //  await Printing.layoutPdf(onLayout: (_) => bytx);
 
+          /*Uint8List decodedbytes = base64.decode(base64Image);
 
-         /* Uint8List decodedbytes = base64.decode(base64Image);
-
-          String _dataURI = 'data:image/png;base64,' + base64Image;
+          String _dataURI = 'data:image/jpeg;base64,' + base64Image;
 
           UriData? _data = Uri.parse(_dataURI).data;
           Image? _image =
           Image.memory(_data!.contentAsBytes().buffer.asUint8List());
 
           decodedbytes = _data!.contentAsBytes().buffer.asUint8List(_data!.contentAsBytes().offsetInBytes, _data!.contentAsBytes().lengthInBytes);
-
+          testPrint.sample(decodedbytes);
           print("image Generated :::: ");*/
         } else {
           _showToast(jsonResponse['returnMessage']);
