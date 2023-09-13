@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:langlobal/triage/triageLookupPage2.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../dashboard/DashboardPage.dart';
 import '../drawer/drawerElement.dart';
 import '../utilities.dart';
@@ -15,6 +16,7 @@ class TriageLookupPage1 extends StatefulWidget {
 }
 
 class _TriageLookupPage1 extends State<TriageLookupPage1> {
+  BuildContext? _context;
   TextEditingController memoController = TextEditingController();
   TextEditingController skuController = TextEditingController();
   TextEditingController fromDateController = TextEditingController();
@@ -35,11 +37,37 @@ class _TriageLookupPage1 extends State<TriageLookupPage1> {
   late String? _conditionList = null;
   String conditionVal = "";
 
+  List<String> triageSourcesList = [];
+  late String? _triageSourcesList = null;
+  String triageSourcesVal = "";
+
+  List<String> triageStatusesList = [];
+  late String? _triageStatusesList = null;
+  String triageStatusesVal = "";
+
+  List<String> triagePrioritiesList = [];
+  late String? _triagePrioritiesList = null;
+  String triagePrioritiesVal = "";
+
+  List<String> functionAndGradingsList = [];
+  late String? _functionAndGradingsList = null;
+  String functionAndGradingsVal = "";
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     conditionList.add('Select');
+    if(!Utilities.ActiveConnection){
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        _showToast('No internet connection found!');
+      });
+    }else{
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        buildShowDialog(context);
+      });
+      callCommonApi();
+    }
   }
 
   @override
@@ -91,14 +119,14 @@ class _TriageLookupPage1 extends State<TriageLookupPage1> {
           icon: const Icon(Icons.arrow_drop_down),
           iconSize: 26.0,
           isExpanded: true,
-          value: _conditionList,
+          value: _functionAndGradingsList,
           onChanged: (value) {
             setState(() {
-              _conditionList = value!;
-              conditionVal = value!;
+              _functionAndGradingsList = value!;
+              functionAndGradingsVal = value!;
             });
           },
-          items: conditionList.map((String map) {
+          items: functionAndGradingsList.map((String map) {
             return DropdownMenuItem<String>(
               value: map,
               child: Text(
@@ -123,14 +151,14 @@ class _TriageLookupPage1 extends State<TriageLookupPage1> {
           icon: const Icon(Icons.arrow_drop_down),
           iconSize: 26.0,
           isExpanded: true,
-          value: _conditionList,
+          value: _triageStatusesList,
           onChanged: (value) {
             setState(() {
-              _conditionList = value!;
-              conditionVal = value!;
+              _triageStatusesList = value!;
+              triageStatusesVal = value!;
             });
           },
-          items: conditionList.map((String map) {
+          items: triageStatusesList.map((String map) {
             return DropdownMenuItem<String>(
               value: map,
               child: Text(
@@ -155,14 +183,14 @@ class _TriageLookupPage1 extends State<TriageLookupPage1> {
           icon: const Icon(Icons.arrow_drop_down),
           iconSize: 26.0,
           isExpanded: true,
-          value: _conditionList,
+          value: _triageSourcesList,
           onChanged: (value) {
             setState(() {
-              _conditionList = value!;
-              conditionVal = value!;
+              _triageSourcesList = value!;
+              triageSourcesVal = value!;
             });
           },
-          items: conditionList.map((String map) {
+          items: triageSourcesList.map((String map) {
             return DropdownMenuItem<String>(
               value: map,
               child: Text(
@@ -187,14 +215,14 @@ class _TriageLookupPage1 extends State<TriageLookupPage1> {
           icon: const Icon(Icons.arrow_drop_down),
           iconSize: 26.0,
           isExpanded: true,
-          value: _conditionList,
+          value: _triagePrioritiesList,
           onChanged: (value) {
             setState(() {
-              _conditionList = value!;
-              conditionVal = value!;
+              _triagePrioritiesList = value!;
+              triagePrioritiesVal = value!;
             });
           },
-          items: conditionList.map((String map) {
+          items: triagePrioritiesList.map((String map) {
             return DropdownMenuItem<String>(
               value: map,
               child: Text(
@@ -332,11 +360,8 @@ class _TriageLookupPage1 extends State<TriageLookupPage1> {
           } else if (!Utilities.ActiveConnection) {
             _showToast("No internet connection found!");
           } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => TriageLookupPage2()),
-            );
+            buildShowDialog(context);
+            callTriageSearchApi();
           }
         },
         child: Text("Search",
@@ -439,6 +464,120 @@ class _TriageLookupPage1 extends State<TriageLookupPage1> {
         ),
       )
     );
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+  }
+
+
+  void callCommonApi() async{
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    var url = "https://api.langlobal.com/triage/v1/commonapis";
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var response =
+    await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          var conditionsFromJson = jsonResponse['condtions'];
+          conditionList= new List<String>.from(conditionsFromJson);
+          triageSourcesList= new List<String>.from(jsonResponse['triageSources']);
+          triageStatusesList= new List<String>.from(jsonResponse['triageStatuses']);
+          triagePrioritiesList= new List<String>.from(jsonResponse['triagePriorities']);
+          var functionAndGradings=jsonResponse['functionAndGradings'];
+          for(int m=0;m<functionAndGradings.length;m++){
+            functionAndGradingsList.add(functionAndGradings[m]['functionNGrading']);
+          }
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
+    setState(() {});
+  }
+
+  void callTriageSearchApi() async{
+    //https://api.langlobal.com/inventoryallocation/v1/cartonlookupnew/LGI20230822151153295?base64Type=image&action=print
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    String? companyID = myPrefs.getString("companyID");
+    var url = "https://api.langlobal.com/triage/v1";
+
+    var body = json.encode({
+      "companyID": int.parse(companyID!),
+      "memoNumber": memoController.text.toString(),
+      "dateFrom":fromDate,
+      "dateTo": toDate,
+      "sku": skuController.text.toString(),
+      "condition": conditionVal,
+      "functionGrading":1,
+      "triageSource": triageSourcesVal,
+      "priority": triagePrioritiesVal,
+      "triageStatus": triageStatusesVal,
+    });
+
+    print("API Url >>>>>>"+url);
+    print("requestParams$body");
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type":"application/json"
+    };
+    var response =
+    await http.post(Uri.parse(url), headers: headers, body: body);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      var jsonResponse = json.decode(response.body);
+
+      try {
+        var returnCode=jsonResponse['returnCode'];
+        if(returnCode=="1"){
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TriageLookupPage2(jsonResponse,memoController.text.toString())),
+            );
+        }else{
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::"+e.toString());
+        print('returnCode'+e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
+    print(response.body);
   }
 
   void _showToast(String errorMessage) {

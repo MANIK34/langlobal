@@ -4,17 +4,31 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:langlobal/triage/triageLookupPage3.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../dashboard/DashboardPage.dart';
 import '../drawer/drawerElement.dart';
 import '../utilities.dart';
 
 class TriageLookupPage2 extends StatefulWidget {
+
+  var jsonResponse;
+  var memoNumber;
+  TriageLookupPage2(this.jsonResponse,this.memoNumber,
+      {Key? key}) : super(key: key);
+
   @override
-  _TriageLookupPage2 createState() => _TriageLookupPage2();
+  _TriageLookupPage2 createState() => _TriageLookupPage2(this.jsonResponse,this.memoNumber);
 }
 
 class _TriageLookupPage2 extends State<TriageLookupPage2> {
+
+  var jsonResponse;
+  var memoNumber;
+  _TriageLookupPage2(this.jsonResponse,this.memoNumber);
+
+  BuildContext? _context;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
@@ -35,11 +49,7 @@ class _TriageLookupPage2 extends State<TriageLookupPage2> {
         minWidth: 200,
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TriageLookupPage3()),
-          );
+
         },
         child: Text("Search",
             textAlign: TextAlign.center,
@@ -51,11 +61,14 @@ class _TriageLookupPage2 extends State<TriageLookupPage2> {
     return Scaffold(
         bottomSheet: Padding(
           padding: EdgeInsets.only(bottom: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[submitButton],
-          ),
+          child: Visibility(
+            visible: false,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[submitButton],
+            ),
+          )
         ),
         appBar: AppBar(
           backgroundColor: Colors.blue.shade700,
@@ -184,7 +197,7 @@ class _TriageLookupPage2 extends State<TriageLookupPage2> {
                   ListView.builder(
                     shrinkWrap: true,
                     primary: false,
-                    itemCount: 4,
+                    itemCount: jsonResponse['triageList'].length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                         color:
@@ -197,30 +210,36 @@ class _TriageLookupPage2 extends State<TriageLookupPage2> {
                               child: Text(
                                 " "+(index+1).toString(),
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
+                                    fontWeight: FontWeight.bold, fontSize: 10),
                               ),
                             ),
                             SizedBox(
                               width: 5,
                             ),
-                            SizedBox(
-                              width: 70,
-                              child: Text(
-                                'Memo#',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,color: Colors.blue,
-                                    fontSize: 12,decoration: TextDecoration.underline),
-                              ),
-                            ),
+                           GestureDetector(
+                             onTap: (){
+                               buildShowDialog(context);
+                               callMemoInfoApi();
+                             },
+                             child:  SizedBox(
+                               width: 70,
+                               child: Text(
+                                 jsonResponse['triageList'][index]['memoNumber'].toString(),
+                                 style: TextStyle(
+                                     fontWeight: FontWeight.bold,color: Colors.blue,
+                                     fontSize: 12,decoration: TextDecoration.underline),
+                               ),
+                             ),
+                           ),
                             SizedBox(
                               width: 5,
                             ),
                             SizedBox(
                               width: 60,
                               child: Text(
-                                '',
+                                  jsonResponse['triageList'][index]['priority'],
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
+                                    fontWeight: FontWeight.bold, fontSize: 10),
                               ),
                             ),
                             SizedBox(
@@ -229,9 +248,9 @@ class _TriageLookupPage2 extends State<TriageLookupPage2> {
                             SizedBox(
                               width: 50,
                               child: Text(
-                                '',
+                                  jsonResponse['triageList'][index]['sku'],
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
+                                    fontWeight: FontWeight.bold, fontSize: 10),
                               ),
                             ),
                             SizedBox(
@@ -240,9 +259,10 @@ class _TriageLookupPage2 extends State<TriageLookupPage2> {
                             SizedBox(
                               width: 50,
                               child: Text(
-                                '',
+                                jsonResponse['triageList'][index]['status'],
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
+                                    fontWeight: FontWeight.bold, fontSize: 10),
                               ),
                             ),
                             SizedBox(
@@ -251,10 +271,10 @@ class _TriageLookupPage2 extends State<TriageLookupPage2> {
                             SizedBox(
                               width: 80,
                               child: Text(
-                                '',
+                                jsonResponse['triageList'][index]['functionAndGrading'],
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
+                                    fontWeight: FontWeight.bold, fontSize: 10),
                               ),
                             ),
                           ],
@@ -277,5 +297,56 @@ class _TriageLookupPage2 extends State<TriageLookupPage2> {
         onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
       ),
     ));
+  }
+
+  void callMemoInfoApi() async {
+    SharedPreferences myPrefs = await SharedPreferences.getInstance();
+    String? token = myPrefs.getString("token");
+    var url = "https://api.langlobal.com/triage/v1/"+memoNumber;
+    Map<String, String> headers = {
+      'Authorization': 'Bearer ${token!}',
+      "Accept": "application/json",
+      "content-type": "application/json"
+    };
+    var response =
+    await http.get(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      Navigator.of(_context!).pop();
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      try {
+        var returnCode = jsonResponse['returnCode'];
+        if (returnCode == "1") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TriageLookupPage3(jsonResponse)),
+          );
+        } else {
+          _showToast(jsonResponse['returnMessage']);
+        }
+      } catch (e) {
+        print("error message ::" + e.toString());
+        print('returnCode' + e.toString());
+        // TODO: handle exception, for example by showing an alert to the user
+      }
+    } else {
+      Navigator.of(_context!).pop();
+      print(response.statusCode);
+    }
+  }
+
+  buildShowDialog(BuildContext context) {
+
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          _context=context;
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
   }
 }

@@ -2,18 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-
 import '../dashboard/DashboardPage.dart';
 import '../drawer/drawerElement.dart';
-import '../utilities.dart';
 
 class TriageLookupPage3 extends StatefulWidget {
+
+  var jsonResponse;
+  TriageLookupPage3(this.jsonResponse,
+      {Key? key}) : super(key: key);
+
   @override
-  _TriageLookupPage3 createState() => _TriageLookupPage3();
+  _TriageLookupPage3 createState() => _TriageLookupPage3(this.jsonResponse);
 }
 
 class _TriageLookupPage3 extends State<TriageLookupPage3> {
+  var jsonResponse;
+  _TriageLookupPage3(this.jsonResponse);
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   TextStyle style = const TextStyle(
       fontFamily: 'Montserrat', fontSize: 16.0, color: Colors.black);
@@ -112,13 +117,13 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Memo#',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['memoNumber'].toString(),style: TextStyle(
                         fontWeight: FontWeight.bold
                       ),),
-                      Text('Transient Date',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['transientRecieveDate'].toString(),style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
-                      Text('Status',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['triageStatus'],style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                     ],
@@ -130,7 +135,7 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                           fontWeight: FontWeight.bold
                       ),),
                       SizedBox(width: 120,),
-                      Text('Sku',textAlign:TextAlign.left,style: TextStyle(
+                      Text(jsonResponse['triageInfo']['sku'],textAlign:TextAlign.left,style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                       Text('',style: TextStyle(
@@ -143,7 +148,7 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Product Name',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['productName'],style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                     ],
@@ -153,7 +158,7 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Supplier',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['supplierName'],style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                     ],
@@ -161,11 +166,11 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                   SizedBox(height: 5,),
                   Row(
                     children: <Widget>[
-                      Text('Order Qty:',style: TextStyle(
+                      Text('Order Qty: '+jsonResponse['triageInfo']['orderedQty'].toString(),style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                       SizedBox(width: 80,),
-                      Text('Received Qty:',style: TextStyle(
+                      Text('Received Qty: '+jsonResponse['triageInfo']['triageStatus'],style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                       Text('',style: TextStyle(
@@ -186,13 +191,13 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Memo#',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['memoNumber'].toString(),style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
-                      Text('Triage Date',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['triageDate'].toString().substring(0,10),style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
-                      Text('Status',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['triageStatus'],style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                     ],
@@ -201,7 +206,7 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text('Requested By:',style: TextStyle(
+                      Text('Requested By: '+jsonResponse['triageInfo']['requestedBy'].toString(),style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                       Text('Approved By:',textAlign:TextAlign.left,style: TextStyle(
@@ -214,10 +219,10 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Priority',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['priority'],style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
-                      Text('Func & Grading',style: TextStyle(
+                      Text(jsonResponse['triageInfo']['requestedBy'].toString(),style: TextStyle(
                           fontWeight: FontWeight.bold
                       ),),
                       Text('Quality Check',style: TextStyle(
@@ -247,7 +252,7 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                         width: 5,
                       ),
                       SizedBox(
-                        width: 120,
+                        width: 150,
                         child: Text(
                           'Carton',
                           style: TextStyle(
@@ -272,7 +277,7 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                   ListView.builder(
                     shrinkWrap: true,
                     primary: false,
-                    itemCount: 2,
+                    itemCount: jsonResponse['triageInfo']['cartons'].length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                         color:
@@ -292,21 +297,21 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                               width: 5,
                             ),
                             SizedBox(
-                              width: 70,
+                              width: 150,
                               child: Text(
-                                '',
+                                jsonResponse['triageInfo']['cartons'][index]['cartonID'],
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12),
                               ),
                             ),
                             SizedBox(
-                              width: 5,
+                              width: 15,
                             ),
                             SizedBox(
                               width: 60,
                               child: Text(
-                                '',
+                                jsonResponse['triageInfo']['cartons'][index]['qty'].toString(),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 12),
                               ),
@@ -339,7 +344,7 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                         width: 5,
                       ),
                       SizedBox(
-                        width: 120,
+                        width: 80,
                         child: Text(
                           'Memp#',
                           style: TextStyle(
@@ -376,7 +381,7 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                   ListView.builder(
                     shrinkWrap: true,
                     primary: false,
-                    itemCount: 2,
+                    itemCount: jsonResponse['triageInfo']['dispositions'].length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                         color:
@@ -393,24 +398,35 @@ class _TriageLookupPage3 extends State<TriageLookupPage3> {
                               ),
                             ),
                             SizedBox(
-                              width: 5,
+                              width: 15,
                             ),
                             SizedBox(
                               width: 70,
                               child: Text(
-                                '',
+                                jsonResponse['triageInfo']['dispositions'][index]['dispositionNumber'].toString(),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12),
                               ),
                             ),
                             SizedBox(
-                              width: 5,
+                              width: 15,
                             ),
                             SizedBox(
-                              width: 60,
+                              width: 120,
                               child: Text(
-                                '',
+                                jsonResponse['triageInfo']['dispositions'][index]['disposedDate'].toString().substring(0,10),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            SizedBox(
+                              width: 90,
+                              child: Text(
+                                jsonResponse['triageInfo']['dispositions'][index]['disposedQty'].toString(),
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 12),
                               ),
